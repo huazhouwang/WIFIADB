@@ -1,32 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
-
-    <LinearLayout
+    >
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/start"
-            android:onClick="listenInPort"/>
+        android:layout_height="match_parent"
+        tools:context=".activity.MainActivity">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/wifi"/>
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/wifi_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/monitor_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disable"
+            android:layout_centerInParent="true"/>
+
+        <LinearLayout
+            android:id="@+id/ip_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:layout_below="@id/monitor_button"
+            android:layout_centerHorizontal="true"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ip_title"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 />
 
             <TextView
@@ -35,18 +60,19 @@
                 android:layout_height="wrap_content"
                 tools:text="192.168.1.11"/>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/page_loading"
+        android:id="@+id/mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@null"
         tools:visibility="gone">
         <ProgressBar
+            android:id="@+id/loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             />
     </FrameLayout>
-</FrameLayout>
+</merge>

@@ -53,11 +53,11 @@ public class CommandExecutor {
             final StringBuilder errorBuilder = new StringBuilder();
             String line;
 
-            while (TextUtils.isEmpty(line = successReader.readLine())){
+            while (!TextUtils.isEmpty(line = successReader.readLine())){
                 successBuilder.append(line);
             }
 
-            while (TextUtils.isEmpty(line = errorReader.readLine())){
+            while (!TextUtils.isEmpty(line = errorReader.readLine())){
                 errorBuilder.append(line);
             }
 

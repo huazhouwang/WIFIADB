@@ -12,7 +12,7 @@ public interface Config {
     String EXIT = "exit";
 
     String[] CHECK_MONITOR = new String[]{
-            "getprop service.adb.tcp.prot"
+            "getprop service.adb.tcp.port"
     };
 
     String[] START_MONITOR = new String[]{

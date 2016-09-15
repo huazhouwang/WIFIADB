@@ -1,6 +1,8 @@
 package adb.wifi.woaiwhz.wifiadbandroid.base;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.Nullable;
@@ -12,11 +14,15 @@ import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
  */
 public class WiFiModule {
     private static WiFiModule mInstance;
-    private WifiManager mManager;
+    private WifiManager mWifiManager;
+    private ConnectivityManager mConnectivityManager;
+
 
     private WiFiModule(Context context){
-        mManager = (WifiManager) context.getApplicationContext()
-                .getSystemService(Context.WIFI_SERVICE);
+        context = context.getApplicationContext();
+
+        mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     public static WiFiModule getInstance(){
@@ -27,9 +33,9 @@ public class WiFiModule {
         return mInstance;
     }
 
-    private @Nullable String getIp(){
+    public @Nullable String getIp(){
         if(isEnable()){
-            final WifiInfo info = mManager.getConnectionInfo();
+            final WifiInfo info = mWifiManager.getConnectionInfo();
             final String ip = format(info.getIpAddress());
 
             return ip;
@@ -38,8 +44,21 @@ public class WiFiModule {
         }
     }
 
+    public void setEnable(boolean enable){
+        mWifiManager.setWifiEnabled(enable);
+    }
+
     public boolean isEnable(){
-        return mManager.isWifiEnabled();
+        boolean enable = mWifiManager.isWifiEnabled();
+
+        if(enable){
+            final NetworkInfo.State state = mConnectivityManager
+                    .getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+
+            enable = (state == NetworkInfo.State.CONNECTED);
+        }
+
+        return enable;
     }
 
     private static String format(final int ip) {

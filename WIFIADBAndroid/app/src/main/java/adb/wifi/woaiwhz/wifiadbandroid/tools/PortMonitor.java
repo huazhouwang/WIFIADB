@@ -2,6 +2,7 @@ package adb.wifi.woaiwhz.wifiadbandroid.tools;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
@@ -19,14 +20,11 @@ import adb.wifi.woaiwhz.wifiadbandroid.base.MonitorResult;
  */
 public class PortMonitor {
     private static final String TAG = PortMonitor.class.getSimpleName();
-    public static final int FAIL_2_START_MONITOR = 1;
-    public static final int SUCCESS_2_START_MONITOR = 1 << 1;
-    public static final int SUCCESS_2_CHECK_MONITOR = 1 << 2;
-    public static final int SOME_THING_FAIL = 1 << 3;
+    public static final int MONITOR_ENABLE = 1 << 2;
+    public static final int MONITOR_DISABLE = 1 << 3;
 
     private Handler mHandler;
     private ExecutorService mExecutor;
-
     private AtomicBoolean mFree;
 
     public PortMonitor(@NonNull Handler handler){
@@ -63,105 +61,116 @@ public class PortMonitor {
     }
 
     private static class ExecuteMonitor implements Runnable{
-        private static final int MAX_TRY = 2;
-
-        private final boolean mEnable;
+        private final boolean m2Enable;
         private final WeakReference<Handler> mReference;
         private final AtomicBoolean mFree;
-        private int mTryCount;
         private final String[] mCommands;
 
         private ExecuteMonitor(@NonNull Handler handle,final boolean enable,AtomicBoolean free){
             mReference = new WeakReference<>(handle);
-            mEnable = enable;
+            m2Enable = enable;
 
-            if(mEnable){
+            if(enable){
                 mCommands = Config.START_MONITOR;
             }else {
                 mCommands = Config.STOP_MONITOR;
             }
-            mTryCount = 0;
 
             mFree = free;
         }
 
         @Override
         public void run() {
-            ++mTryCount;
-
             final MonitorResult result = CommandExecutor.execute(true,mCommands);
 
-            if(result.success){
-                final Handler handler = mReference.get();
-
-                if(handler != null){
-                    handler.sendEmptyMessage(SUCCESS_2_START_MONITOR);
-                    mFree.set(true);
-                }//if handler is null,then let mFree stay in false
-            }else if(mTryCount <= MAX_TRY){
-                run();
+            if((result.success && m2Enable)
+                    || (!result.success && !m2Enable)){
+                isEnable(result);
             }else {
-                final Handler handler = mReference.get();
-                if(handler != null) {
-                    final Runnable runnable = new CheckMonitor(mReference.get(),mFree);
-                    runnable.run();
-                }
+                isDisable(result);
+            }
+        }
+
+        private void isEnable(@NonNull MonitorResult result){
+            final Handler handler = mReference.get();
+
+            if(handler != null){
+                handler.sendEmptyMessage(MONITOR_ENABLE);
+                mFree.set(true);
+            }//if handler is null,then let mFree stay in false
+        }
+
+        private void isDisable(@NonNull MonitorResult result){
+            final Handler handler = mReference.get();
+
+            if(handler != null){
+                handler.sendEmptyMessage(MONITOR_DISABLE);
+                mFree.set(true);
             }
         }
     }
 
     private static class CheckMonitor implements Runnable{
-        private static final int MAX_TRY = 3;
-
         private WeakReference<Handler> mReference;
-        private int mTryCount;
         private final AtomicBoolean mFree;
 
         private CheckMonitor(@NonNull Handler handler,AtomicBoolean free){
             mReference = new WeakReference<>(handler);
-            mTryCount = 0;
             mFree = free;
         }
 
         @Override
         public void run() {
-            ++mTryCount;
-
             final MonitorResult result = CommandExecutor.execute(false, Config.CHECK_MONITOR);
 
-            if (result.success){
-                final Handler handler = mReference.get();
-
-                if(handler != null){
-                    handler.sendEmptyMessage(SUCCESS_2_CHECK_MONITOR);
-                    mFree.set(true);
-                }
-            }else if(mTryCount <= MAX_TRY){
-                run();
-            }else {
-                final Handler handler = mReference.get();
-
-                if(handler != null){
-                    handler.sendEmptyMessage(SOME_THING_FAIL);
-                    mFree.set(true);
-
-                    if(BuildConfig.DEBUG){
-                        Log.e(TAG, "CheckMonitor::run >> " + result);
+            if (result.success && !TextUtils.isEmpty(result.message)){
+                try{
+                    if(Integer.parseInt(result.message) == Config.PORT){
+                        success(result);
+                    }else {
+                        fail(result);
                     }
+                }catch (Exception e){
+                    if(BuildConfig.DEBUG){
+                        e.printStackTrace();
+                    }
+                    fail(result);
+                }
+            }else {
+                fail(result);
+            }
+        }
+
+        private void success(@NonNull MonitorResult result){
+            final Handler handler = mReference.get();
+
+            if(handler != null){
+                handler.sendEmptyMessage(MONITOR_ENABLE);
+                mFree.set(true);
+            }
+        }
+
+        private void fail(@NonNull MonitorResult result){
+            final Handler handler = mReference.get();
+
+            if(handler != null){
+                handler.sendEmptyMessage(MONITOR_DISABLE);
+                mFree.set(true);
+
+                if(BuildConfig.DEBUG){
+                    Log.e(TAG, "CheckMonitor::run >> " + result);
                 }
             }
         }
     }
 
     public void onDestroy(){
-        mExecutor.shutdown();
+        mExecutor.shutdownNow();
         mExecutor = null;
 
         final int[] messageWhat = new int[]{
-                FAIL_2_START_MONITOR,
-                SUCCESS_2_START_MONITOR,
-                SUCCESS_2_CHECK_MONITOR,
-                SOME_THING_FAIL
+                MONITOR_ENABLE,
+                MONITOR_DISABLE
         };
 
         for (final int what : messageWhat){
