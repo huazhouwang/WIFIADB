@@ -25,7 +25,7 @@ public class CommandExecutor {
             final String user;
 
             if(needRoot){
-                user = Config.SU;
+                user = Config.SU; // TODO: 2016/9/16 授权失败的话
             }else {
                 user = Config.SH;
             }

@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="primary">#673AB7</color>
+    <color name="primary_dark">#512DA8</color>
+    <color name="primary_light">#D1C4E9</color>
+    <color name="accent">#448AFF</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+
+    <color name="mask_background">#80757575</color>
+    <color name="port_ready_primary">#4CAF50</color>
+    <color name="port_ready_accent">#8BC34A</color>
+    <color name="port_no_ready_primary">#E91E63</color>
+    <color name="port_no_ready_accent">#FF5252</color>
+    <color name="wifi_no_ready_primary">#ffffff</color>
+    <color name="wifi_no_ready_accent">#9E9E9E</color>
 </resources>

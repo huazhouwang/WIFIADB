@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
     <RelativeLayout
+        android:id="@+id/node_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activity.MainActivity">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="@string/app_name"
+            app:titleTextColor="@android:color/white"
+            android:elevation="4dp"
+            tools:targetApi="21"
             >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/wifi"/>
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/wifi_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_gravity="end|center_vertical"
                 />
-        </LinearLayout>
+        </android.support.v7.widget.Toolbar>
 
         <Button
             android:id="@+id/monitor_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_ready"
+            android:text="@string/port_no_ready"
+            android:textColor="@color/icons"
+            android:textSize="25sp"
+            android:background="@drawable/port_switch"
             android:layout_centerInParent="true"/>
 
         <LinearLayout
             android:id="@+id/ip_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:orientation="horizontal"
             android:layout_below="@id/monitor_button"
             android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:background="@drawable/ip_layout_background"
             >
 
             <TextView
@@ -52,12 +56,14 @@
                 android:text="@string/ip_title"
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
+                android:textColor="@color/icons"
                 />
 
             <TextView
                 android:id="@+id/ip_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/icons"
                 tools:text="192.168.1.11"/>
         </LinearLayout>
     </RelativeLayout>
@@ -66,13 +72,13 @@
         android:id="@+id/mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@null"
         android:visibility="gone">
         <ProgressBar
             android:id="@+id/loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+
             />
     </FrameLayout>
 </merge>

@@ -8,7 +8,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import adb.wifi.woaiwhz.wifiadbandroid.BuildConfig;
 import adb.wifi.woaiwhz.wifiadbandroid.base.CommandExecutor;
@@ -25,17 +25,20 @@ public class PortMonitor {
 
     private Handler mHandler;
     private ExecutorService mExecutor;
-    private AtomicBoolean mFree;
+    private AtomicInteger mCurrent;
+    private int mAssignIndex;
 
     public PortMonitor(@NonNull Handler handler){
         mHandler = handler;
-        mFree = new AtomicBoolean(true);
+        mAssignIndex = 0;
+        mCurrent = new AtomicInteger(mAssignIndex);
         mExecutor = Executors.newSingleThreadExecutor();
     }
 
     public boolean checkPort(){
-        if(mFree.compareAndSet(true,false)) {
-            mExecutor.execute(new CheckMonitor(mHandler,mFree));
+        if(mAssignIndex == mCurrent.get()){
+            mExecutor.execute(new CheckMonitor(mHandler, mCurrent));
+            ++mAssignIndex;
             return true;
         }else {
             return false;
@@ -43,8 +46,9 @@ public class PortMonitor {
     }
 
     public boolean stopPort(){
-        if(mFree.compareAndSet(true,false)) {
-            mExecutor.execute(new ExecuteMonitor(mHandler, false, mFree));
+        if(mAssignIndex == mCurrent.get()){
+            mExecutor.execute(new ExecuteMonitor(mHandler, false, mCurrent));
+            ++mAssignIndex;
             return true;
         }else {
             return false;
@@ -52,8 +56,9 @@ public class PortMonitor {
     }
 
     public boolean startPort(){
-        if(mFree.compareAndSet(true,false)) {
-            mExecutor.execute(new ExecuteMonitor(mHandler, true,mFree));
+        if(mAssignIndex == mCurrent.get()){
+            mExecutor.execute(new ExecuteMonitor(mHandler, true, mCurrent));
+            ++mAssignIndex;
             return true;
         }else {
             return false;
@@ -63,10 +68,11 @@ public class PortMonitor {
     private static class ExecuteMonitor implements Runnable{
         private final boolean m2Enable;
         private final WeakReference<Handler> mReference;
-        private final AtomicBoolean mFree;
+        private final AtomicInteger mCurrent;
+        private final int mAssignIndex;
         private final String[] mCommands;
 
-        private ExecuteMonitor(@NonNull Handler handle,final boolean enable,AtomicBoolean free){
+        private ExecuteMonitor(@NonNull Handler handle,final boolean enable,AtomicInteger current){
             mReference = new WeakReference<>(handle);
             m2Enable = enable;
 
@@ -76,18 +82,21 @@ public class PortMonitor {
                 mCommands = Config.STOP_MONITOR;
             }
 
-            mFree = free;
+            mCurrent = current;
+            mAssignIndex = mCurrent.get();
         }
 
         @Override
         public void run() {
             final MonitorResult result = CommandExecutor.execute(true,mCommands);
 
-            if((result.success && m2Enable)
-                    || (!result.success && !m2Enable)){
-                isEnable(result);
-            }else {
-                isDisable(result);
+            if(mCurrent.compareAndSet(mAssignIndex,mAssignIndex + 1)) {
+                if ((result.success && m2Enable)
+                        || (!result.success && !m2Enable)) {
+                    isEnable(result);
+                } else {
+                    isDisable(result);
+                }
             }
         }
 
@@ -96,8 +105,7 @@ public class PortMonitor {
 
             if(handler != null){
                 handler.sendEmptyMessage(PORT_READY_NOW);
-                mFree.set(true);
-            }//if handler is null,then let mFree stay in false
+            }
         }
 
         private void isDisable(@NonNull MonitorResult result){
@@ -105,39 +113,42 @@ public class PortMonitor {
 
             if(handler != null){
                 handler.sendEmptyMessage(PORT_NO_READY_NOW);
-                mFree.set(true);
             }
         }
     }
 
     private static class CheckMonitor implements Runnable{
         private WeakReference<Handler> mReference;
-        private final AtomicBoolean mFree;
+        private final AtomicInteger mCurrent;
+        private final int mAssignIndex;
 
-        private CheckMonitor(@NonNull Handler handler,AtomicBoolean free){
+        private CheckMonitor(@NonNull Handler handler,AtomicInteger current){
             mReference = new WeakReference<>(handler);
-            mFree = free;
+            mCurrent = current;
+            mAssignIndex = current.get();
         }
 
         @Override
         public void run() {
             final MonitorResult result = CommandExecutor.execute(false, Config.CHECK_MONITOR);
 
-            if (result.success && !TextUtils.isEmpty(result.message)){
-                try{
-                    if(Integer.parseInt(result.message) == Config.PORT){
-                        success(result);
-                    }else {
+            if(mCurrent.compareAndSet(mAssignIndex,mAssignIndex + 1)) {
+                if (result.success && !TextUtils.isEmpty(result.message)) {
+                    try {
+                        if (Integer.parseInt(result.message) == Config.PORT) {
+                            success(result);
+                        } else {
+                            fail(result);
+                        }
+                    } catch (Exception e) {
+                        if (BuildConfig.DEBUG) {
+                            e.printStackTrace();
+                        }
                         fail(result);
                     }
-                }catch (Exception e){
-                    if(BuildConfig.DEBUG){
-                        e.printStackTrace();
-                    }
+                } else {
                     fail(result);
                 }
-            }else {
-                fail(result);
             }
         }
 
@@ -146,7 +157,6 @@ public class PortMonitor {
 
             if(handler != null){
                 handler.sendEmptyMessage(PORT_READY_NOW);
-                mFree.set(true);
             }
         }
 
@@ -155,7 +165,6 @@ public class PortMonitor {
 
             if(handler != null){
                 handler.sendEmptyMessage(PORT_NO_READY_NOW);
-                mFree.set(true);
 
                 if(BuildConfig.DEBUG){
                     Log.e(TAG, "CheckMonitor::run >> " + result);
@@ -165,6 +174,8 @@ public class PortMonitor {
     }
 
     public void interrupt(){
+        mAssignIndex = mCurrent.incrementAndGet();
+
         final int[] messageWhat = new int[]{
                 PORT_READY_NOW,
                 PORT_NO_READY_NOW
