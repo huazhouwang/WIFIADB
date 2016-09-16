@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">WIFIADBAndroid</string>
-    <string name="start">Start</string>
     <string name="ip_title">IP :</string>
     <string name="wifi">WIFI :</string>
-    <string name="enable">Enable</string>
-    <string name="disable">Disable</string>
-    <string name="wifi_no_ready">Wifi is not ready!</string>
+    <string name="ready">READY</string>
+    <string name="no_ready">NO READY</string>
+    <string name="wifi_no_ready">WIFI ISN\'T READY!</string>
 </resources>

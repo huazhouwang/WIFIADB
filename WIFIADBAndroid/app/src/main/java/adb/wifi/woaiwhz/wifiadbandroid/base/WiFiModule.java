@@ -34,7 +34,7 @@ public class WiFiModule {
     }
 
     public @Nullable String getIp(){
-        if(isEnable()){
+        if(isReady()){
             final WifiInfo info = mWifiManager.getConnectionInfo();
             final String ip = format(info.getIpAddress());
 
@@ -44,11 +44,11 @@ public class WiFiModule {
         }
     }
 
-    public void setEnable(boolean enable){
+    public void enable(boolean enable){
         mWifiManager.setWifiEnabled(enable);
     }
 
-    public boolean isEnable(){
+    public boolean isReady(){
         boolean enable = mWifiManager.isWifiEnabled();
 
         if(enable){

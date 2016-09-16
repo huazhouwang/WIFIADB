@@ -20,8 +20,8 @@ import adb.wifi.woaiwhz.wifiadbandroid.base.MonitorResult;
  */
 public class PortMonitor {
     private static final String TAG = PortMonitor.class.getSimpleName();
-    public static final int MONITOR_ENABLE = 1 << 2;
-    public static final int MONITOR_DISABLE = 1 << 3;
+    public static final int PORT_READY_NOW = 1;
+    public static final int PORT_NO_READY_NOW = 1 << 1;
 
     private Handler mHandler;
     private ExecutorService mExecutor;
@@ -33,7 +33,7 @@ public class PortMonitor {
         mExecutor = Executors.newSingleThreadExecutor();
     }
 
-    public boolean check(){
+    public boolean checkPort(){
         if(mFree.compareAndSet(true,false)) {
             mExecutor.execute(new CheckMonitor(mHandler,mFree));
             return true;
@@ -42,7 +42,7 @@ public class PortMonitor {
         }
     }
 
-    public boolean stop(){
+    public boolean stopPort(){
         if(mFree.compareAndSet(true,false)) {
             mExecutor.execute(new ExecuteMonitor(mHandler, false, mFree));
             return true;
@@ -51,7 +51,7 @@ public class PortMonitor {
         }
     }
 
-    public boolean start(){
+    public boolean startPort(){
         if(mFree.compareAndSet(true,false)) {
             mExecutor.execute(new ExecuteMonitor(mHandler, true,mFree));
             return true;
@@ -95,7 +95,7 @@ public class PortMonitor {
             final Handler handler = mReference.get();
 
             if(handler != null){
-                handler.sendEmptyMessage(MONITOR_ENABLE);
+                handler.sendEmptyMessage(PORT_READY_NOW);
                 mFree.set(true);
             }//if handler is null,then let mFree stay in false
         }
@@ -104,7 +104,7 @@ public class PortMonitor {
             final Handler handler = mReference.get();
 
             if(handler != null){
-                handler.sendEmptyMessage(MONITOR_DISABLE);
+                handler.sendEmptyMessage(PORT_NO_READY_NOW);
                 mFree.set(true);
             }
         }
@@ -145,7 +145,7 @@ public class PortMonitor {
             final Handler handler = mReference.get();
 
             if(handler != null){
-                handler.sendEmptyMessage(MONITOR_ENABLE);
+                handler.sendEmptyMessage(PORT_READY_NOW);
                 mFree.set(true);
             }
         }
@@ -154,7 +154,7 @@ public class PortMonitor {
             final Handler handler = mReference.get();
 
             if(handler != null){
-                handler.sendEmptyMessage(MONITOR_DISABLE);
+                handler.sendEmptyMessage(PORT_NO_READY_NOW);
                 mFree.set(true);
 
                 if(BuildConfig.DEBUG){
@@ -164,19 +164,14 @@ public class PortMonitor {
         }
     }
 
-    public void onDestroy(){
-        mExecutor.shutdownNow();
-        mExecutor = null;
-
+    public void interrupt(){
         final int[] messageWhat = new int[]{
-                MONITOR_ENABLE,
-                MONITOR_DISABLE
+                PORT_READY_NOW,
+                PORT_NO_READY_NOW
         };
 
         for (final int what : messageWhat){
             mHandler.removeMessages(what);
         }
-
-        mHandler = null;
     }
 }

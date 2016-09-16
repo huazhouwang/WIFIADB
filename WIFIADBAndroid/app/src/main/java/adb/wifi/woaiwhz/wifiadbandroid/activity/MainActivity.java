@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
             mPresenter = new MainPresenter(this);
         }
 
-        mPresenter.onResume();
+        mPresenter.check();
     }
 
     @SuppressWarnings("unchecked")
@@ -89,44 +89,44 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void wifiNotReady() {
+    public void onWifiNoReady() {
         mSwitch.setChecked(false);
         mButton.setEnabled(false);
         mButton.setClickable(false);
-        mIpContainer.setVisibility(View.GONE);
+        onPortNoReady();
 
         Toast.makeText(this, R.string.wifi_no_ready,Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void wifiReadyNow() {
+    public void onWifiReady() {
         mSwitch.setChecked(true);
         mButton.setEnabled(true);
         mButton.setClickable(true);
-        mIpContainer.setVisibility(View.VISIBLE);
+        onPortNoReady();
     }
 
     @Override
-    public void monitorEnable(String ip) {
+    public void onPortReady(String ip) {
         mIpValue.setText(ip);
         mIpContainer.setVisibility(View.VISIBLE);
-        mButton.setText(R.string.enable);
+        mButton.setText(R.string.ready);
     }
 
     @Override
-    public void monitorDisable() {
+    public void onPortNoReady() {
         mIpContainer.setVisibility(View.GONE);
         mIpValue.setText(null);
-        mButton.setText(R.string.disable);
+        mButton.setText(R.string.no_ready);
     }
 
     private void toggleWifiSwitch(boolean isChecked){
-        WiFiModule.getInstance().setEnable(isChecked);
+        WiFiModule.getInstance().enable(isChecked);
     }
 
 
     private void toggleMonitorState() {
-        mPresenter.toggleMonitorState();
+        mPresenter.togglePortState();
     }
 
     @Override
