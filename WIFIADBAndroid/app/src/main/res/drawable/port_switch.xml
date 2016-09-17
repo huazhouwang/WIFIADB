@@ -6,6 +6,6 @@
     <size android:height="300dp"
         android:width="300dp"/>
 
-    <solid android:color="@color/wifi_no_ready_accent"/>
+    <solid android:color="@color/wifi_unready_accent"/>
 
 </shape>

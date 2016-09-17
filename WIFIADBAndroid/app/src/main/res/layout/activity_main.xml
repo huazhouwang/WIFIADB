@@ -4,11 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
-    <RelativeLayout
-        android:id="@+id/node_root"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.MainActivity">
+        android:orientation="vertical"
+        >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/tool_bar"
@@ -28,57 +29,70 @@
                 />
         </android.support.v7.widget.Toolbar>
 
-        <Button
-            android:id="@+id/monitor_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/port_no_ready"
-            android:textColor="@color/icons"
-            android:textSize="25sp"
-            android:background="@drawable/port_switch"
-            android:layout_centerInParent="true"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/ip_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:orientation="horizontal"
-            android:layout_below="@id/monitor_button"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:background="@drawable/ip_layout_background"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ip_title"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/icons"
+            <View
+                android:id="@+id/reveal_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 />
 
-            <TextView
-                android:id="@+id/ip_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/icons"
-                tools:text="192.168.1.11"/>
-        </LinearLayout>
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".activity.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/mask"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-        <ProgressBar
-            android:id="@+id/loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+                <ImageButton
+                    android:id="@+id/monitor_button"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/bg_button_shadow"
+                    />
 
-            />
-    </FrameLayout>
+                <LinearLayout
+                    android:id="@+id/ip_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/monitor_button"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:background="@drawable/ip_layout_background"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ip_title"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:textColor="@color/icons"
+                        />
+
+                    <TextView
+                        android:id="@+id/ip_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/icons"
+                        tools:text="192.168.1.11"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/mask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+                <ProgressBar
+                    android:id="@+id/loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
 </merge>

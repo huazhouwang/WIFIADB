@@ -8,43 +8,34 @@ import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.IntDef;
-
-import java.lang.annotation.Retention;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
+import adb.wifi.woaiwhz.wifiadbandroid.base.MonitorResult;
+import adb.wifi.woaiwhz.wifiadbandroid.base.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
-import adb.wifi.woaiwhz.wifiadbandroid.tools.PortMonitor;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import adb.wifi.woaiwhz.wifiadbandroid.tools.MonitorTool;
 
 /**
  * Created by huazhou.whz on 2016/9/14.
  */
 public class MainPresenter {
-    private static final int WIFI_NO_READY = 1;
-    private static final int WIFI_READY = 1 << 1;
-    private static final int PORT_NO_READY = 1 << 2;
-    private static final int PORT_READY = 1 << 3;
-
-    private final PortMonitor mMonitor;
+    private final MonitorTool mMonitor;
     private final MainView mViewLayer;
+    private final BroadcastReceiver mReceiver;
 
-    @IntDef({PORT_READY, PORT_NO_READY, WIFI_NO_READY,WIFI_READY})
-    @Retention(SOURCE)
-    private @interface STATE{}
-    @STATE private int mState;
-
+    @State.STATE
+    private int mState;
     private boolean mRunning;
-    private BroadcastReceiver mReceiver;
 
     public MainPresenter(MainView viewLayer){
         mViewLayer = viewLayer;
         final Handler handler = new MyHandler(Looper.getMainLooper());
-        mMonitor = new PortMonitor(handler);
-        mRunning = false;
+        mMonitor = new MonitorTool(handler);
         mReceiver = new WifiChangeReceiver();
 
+        mRunning = false;
         MyApp.getContext().registerReceiver(mReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -63,37 +54,39 @@ public class MainPresenter {
         }
     }
 
-    private void wifiNoReady(){
-        mState = WIFI_NO_READY;
-        mViewLayer.onWifiNoReady();
-    }
-
     private void wifiReady(){
-        mState = WIFI_READY;
+        mState = State.WIFI_READY;
         mViewLayer.onWifiReady();
         checkPortState();
     }
 
+    private void wifiNoReady(){
+        mState = State.WIFI_UNREADY;
+        mViewLayer.onWifiUnready();
+    }
+
     public void togglePortState(){
-        if(mState == PORT_READY){
-            changePortState(PORT_NO_READY);
-        }else if(mState == PORT_NO_READY){
-            changePortState(PORT_READY);
+        if(mState == State.PORT_READY){
+            changePort(State.PORT_UNREADY);
+        }else if(mState == State.PORT_UNREADY){
+            changePort(State.PORT_READY);
         }
     }
 
-    private void changePortState(@STATE int newState){
+    private void changePort(@State.STATE int newState){
         if(cannotRun()){
             return;
         }
 
-        if (newState == PORT_NO_READY){
-            mRunning = mMonitor.stopPort();
-        }else if(newState == PORT_READY){
-            mRunning = mMonitor.startPort();
+        if (newState == State.PORT_UNREADY){
+            mRunning = mMonitor.cancelMonitor();
+        }else if(newState == State.PORT_READY){
+            mRunning = mMonitor.try2monitor();
         }
 
-        mViewLayer.pageLoading(mRunning);
+        if(mRunning){
+            mViewLayer.pageLoading(true);
+        }
     }
 
     private void checkPortState(){
@@ -102,11 +95,14 @@ public class MainPresenter {
         }
 
         mRunning = mMonitor.checkPort();
-        mViewLayer.pageLoading(mRunning);
+
+        if(mRunning) {
+            mViewLayer.pageLoading(true);
+        }
     }
 
     private boolean cannotRun(){
-        return mRunning || mState < WIFI_READY;
+        return mRunning || mState < State.WIFI_READY;
     }
 
     public void onDestroy(){
@@ -122,14 +118,19 @@ public class MainPresenter {
         @Override
         public void dispatchMessage(Message msg) {
             final int what = msg.what;
+            final MonitorResult result = (MonitorResult) msg.obj;
 
             switch (what){
-                case PortMonitor.PORT_READY_NOW:
-                    onPortReady();
+                case MonitorTool.ACTION_READY_PORT_SUCCESS:
+                    onPortReady(result);
                     break;
 
-                case PortMonitor.PORT_NO_READY_NOW:
-                    onPortNoReady();
+                case MonitorTool.ACTION_UNREADY_PORT_SUCCESS:
+                    onPortUnready(result);
+                    break;
+
+                case MonitorTool.ACTION_FAIL:
+                    onFail(result);
                     break;
 
                 default:
@@ -141,14 +142,26 @@ public class MainPresenter {
         }
     }
 
-    private void onPortReady() {
-        mState = PORT_READY;
+    private void onPortReady(MonitorResult result) {
+        mState = State.PORT_READY;
         mViewLayer.onPortReady(WiFiModule.getInstance().getIp());
     }
 
-    private void onPortNoReady(){
-        mState = PORT_NO_READY;
-        mViewLayer.onPortNoReady();
+    private void onPortUnready(MonitorResult result){
+        mState = State.PORT_UNREADY;
+        mViewLayer.onPortUnready();
+    }
+
+    private void onFail(MonitorResult result){
+        String message = result.message;
+
+        if(TextUtils.isEmpty(message)){
+            message = "Please check whether you gain root authority";
+        }
+
+        if(!TextUtils.isEmpty(message)){
+            mViewLayer.onActionFail(message);
+        }
     }
 
     private class WifiChangeReceiver extends BroadcastReceiver {
@@ -157,27 +170,24 @@ public class MainPresenter {
             final boolean wifiReady = WiFiModule.getInstance().isReady();
 
             if(wifiReady){
-                if(mState < WIFI_READY){
+                if(mState < State.WIFI_READY){
                     wifiReady();
-//                    interrupt();
                 }
-            }else if(mState >= WIFI_READY){
+            }else if(mState >= State.WIFI_UNREADY){
                 wifiNoReady();
-                interrupt();
+                mViewLayer.pageLoading(false);
+                mMonitor.interrupt();
+                mRunning = false;
             }
-        }
-
-        private void interrupt(){
-            mMonitor.interrupt();
-            mRunning = false;
         }
     }
 
     public interface MainView{
         void pageLoading(boolean show);
-        void onWifiNoReady();
+        void onWifiUnready();
         void onWifiReady();
         void onPortReady(String ip);
-        void onPortNoReady();
+        void onPortUnready();
+        void onActionFail(@NonNull String message);
     }
 }

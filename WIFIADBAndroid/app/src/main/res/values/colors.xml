@@ -10,10 +10,10 @@
     <color name="divider">#BDBDBD</color>
 
     <color name="mask_background">#80757575</color>
-    <color name="port_ready_primary">#4CAF50</color>
-    <color name="port_ready_accent">#8BC34A</color>
-    <color name="port_no_ready_primary">#E91E63</color>
-    <color name="port_no_ready_accent">#FF5252</color>
-    <color name="wifi_no_ready_primary">#ffffff</color>
-    <color name="wifi_no_ready_accent">#9E9E9E</color>
+    <color name="port_ready_primary">#03A9F4</color>
+    <color name="port_ready_accent">#448AFF</color>
+    <color name="port_unready_primary">#F36C60</color>
+    <color name="port_unready_accent">#E51C23</color>
+    <color name="wifi_unready_primary">#ffffff</color>
+    <color name="wifi_unready_accent">#212121</color>
 </resources>

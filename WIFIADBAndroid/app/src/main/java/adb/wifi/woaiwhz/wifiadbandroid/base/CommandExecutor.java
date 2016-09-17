@@ -25,7 +25,7 @@ public class CommandExecutor {
             final String user;
 
             if(needRoot){
-                user = Config.SU; // TODO: 2016/9/16 授权失败的话
+                user = Config.SU;
             }else {
                 user = Config.SH;
             }
@@ -33,6 +33,7 @@ public class CommandExecutor {
             process = Runtime.getRuntime().exec(user);
             output2Process = new DataOutputStream(process.getOutputStream());
 
+            Thread.sleep(100);
             for(String command : commands){
                 if(!TextUtils.isEmpty(command)) {
                     output2Process.writeBytes(command + Config.END_LINE);

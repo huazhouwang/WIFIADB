@@ -1,19 +1,22 @@
 package adb.wifi.woaiwhz.wifiadbandroid.activity;
 
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.v4.util.SimpleArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import adb.wifi.woaiwhz.wifiadbandroid.R;
+import adb.wifi.woaiwhz.wifiadbandroid.base.CircularRevealDrawable;
 import adb.wifi.woaiwhz.wifiadbandroid.base.OnTouchInterceptor;
+import adb.wifi.woaiwhz.wifiadbandroid.base.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
 import adb.wifi.woaiwhz.wifiadbandroid.presenter.MainPresenter;
 
@@ -23,17 +26,18 @@ public class MainActivity extends AppCompatActivity
     private View mMaskView;
     private View mLoading;
     private TextView mIpValue;
-    private Button mButton;
+    private ImageButton mButton;
     private View mIpContainer;
     private SwitchCompat mSwitch;
     private MainPresenter mPresenter;
+    private CircularRevealDrawable mRevelDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNodeLayout = $(R.id.node_root);
+        mNodeLayout = $(R.id.reveal_holder);
         mMaskView = $(R.id.mask);
         mButton = $(R.id.monitor_button);
         mLoading = $(R.id.loading);
@@ -47,6 +51,14 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = $(R.id.tool_bar);
         setSupportActionBar(toolbar);
+
+        SimpleArrayMap<Integer,Integer> map = new SimpleArrayMap<>();
+        map.put(State.INIT,getResources().getColor(android.R.color.white));
+        map.put(State.WIFI_UNREADY,getResources().getColor(R.color.wifi_unready_primary));
+        map.put(State.PORT_UNREADY,getResources().getColor(R.color.port_unready_primary));
+        map.put(State.PORT_READY,getResources().getColor(R.color.port_ready_primary));
+        mRevelDrawable = new CircularRevealDrawable(map);
+        mNodeLayout.setBackgroundDrawable(mRevelDrawable);
     }
 
     @Override
@@ -88,36 +100,35 @@ public class MainActivity extends AppCompatActivity
         mMaskView.setVisibility(View.VISIBLE);
 
         if(withLoading){
-//            mMaskView.setBackgroundResource(R.color.mask_background);
             mLoading.setVisibility(View.VISIBLE);
         }else{
-//            mMaskView.setBackgroundResource(android.R.color.transparent);
             mLoading.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void onWifiNoReady() {
-        mNodeLayout.setBackgroundResource(R.color.wifi_no_ready_primary);
+    public void onWifiUnready() {
+        mNodeLayout.setBackgroundResource(R.color.wifi_unready_primary);
         mSwitch.setChecked(false);
-        mButton.setEnabled(false);
-        mButton.setClickable(false);
+        disableButton();
 
-        GradientDrawable drawable = (GradientDrawable) mButton.getBackground();
-        drawable.setColor(getResources().getColor(R.color.wifi_no_ready_accent));
-        mButton.setText(R.string.port_no_ready);
         mIpContainer.setVisibility(View.GONE);
         mIpValue.setText(null);
 
+        mRevelDrawable.changeState(State.WIFI_UNREADY);
         Toast.makeText(this, R.string.wifi_no_ready,Toast.LENGTH_SHORT).show();
+    }
+
+    private void disableButton(){
+        mButton.setEnabled(false);
+        mButton.setClickable(false);
+        mButton.setActivated(false);
     }
 
     @Override
     public void onWifiReady() {
         mSwitch.setChecked(true);
-        mButton.setEnabled(true);
         mButton.setClickable(true);
-        mButton.setText(R.string.port_no_ready);
         mIpContainer.setVisibility(View.GONE);
         mIpValue.setText(null);
     }
@@ -126,31 +137,33 @@ public class MainActivity extends AppCompatActivity
     public void onPortReady(String ip) {
         mIpValue.setText(ip);
         mIpContainer.setVisibility(View.VISIBLE);
-        mButton.setText(R.string.ready);
-        GradientDrawable drawable = (GradientDrawable) mButton.getBackground();
-        drawable.setColor(getResources().getColor(R.color.port_ready_accent));
-//        mButton.setBackgroundResource(R.color.port_ready_accent);
-        mNodeLayout.setBackgroundResource(R.color.port_ready_primary);
+        activeButton();
+        mRevelDrawable.changeState(State.PORT_READY);
+
+    }
+
+    private void enableButton(){
+        mButton.setEnabled(true);
+        mButton.setActivated(false);
+    }
+
+    private void activeButton(){
+        mButton.setEnabled(true);
+        mButton.setActivated(true);
     }
 
     @Override
-    public void onPortNoReady() {
+    public void onPortUnready() {
         mIpContainer.setVisibility(View.GONE);
         mIpValue.setText(null);
-        mButton.setText(R.string.port_no_ready);
-        mNodeLayout.setBackgroundResource(R.color.port_no_ready_primary);
-        GradientDrawable drawable = (GradientDrawable) mButton.getBackground();
-        drawable.setColor(getResources().getColor(R.color.port_no_ready_accent));
-//        mButton.setBackgroundResource(R.color.port_no_ready_accent);
+
+        enableButton();
+        mRevelDrawable.changeState(State.PORT_UNREADY);
     }
 
-    private void toggleWifiSwitch(boolean isChecked){
-        WiFiModule.getInstance().enable(isChecked);
-    }
-
-
-    private void togglePortState() {
-        mPresenter.togglePortState();
+    @Override
+    public void onActionFail(@NonNull String message) {
+        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -159,7 +172,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id){
             case R.id.monitor_button:
-                togglePortState();
+                mPresenter.togglePortState();
                 break;
 
             default:
@@ -169,6 +182,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        toggleWifiSwitch(isChecked);
+        if(buttonView == mSwitch) {
+            WiFiModule.getInstance().enable(isChecked);
+        }
     }
 }
