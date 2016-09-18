@@ -18,8 +18,8 @@ import adb.wifi.woaiwhz.wifiadbandroid.base.MonitorResult;
 /**
  * Created by huazhou.whz on 2016/9/13.
  */
-public class MonitorTool {
-    private static final String TAG = MonitorTool.class.getSimpleName();
+public class Monitor {
+    private static final String TAG = Monitor.class.getSimpleName();
 
     public static final int ACTION_FAIL = 1;
     public static final int ACTION_READY_PORT_SUCCESS = 1 << 1;
@@ -31,7 +31,7 @@ public class MonitorTool {
 
     private int mAssignIndex;
 
-    public MonitorTool(@NonNull Handler handler){
+    public Monitor(@NonNull Handler handler){
         mHandler = handler;
         mAssignIndex = 0;
         mCurrent = new AtomicInteger(mAssignIndex);
@@ -99,6 +99,7 @@ public class MonitorTool {
                 final Runnable runnable = new CheckMonitor(mAssignIndex);
                 runnable.run();
             }else {
+                mCurrent.compareAndSet(mAssignIndex,mAssignIndex + 1);
                 fail(result);
             }
 

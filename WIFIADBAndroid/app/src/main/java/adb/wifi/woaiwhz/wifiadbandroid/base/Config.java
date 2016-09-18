@@ -5,23 +5,26 @@ package adb.wifi.woaiwhz.wifiadbandroid.base;
  */
 public interface Config {
     int PORT = 5555;
+    int EOF_PORT = -1;
 
     String SH = "sh";
     String SU = "su";
     String END_LINE = "\n";
     String EXIT = "exit";
+    String TARGET = "service.adb.tcp.port";
+    String GET = "getprop";
+    String SET = "setprop";
+    String SPACE = " ";
 
     String[] CHECK_MONITOR = new String[]{
-            "getprop service.adb.tcp.port"
+            GET + SPACE + TARGET
     };
 
     String[] START_MONITOR = new String[]{
-            "setprop service.adb.tcp.port " + PORT,
-            "stop adbd",
-            "start adbd"
+            SET + SPACE + TARGET + SPACE + PORT,
     };
 
     String[] STOP_MONITOR = new String[]{
-            "setprop service.adb.tcp.port -1"
+            SET + SPACE + TARGET + SPACE + EOF_PORT
     };
 }

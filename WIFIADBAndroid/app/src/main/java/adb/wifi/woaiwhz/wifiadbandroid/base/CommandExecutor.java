@@ -22,25 +22,25 @@ public class CommandExecutor {
         MonitorResult result;
 
         try {
-            final String user;
+            final String author;
 
             if(needRoot){
-                user = Config.SU;
+                author = Config.SU;
             }else {
-                user = Config.SH;
+                author = Config.SH;
             }
 
-            process = Runtime.getRuntime().exec(user);
+            process = Runtime.getRuntime().exec(author);
             output2Process = new DataOutputStream(process.getOutputStream());
 
             Thread.sleep(100);
             for(String command : commands){
                 if(!TextUtils.isEmpty(command)) {
-                    output2Process.writeBytes(command + Config.END_LINE);
+                    output2Process.writeBytes(command + Config.SPACE +  Config.END_LINE);
                 }
             }
 
-            output2Process.writeBytes(Config.EXIT + Config.END_LINE);
+            output2Process.writeBytes(Config.EXIT + Config.SPACE + Config.END_LINE);
             output2Process.flush();
             process.waitFor();
 

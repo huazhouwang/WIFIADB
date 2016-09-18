@@ -15,13 +15,13 @@ import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
 import adb.wifi.woaiwhz.wifiadbandroid.base.MonitorResult;
 import adb.wifi.woaiwhz.wifiadbandroid.base.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
-import adb.wifi.woaiwhz.wifiadbandroid.tools.MonitorTool;
+import adb.wifi.woaiwhz.wifiadbandroid.tools.Monitor;
 
 /**
  * Created by huazhou.whz on 2016/9/14.
  */
 public class MainPresenter {
-    private final MonitorTool mMonitor;
+    private final Monitor mMonitor;
     private final MainView mViewLayer;
     private final BroadcastReceiver mReceiver;
 
@@ -32,7 +32,7 @@ public class MainPresenter {
     public MainPresenter(MainView viewLayer){
         mViewLayer = viewLayer;
         final Handler handler = new MyHandler(Looper.getMainLooper());
-        mMonitor = new MonitorTool(handler);
+        mMonitor = new Monitor(handler);
         mReceiver = new WifiChangeReceiver();
 
         mRunning = false;
@@ -121,15 +121,15 @@ public class MainPresenter {
             final MonitorResult result = (MonitorResult) msg.obj;
 
             switch (what){
-                case MonitorTool.ACTION_READY_PORT_SUCCESS:
+                case Monitor.ACTION_READY_PORT_SUCCESS:
                     onPortReady(result);
                     break;
 
-                case MonitorTool.ACTION_UNREADY_PORT_SUCCESS:
+                case Monitor.ACTION_UNREADY_PORT_SUCCESS:
                     onPortUnready(result);
                     break;
 
-                case MonitorTool.ACTION_FAIL:
+                case Monitor.ACTION_FAIL:
                     onFail(result);
                     break;
 
