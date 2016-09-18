@@ -75,14 +75,14 @@ public class Monitor {
     }
 
     private class ExecuteMonitor implements Runnable{
-        private final boolean mIsReady;
+        private final boolean mMakeReady;
         private final int mAssignIndex;
         private final String[] mCommands;
 
-        private ExecuteMonitor(final boolean enable,int assignIndex){
-            mIsReady = enable;
+        private ExecuteMonitor(final boolean makeReady,int assignIndex){
+            mMakeReady = makeReady;
 
-            if(enable){
+            if(makeReady){
                 mCommands = Config.START_MONITOR;
             }else {
                 mCommands = Config.STOP_MONITOR;
@@ -92,18 +92,54 @@ public class Monitor {
         }
 
         @Override
-        public void run() {
-            final MonitorResult result = CommandExecutor.execute(true,mCommands);
-
-            if(result.success){
-                final Runnable runnable = new CheckMonitor(mAssignIndex);
-                runnable.run();
-            }else {
-                mCurrent.compareAndSet(mAssignIndex,mAssignIndex + 1);
-                fail(result);
+        public void run() {// TODO: 2016/9/18 锁的情况是不很清晰
+            if (!mCurrent.compareAndSet(mAssignIndex, mAssignIndex + 1)) {
+                return;
             }
 
+            final MonitorResult result = CommandExecutor.execute(true, mCommands);
+
+            if (result.success) {
+                final MonitorResult result2 = CommandExecutor.execute(false, Config.CHECK_MONITOR);
+
+                if (result2.success) {
+                    if (mMakeReady) {
+                        if (verifyPort(result2, Config.PORT)) {
+                            portReady();
+                            return;
+                        }
+                    } else if (verifyPort(result2, Config.EOF_PORT)) {
+                        portUnReady();
+                        return;
+                    }
+
+                    fail("fail to gain root authority");
+                    return;
+                }
+            }
+
+            fail("fail to execute");
         }
+    }
+
+    private boolean verifyPort(@NonNull MonitorResult result, int target){
+        final String current = result.message;
+
+        if(target == Config.PORT) {
+            try {
+                return !TextUtils.isEmpty(current) && Integer.parseInt(current) == target;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }else if(target == Config.EOF_PORT){
+            try {
+                return TextUtils.isEmpty(current) || Integer.parseInt(current) == target;
+            }catch (NumberFormatException e) {
+                return true;
+            }
+        }
+
+        throw new IllegalArgumentException();
     }
 
     private class CheckMonitor implements Runnable{
@@ -115,60 +151,40 @@ public class Monitor {
 
         @Override
         public void run() {
+            if(!mCurrent.compareAndSet(mAssignIndex,mAssignIndex + 1)){
+                return;
+            }
+
             final MonitorResult result = CommandExecutor.execute(false, Config.CHECK_MONITOR);
 
-            if(mCurrent.compareAndSet(mAssignIndex,mAssignIndex + 1)) {
-                if (result.success) {
-                    try {
-                        if(TextUtils.isEmpty(result.message) || Integer.parseInt(result.message) != Config.PORT){
-                            portUnReady(result);
-                        }else {
-                            portReady(result);
-                        }
-                    } catch (Exception e) {
-                        if (BuildConfig.DEBUG) {
-                            e.printStackTrace();
-                        }
-
-                        fail(result);
-                    }
-                } else {
-                    fail(result);
+            if (result.success) {
+                if(verifyPort(result,Config.PORT)){
+                    portReady();
+                }else {
+                    portUnReady();
                 }
+            } else {
+                fail("fail");
             }
         }
     }
 
-    private void portReady(@NonNull MonitorResult result){
-        final Message message = new Message();
-        message.what = ACTION_READY_PORT_SUCCESS;
-        message.obj = result;
-        mHandler.sendMessage(message);
-
-        if(BuildConfig.DEBUG){
-            Log.i(TAG, "portReady: " + result);
-        }
+    private void portReady(){
+        mHandler.sendEmptyMessage(ACTION_READY_PORT_SUCCESS);
     }
 
-    private void portUnReady(@NonNull MonitorResult result){
-        final Message message = new Message();
-        message.what = ACTION_UNREADY_PORT_SUCCESS;
-        message.obj = result;
-        mHandler.sendMessage(message);
-
-        if(BuildConfig.DEBUG){
-            Log.i(TAG, "portUnReady: " + result);
-        }
+    private void portUnReady(){
+        mHandler.sendEmptyMessage(ACTION_UNREADY_PORT_SUCCESS);
     }
 
-    private void fail(@NonNull MonitorResult result){
+    private void fail(String data){
         final Message message = new Message();
         message.what = ACTION_FAIL;
-        message.obj = result;
+        message.obj = data;
         mHandler.sendMessage(message);
 
         if(BuildConfig.DEBUG){
-            Log.i(TAG, "fail: " + result);
+            Log.i(TAG, "fail: " + data);
         }
     }
 

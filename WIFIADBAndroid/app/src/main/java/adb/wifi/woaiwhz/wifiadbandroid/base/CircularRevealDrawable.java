@@ -15,13 +15,14 @@ import android.support.v4.util.SimpleArrayMap;
  * Created by huazhou.whz on 2016/9/17.
  */
 public class CircularRevealDrawable extends Drawable implements ValueAnimator.AnimatorUpdateListener,ValueAnimator.AnimatorListener{
-    private static final int EOF_COLOR = -1;
+    private static final int EOF_COLOR = Integer.MIN_VALUE;
 
     private Paint mPaint;
     private RectF mReact;
     private PointF mCenterPoint;
     private ValueAnimator mAnimator;
     private float mCurrentRadius;
+    private float mMaxRadius;
 
     private int mInitColor;
     private int mColorWifiUnReady;
@@ -53,16 +54,19 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
         float centerY = (top + bottom) >> 1;
 
         mCenterPoint = new PointF(centerX,centerY);
-        float maxRadius = (float) Math.sqrt(Math.pow(centerX,2) + Math.pow(centerY,2));
+        mCurrentRadius = mMaxRadius = (float) Math.sqrt(Math.pow(centerX,2) + Math.pow(centerY,2));
 
         if(mAnimator != null && mAnimator.isRunning()){
             mAnimator.cancel();
         }
 
-        mAnimator = ValueAnimator.ofFloat(0, maxRadius);
+        mAnimator = ValueAnimator.ofFloat(0, mMaxRadius);
         mAnimator.setDuration(500);
         mAnimator.addUpdateListener(this);
         mAnimator.addListener(this);
+        if(mNextColor != EOF_COLOR){
+            mAnimator.start();
+        }
     }
 
     public void changeState(@State.STATE int state){
@@ -96,9 +100,9 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
     public void draw(Canvas canvas) {
         mPaint.setColor(mCurrentColor);
         canvas.drawRect(mReact,mPaint);
-        mPaint.setColor(mNextColor);
 
-        if(mNextColor != EOF_COLOR) {
+        if(mNextColor != EOF_COLOR){
+            mPaint.setColor(mNextColor);
             canvas.drawCircle(mCenterPoint.x, mCenterPoint.y, mCurrentRadius, mPaint);
         }
     }

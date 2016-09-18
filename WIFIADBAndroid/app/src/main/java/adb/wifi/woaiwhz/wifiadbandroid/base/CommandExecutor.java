@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 
+import adb.wifi.woaiwhz.wifiadbandroid.BuildConfig;
+
 /**
  * Created by huazhou.whz on 2016/9/14.
  */
@@ -33,7 +35,6 @@ public class CommandExecutor {
             process = Runtime.getRuntime().exec(author);
             output2Process = new DataOutputStream(process.getOutputStream());
 
-            Thread.sleep(100);
             for(String command : commands){
                 if(!TextUtils.isEmpty(command)) {
                     output2Process.writeBytes(command + Config.SPACE +  Config.END_LINE);
@@ -71,9 +72,11 @@ public class CommandExecutor {
 
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
-            result = new MonitorResult(false,e.getMessage());
+            if(BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
 
+            result = new MonitorResult(false,e.getMessage());
             return result;
         } finally {
             try {
@@ -93,7 +96,9 @@ public class CommandExecutor {
                     process.destroy();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if(BuildConfig.DEBUG) {
+                    e.printStackTrace();
+                }
             }
         }
     }

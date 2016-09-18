@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         SimpleArrayMap<Integer,Integer> map = new SimpleArrayMap<>();
-        map.put(State.INIT,getResources().getColor(android.R.color.white));
+        map.put(State.INIT,getResources().getColor(android.R.color.black));
         map.put(State.WIFI_UNREADY,getResources().getColor(R.color.wifi_unready_primary));
         map.put(State.PORT_UNREADY,getResources().getColor(R.color.port_unready_primary));
         map.put(State.PORT_READY,getResources().getColor(R.color.port_ready_primary));
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWifiUnready() {
-        mNodeLayout.setBackgroundResource(R.color.wifi_unready_primary);
+//        mNodeLayout.setBackgroundResource(R.color.wifi_unready_primary);
         mSwitch.setChecked(false);
         disableButton();
 
@@ -138,13 +138,13 @@ public class MainActivity extends AppCompatActivity
         mIpValue.setText(ip);
         mIpContainer.setVisibility(View.VISIBLE);
         activeButton();
-        mRevelDrawable.changeState(State.PORT_READY);
+//        mNodeLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+                mRevelDrawable.changeState(State.PORT_READY);
+//            }
+//        });
 
-    }
-
-    private void enableButton(){
-        mButton.setEnabled(true);
-        mButton.setActivated(false);
     }
 
     private void activeButton(){
@@ -159,6 +159,11 @@ public class MainActivity extends AppCompatActivity
 
         enableButton();
         mRevelDrawable.changeState(State.PORT_UNREADY);
+    }
+
+    private void enableButton(){
+        mButton.setEnabled(true);
+        mButton.setActivated(false);
     }
 
     @Override

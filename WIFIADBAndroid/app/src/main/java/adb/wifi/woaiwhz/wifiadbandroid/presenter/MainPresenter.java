@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
-import adb.wifi.woaiwhz.wifiadbandroid.base.MonitorResult;
 import adb.wifi.woaiwhz.wifiadbandroid.base.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
 import adb.wifi.woaiwhz.wifiadbandroid.tools.Monitor;
@@ -118,19 +117,19 @@ public class MainPresenter {
         @Override
         public void dispatchMessage(Message msg) {
             final int what = msg.what;
-            final MonitorResult result = (MonitorResult) msg.obj;
 
             switch (what){
                 case Monitor.ACTION_READY_PORT_SUCCESS:
-                    onPortReady(result);
+                    onPortReady();
                     break;
 
                 case Monitor.ACTION_UNREADY_PORT_SUCCESS:
-                    onPortUnready(result);
+                    onPortUnready();
                     break;
 
                 case Monitor.ACTION_FAIL:
-                    onFail(result);
+                    final String message = (String) msg.obj;
+                    onFail(message);
                     break;
 
                 default:
@@ -142,26 +141,22 @@ public class MainPresenter {
         }
     }
 
-    private void onPortReady(MonitorResult result) {
+    private void onPortReady() {
         mState = State.PORT_READY;
         mViewLayer.onPortReady(WiFiModule.getInstance().getIp());
     }
 
-    private void onPortUnready(MonitorResult result){
+    private void onPortUnready(){
         mState = State.PORT_UNREADY;
         mViewLayer.onPortUnready();
     }
 
-    private void onFail(MonitorResult result){
-        String message = result.message;
-
+    private void onFail(String message){
         if(TextUtils.isEmpty(message)){
-            message = "Please check whether you gain root authority";
+            message = "Something wrong";
         }
 
-        if(!TextUtils.isEmpty(message)){
-            mViewLayer.onActionFail(message);
-        }
+        mViewLayer.onActionFail(message);
     }
 
     private class WifiChangeReceiver extends BroadcastReceiver {
