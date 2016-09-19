@@ -99,10 +99,8 @@ public class Monitor {
                 }
 
                 final MonitorResult result = CommandExecutor.execute(true, mCommands);
-
                 if (result.success) {
                     final MonitorResult result2 = CommandExecutor.execute(false, Config.CHECK_MONITOR);
-
                     if (result2.success) {
                         if (mMakeReady) {
                             if (verifyPort(result2, Config.PORT)) {
@@ -123,7 +121,6 @@ public class Monitor {
             }
         }
     }
-
     private boolean verifyPort(@NonNull MonitorResult result, int target){
         final String current = result.message;
 
@@ -195,7 +192,6 @@ public class Monitor {
     public void interrupt() {
         synchronized (mHandler) {
             mAssignIndex = mCurrent.incrementAndGet();
-
             final int[] messageWhat = new int[]{
                     ACTION_FAIL,
                     ACTION_READY_PORT_SUCCESS,

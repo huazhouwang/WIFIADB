@@ -43,7 +43,6 @@ public class MainPresenter {
         if(mRunning){
             return;
         }
-
         final boolean wifiReady = WiFiModule.getInstance().isReady();
 
         if(wifiReady){
@@ -54,14 +53,18 @@ public class MainPresenter {
     }
 
     private void wifiReady(){
-        mState = State.WIFI_READY;
-        mViewLayer.onWifiReady();
-        checkPortState();
+        if(mState != State.WIFI_READY) {
+            mState = State.WIFI_READY;
+            mViewLayer.onWifiReady();
+            checkPortState();
+        }
     }
 
     private void wifiNoReady(){
-        mState = State.WIFI_UNREADY;
-        mViewLayer.onWifiUnready();
+        if(mState != State.WIFI_UNREADY) {
+            mState = State.WIFI_UNREADY;
+            mViewLayer.onWifiUnready();
+        }
     }
 
     public void togglePortState(){
@@ -142,13 +145,17 @@ public class MainPresenter {
     }
 
     private void onPortReady() {
-        mState = State.PORT_READY;
-        mViewLayer.onPortReady(WiFiModule.getInstance().getIp());
+        if(mState != State.PORT_READY) {
+            mState = State.PORT_READY;
+            mViewLayer.onPortReady(WiFiModule.getInstance().getIp());
+        }
     }
 
     private void onPortUnready(){
-        mState = State.PORT_UNREADY;
-        mViewLayer.onPortUnready();
+        if(mState != State.PORT_UNREADY) {
+            mState = State.PORT_UNREADY;
+            mViewLayer.onPortUnready();
+        }
     }
 
     private void onFail(String message){
@@ -163,7 +170,6 @@ public class MainPresenter {
         @Override
         public void onReceive(Context context, Intent intent) {
             final boolean wifiReady = WiFiModule.getInstance().isReady();
-
             if(wifiReady){
                 if(mState < State.WIFI_READY){
                     wifiReady();

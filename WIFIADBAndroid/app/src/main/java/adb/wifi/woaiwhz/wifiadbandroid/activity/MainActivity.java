@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onWifiUnready() {
-//        mNodeLayout.setBackgroundResource(R.color.wifi_unready_primary);
         mSwitch.setChecked(false);
         disableButton();
 
