@@ -27,8 +27,8 @@ public class Monitor {
 
     private final Handler mHandler;
     private final ExecutorService mExecutor;
-    private final AtomicInteger mCurrent;
 
+    private final AtomicInteger mCurrent;
     private int mAssignIndex;
 
     public Monitor(@NonNull Handler handler){
@@ -92,33 +92,35 @@ public class Monitor {
         }
 
         @Override
-        public void run() {// TODO: 2016/9/18 锁的情况是不很清晰
-            if (!mCurrent.compareAndSet(mAssignIndex, mAssignIndex + 1)) {
-                return;
-            }
-
-            final MonitorResult result = CommandExecutor.execute(true, mCommands);
-
-            if (result.success) {
-                final MonitorResult result2 = CommandExecutor.execute(false, Config.CHECK_MONITOR);
-
-                if (result2.success) {
-                    if (mMakeReady) {
-                        if (verifyPort(result2, Config.PORT)) {
-                            portReady();
-                            return;
-                        }
-                    } else if (verifyPort(result2, Config.EOF_PORT)) {
-                        portUnReady();
-                        return;
-                    }
-
-                    fail("fail to gain root authority");
+        public void run() {
+            synchronized (mHandler) {
+                if (!mCurrent.compareAndSet(mAssignIndex, mAssignIndex + 1)) {
                     return;
                 }
-            }
 
-            fail("fail to execute");
+                final MonitorResult result = CommandExecutor.execute(true, mCommands);
+
+                if (result.success) {
+                    final MonitorResult result2 = CommandExecutor.execute(false, Config.CHECK_MONITOR);
+
+                    if (result2.success) {
+                        if (mMakeReady) {
+                            if (verifyPort(result2, Config.PORT)) {
+                                portReady();
+                                return;
+                            }
+                        } else if (verifyPort(result2, Config.EOF_PORT)) {
+                            portUnReady();
+                            return;
+                        }
+
+                        fail("fail to gain root authority");
+                        return;
+                    }
+                }
+
+                fail("fail to execute");
+            }
         }
     }
 
@@ -151,20 +153,22 @@ public class Monitor {
 
         @Override
         public void run() {
-            if(!mCurrent.compareAndSet(mAssignIndex,mAssignIndex + 1)){
-                return;
-            }
-
-            final MonitorResult result = CommandExecutor.execute(false, Config.CHECK_MONITOR);
-
-            if (result.success) {
-                if(verifyPort(result,Config.PORT)){
-                    portReady();
-                }else {
-                    portUnReady();
+            synchronized (mHandler) {
+                if (!mCurrent.compareAndSet(mAssignIndex, mAssignIndex + 1)) {
+                    return;
                 }
-            } else {
-                fail("fail");
+
+                final MonitorResult result = CommandExecutor.execute(false, Config.CHECK_MONITOR);
+
+                if (result.success) {
+                    if (verifyPort(result, Config.PORT)) {
+                        portReady();
+                    } else {
+                        portUnReady();
+                    }
+                } else {
+                    fail("fail");
+                }
             }
         }
     }
@@ -188,17 +192,19 @@ public class Monitor {
         }
     }
 
-    public void interrupt(){
-        mAssignIndex = mCurrent.incrementAndGet();
+    public void interrupt() {
+        synchronized (mHandler) {
+            mAssignIndex = mCurrent.incrementAndGet();
 
-        final int[] messageWhat = new int[]{
-                ACTION_FAIL,
-                ACTION_READY_PORT_SUCCESS,
-                ACTION_UNREADY_PORT_SUCCESS
-        };
+            final int[] messageWhat = new int[]{
+                    ACTION_FAIL,
+                    ACTION_READY_PORT_SUCCESS,
+                    ACTION_UNREADY_PORT_SUCCESS
+            };
 
-        for (final int what : messageWhat){
-            mHandler.removeMessages(what);
+            for (final int what : messageWhat) {
+                mHandler.removeMessages(what);
+            }
         }
     }
 }
