@@ -35,6 +35,7 @@ public class MainPresenter {
         mReceiver = new WifiChangeReceiver();
 
         mRunning = false;
+        mState = State.INIT;
         MyApp.getContext().registerReceiver(mReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -55,15 +56,17 @@ public class MainPresenter {
     private void wifiReady(){
         if(mState != State.WIFI_READY) {
             mState = State.WIFI_READY;
-            mViewLayer.onWifiReady();
+//            mViewLayer.onWifiReady();
             checkPortState();
         }
     }
 
     private void wifiNoReady(){
         if(mState != State.WIFI_UNREADY) {
+            if(mState != State.INIT) {
+                mViewLayer.onWifiUnready();
+            }// TODO: 2016/9/25  若最开始时就是 wifi_unready 就不须通知，这样实现不优雅
             mState = State.WIFI_UNREADY;
-            mViewLayer.onWifiUnready();
         }
     }
 
@@ -171,22 +174,23 @@ public class MainPresenter {
         public void onReceive(Context context, Intent intent) {
             final boolean wifiReady = WiFiModule.getInstance().isReady();
             if(wifiReady){
-                if(mState < State.WIFI_READY){
+                if(mState == State.WIFI_UNREADY){
                     wifiReady();
                 }
-            }else if(mState >= State.WIFI_UNREADY){
+            }else if(mState >= State.WIFI_READY){
                 wifiNoReady();
                 mViewLayer.pageLoading(false);
                 mMonitor.interrupt();
                 mRunning = false;
             }
+
         }
     }
 
     public interface MainView{
         void pageLoading(boolean show);
         void onWifiUnready();
-        void onWifiReady();
+//        void onWifiReady();
         void onPortReady(String ip);
         void onPortUnready();
         void onActionFail(@NonNull String message);

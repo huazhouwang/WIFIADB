@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/splash_container"
@@ -21,7 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:scaleX="2"
-        android:scaleY="2"
+        android:scaleX="@integer/switch_max_scale"
+        android:scaleY="@integer/switch_max_scale"
+        android:layout_centerInParent="true"
         />
-</FrameLayout>
+</RelativeLayout>

@@ -48,6 +48,10 @@ public class WiFiModule {
         mWifiManager.setWifiEnabled(enable);
     }
 
+    public boolean isEnable(){
+        return mWifiManager.isWifiEnabled();
+    }
+
     public boolean isReady(){
         boolean enable = mWifiManager.isWifiEnabled();
 

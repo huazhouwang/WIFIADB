@@ -14,21 +14,23 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Property;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
 import adb.wifi.woaiwhz.wifiadbandroid.R;
 import adb.wifi.woaiwhz.wifiadbandroid.base.CircularRevealDrawable;
 import adb.wifi.woaiwhz.wifiadbandroid.base.State;
+import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
 import adb.wifi.woaiwhz.wifiadbandroid.presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity
         implements MainPresenter.MainView,View.OnClickListener,CompoundButton.OnCheckedChangeListener{
     private View mSplashContainer;
+    private SwitchCompat mSplashSwitch;
 
     private View mRevealHolderView;
 //    private View mMaskView;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     private MainPresenter mPresenter;
     private CircularRevealDrawable mRevelDrawable;
     private Toolbar mToolbar;
+
     private boolean mInitAnimate = false;
     private AnimatorSet mAnimate2WifiReady;
     private AnimatorSet mAnimate2WifiUnReady;
@@ -48,8 +51,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-final View root = $(android.R.id.content);
+
         mSplashContainer = $(R.id.splash_container);
+        mSplashSwitch = $(R.id.splash_switch_wifi);
         mRevealHolderView = $(R.id.reveal_holder);
 //        mMaskView = $(R.id.mask);
         mCenterButton = $(R.id.monitor_button);
@@ -60,7 +64,7 @@ final View root = $(android.R.id.content);
 
 //        mMaskView.setOnTouchListener(new OnTouchInterceptor());
         mCenterButton.setOnClickListener(this);
-        mSwitch.setOnCheckedChangeListener(this);
+        mSplashSwitch.setOnCheckedChangeListener(this);
 
         mToolbar = $(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -73,13 +77,6 @@ final View root = $(android.R.id.content);
         mRevelDrawable = new CircularRevealDrawable(map);
         mRevealHolderView.setBackgroundDrawable(mRevelDrawable);
         // TODO: 2016/9/24
-
-        mRevealHolderView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                root.requestLayout();
-            }
-        });
     }
 
     @Override
@@ -89,31 +86,26 @@ final View root = $(android.R.id.content);
         if (!mInitAnimate && hasFocus) {
             init();
             mInitAnimate = true;
+            mPresenter.check();
         }
     }
 
     private void init(){
-        View placeHolderSwitch = $(R.id.switch_place_holder);
-
         final int toolbarBottom = mToolbar.getBottom();
         final int splashBottom = mSplashContainer.getBottom();
-        final int toolbarHeight = mToolbar.getHeight();
-        final int splashHeight = mSplashContainer.getHeight();
         final float noScale = getResources().getInteger(R.integer.switch_no_scale);
         final float maxScale = getResources().getInteger(R.integer.switch_max_scale);
-        final float bigSwitchX = mSwitch.getX();
-        final float bigSwitchY = mSwitch.getY();
-        final float smallSwitchX = placeHolderSwitch.getX();
-        final float smallSwitchY = placeHolderSwitch.getY();
-        final long duration = 500L;
+        final float bigSwitchX = mSplashSwitch.getX();
+        final float bigSwitchY = mSplashSwitch.getY();
+        final float smallSwitchX = mSwitch.getX();
+        final float smallSwitchY = mSwitch.getY();
+        final long duration = 600L;
         final TimeInterpolator interpolator = new AccelerateDecelerateInterpolator();
-        final ViewGroup.LayoutParams splashLP = mSplashContainer.getLayoutParams();
-//        final RelativeLayout.LayoutParams switchLP = (RelativeLayout.LayoutParams) mSwitch.getLayoutParams();
 
         mAnimate2WifiReady = new AnimatorSet();
-        mAnimate2WifiReady.play(ObjectAnimator.ofFloat(mSwitch,scaleProperty,maxScale,noScale))
-                .with(ObjectAnimator.ofFloat(mSwitch,xProperty,bigSwitchX,smallSwitchX))
-                .with(ObjectAnimator.ofFloat(mSwitch,yProperty,bigSwitchY,smallSwitchY))
+        mAnimate2WifiReady.play(ObjectAnimator.ofFloat(mSplashSwitch,scaleProperty,maxScale,noScale))
+                .with(ObjectAnimator.ofFloat(mSplashSwitch,xProperty,bigSwitchX,smallSwitchX))
+                .with(ObjectAnimator.ofFloat(mSplashSwitch,yProperty,bigSwitchY,smallSwitchY))
                 .with(ObjectAnimator.ofInt(mSplashContainer,bottomProperty,splashBottom,toolbarBottom));
 
         mAnimate2WifiReady.setDuration(duration)
@@ -127,62 +119,39 @@ final View root = $(android.R.id.content);
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                splashLP.height = toolbarHeight;
-//                switchLP. = Gravity.CENTER_VERTICAL|Gravity.END;
-//                switchLP.addRule(RelativeLayout.CENTER_IN_PARENT);
-//                mSplashContainer.setMinimumHeight(toolbarHeight);
+                mToolbar.setAlpha(1f);
+                mSplashContainer.setAlpha(0f);
             }
         });
 
-
         mAnimate2WifiUnReady = new AnimatorSet();
-        mAnimate2WifiUnReady.play(ObjectAnimator.ofFloat(mSwitch,scaleProperty,noScale,maxScale))
-                .with(ObjectAnimator.ofFloat(mSwitch,xProperty,smallSwitchX,bigSwitchX))
-                .with(ObjectAnimator.ofFloat(mSwitch,yProperty,smallSwitchY,bigSwitchY))
+        mAnimate2WifiUnReady
+                .play(ObjectAnimator.ofFloat(mSplashSwitch,scaleProperty,noScale,maxScale))
+                .with(ObjectAnimator.ofFloat(mSplashSwitch,xProperty,smallSwitchX,bigSwitchX))
+                .with(ObjectAnimator.ofFloat(mSplashSwitch,yProperty,smallSwitchY,bigSwitchY))
                 .with(ObjectAnimator.ofInt(mSplashContainer,bottomProperty,toolbarBottom,splashBottom));
 
         mAnimate2WifiUnReady.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mSplashContainer.setAlpha(1f);
+                mToolbar.setAlpha(0f);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 mRevealHolderView.setVisibility(View.GONE);
-                splashLP.height = splashHeight;
-//                switchLP.gravity = Gravity.CENTER;
-//                mSplashContainer.setMinimumHeight(splashHeight);
+                Toast.makeText(MyApp.getContext(), R.string.wifi_no_ready,Toast.LENGTH_SHORT).show();
             }
         });
 
         mAnimate2WifiUnReady.setDuration(duration)
                 .setInterpolator(interpolator);
 
-        mToolbar.removeView(placeHolderSwitch);
-
-//        final boolean wifiReady = WiFiModule.getInstance().isReady();
-
-//        if(wifiReady){
-////            layoutParams.height = toolbarHeight;
-//            mSplashContainer.setBottom(toolbarBottom);
-//
-////            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mSwitch.getLayoutParams();
-////            lp.gravity = Gravity.END|Gravity.CENTER_VERTICAL;
-//
-//            mSwitch.setChecked(true);
-//            mSwitch.setX(smallSwitchX);
-//            mSwitch.setY(smallSwitchY);
-//            mSwitch.setScaleX(noScale);
-//            mSwitch.setScaleY(noScale);
-//            mRevealHolderView.setVisibility(View.VISIBLE);
-//        }else {
-//            layoutParams.height = splashHeight;
-//            mSwitch.setChecked(false);
-//            mSwitch.setX(bigSwitchX);
-//            mSwitch.setY(bigSwitchY);
-//            mSwitch.setScaleX(maxScale);
-//            mSwitch.setScaleY(maxScale);
-//            mRevealHolderView.setVisibility(View.GONE);
-//        }
-
     }
 
+    // TODO: 2016/9/25 改成静态类
     private static Property<View,Float> xProperty = new Property<View, Float>(Float.class,"xProperty") {
         @Override
         public Float get(View object) {
@@ -242,8 +211,9 @@ final View root = $(android.R.id.content);
             mPresenter = new MainPresenter(this);
         }
 
-//        if(mInitAnimate)
-        mPresenter.check();
+        if(mInitAnimate) {
+            mPresenter.check();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -282,16 +252,18 @@ final View root = $(android.R.id.content);
 
     @Override
     public void onWifiUnready() {
-//        if(mSwitch.isChecked()) {
-//            mSwitch.setChecked(false);
-//        }
-        disableButton();
+        if(mSplashSwitch.isChecked()) {
+            mSplashSwitch.setChecked(false);
+        }
+//        disableButton();
 
         mIpContainer.setVisibility(View.GONE);
         mIpValue.setText(null);
 
-        mRevelDrawable.changeState(State.WIFI_UNREADY);
-        Toast.makeText(this, R.string.wifi_no_ready,Toast.LENGTH_SHORT).show();
+//        mRevelDrawable.changeState(State.WIFI_UNREADY);
+
+        if(mInitAnimate)
+        mAnimate2WifiUnReady.start();
     }
 
     private void disableButton(){
@@ -300,18 +272,21 @@ final View root = $(android.R.id.content);
         mCenterButton.setActivated(false);
     }
 
-    @Override
-    public void onWifiReady() {
-//        if(!mSwitch.isChecked()) {
-//            mSwitch.setChecked(true);
-//        }
+
+    private void onWifiReady() {
+        if(!mSplashSwitch.isChecked()) {
+            mSplashSwitch.setChecked(true);
+        }
         mCenterButton.setClickable(true);
         mIpContainer.setVisibility(View.GONE);
         mIpValue.setText(null);
+        if(mInitAnimate)
+        mAnimate2WifiReady.start();
     }
 
     @Override
     public void onPortReady(String ip) {
+        onWifiReady();
         mIpValue.setText(ip);
         mIpContainer.setVisibility(View.VISIBLE);
         activeButton();
@@ -331,6 +306,7 @@ final View root = $(android.R.id.content);
 
     @Override
     public void onPortUnready() {
+        onWifiReady();
         mIpContainer.setVisibility(View.GONE);
         mIpValue.setText(null);
 
@@ -364,15 +340,31 @@ final View root = $(android.R.id.content);
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-        if(mSwitch != buttonView){
-            return;
+//        if(mSwitch != buttonView){
+//            return;
+//        }
+
+        if(WiFiModule.getInstance().isEnable() != isChecked) {
+            WiFiModule.getInstance().enable(isChecked);
+        }
+//        if(mSwitch == buttonView) {
+////            if (mInitAnimate) {
+//                mSplashSwitch.setChecked(isChecked);
+////                startSplashAnimate(isChecked);
+////            }
+//        }
+
+//        if(mSplashSwitch == buttonView){
+
+        mSwitch.setChecked(isChecked);
+
+        if(!isChecked){
+            mAnimate2WifiUnReady.start();
         }
 
-//        WiFiModule.getInstance().enable(isChecked);
+//        }
 
-        if(mInitAnimate){
-            startSplashAnimate(isChecked);
-        }/*else {
+        /*else {
             mSwitch.post(new Runnable() {
                 @Override
                 public void run() {
