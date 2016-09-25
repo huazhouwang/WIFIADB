@@ -1,93 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.MainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/reveal_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:paddingTop="?attr/actionBarSize"
+        android:visibility="gone"
+        tools:visibility="visible"
+        >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:background="@drawable/bg_toolbar_shadow"
+            />
+
+        <ImageButton
+            android:id="@+id/monitor_button"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_button_shadow"
+            />
+
+        <LinearLayout
+            android:id="@+id/ip_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:orientation="horizontal"
+            android:layout_below="@id/monitor_button"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:background="@drawable/ip_layout_background"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ip_title"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/icons"
+                />
+
+            <TextView
+                android:id="@+id/ip_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/icons"
+                tools:text="192.168.1.11"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <!--</LinearLayout>-->
+
+    <!--<include-->
+        <!--layout="@layout/splash_layout"-->
+        <!--tools:visibility="gone"/>-->
+
+    <!--<View-->
+        <!--android:id="@+id/mask"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="gone"-->
+        <!--/>-->
+
+    <FrameLayout
+        android:id="@+id/splash_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         >
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/tool_bar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:title="@string/app_name"
             app:titleTextColor="@android:color/white"
-            android:elevation="4dp"
-            tools:targetApi="21"
             >
+
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/wifi_switch"
+                android:id="@+id/switch_place_holder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginRight="@dimen/small_switch_margin_right"
+                android:layout_marginEnd="@dimen/small_switch_margin_right"
+                android:visibility="visible"
                 />
+
         </android.support.v7.widget.Toolbar>
 
-        <FrameLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="?actionBarSize"
+            android:background="?attr/colorPrimary"
+            tools:visibility="gone"
+            />
 
-            <RelativeLayout
-                android:id="@+id/reveal_holder"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".activity.MainActivity">
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switch_real"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleX="@integer/switch_max_scale"
+            android:scaleY="@integer/switch_max_scale"
+            tools:visibility="gone"
+            />
 
-                <ImageButton
-                    android:id="@+id/monitor_button"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/bg_button_shadow"
-                    />
-
-                <LinearLayout
-                    android:id="@+id/ip_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="48dp"
-                    android:orientation="horizontal"
-                    android:layout_below="@id/monitor_button"
-                    android:layout_centerHorizontal="true"
-                    android:gravity="center"
-                    android:background="@drawable/ip_layout_background"
-                    >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/ip_title"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:textColor="@color/icons"
-                        />
-
-                    <TextView
-                        android:id="@+id/ip_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/icons"
-                        tools:text="192.168.1.11"/>
-                </LinearLayout>
-            </RelativeLayout>
-
-            <FrameLayout
-                android:id="@+id/mask"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-                <ProgressBar
-                    android:id="@+id/loading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-        </FrameLayout>
-    </LinearLayout>
-</merge>
+    </FrameLayout>
+</FrameLayout>
