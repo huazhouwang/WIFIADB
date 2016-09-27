@@ -17,9 +17,6 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.6
 
-//repositories {
-//    mavenCentral()
-//}
 
 //dependencies {
 //    compile 'junit:junit:4.12'
