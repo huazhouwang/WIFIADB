@@ -4,7 +4,7 @@ package adb.wifi.woaiwhz.wifiadbandroid.base;
  * Created by huazhou.whz on 2016/9/14.
  */
 public interface Config {
-    int PORT = 5556;
+    int PORT = 5555;
     int EOF_PORT = -1;
 
     String SH = "sh";
