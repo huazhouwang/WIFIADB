@@ -1,4 +1,4 @@
-package adb.wifi.woaiwhz.wifiadbandroid.tools;
+package adb.wifi.woaiwhz.wifiadbandroid.base;
 
 import android.os.Handler;
 import android.os.Message;
@@ -11,19 +11,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import adb.wifi.woaiwhz.wifiadbandroid.BuildConfig;
-import adb.wifi.woaiwhz.wifiadbandroid.base.CommandExecutor;
-import adb.wifi.woaiwhz.wifiadbandroid.base.Config;
-import adb.wifi.woaiwhz.wifiadbandroid.base.MonitorResult;
 
 /**
  * Created by huazhou.whz on 2016/9/13.
  */
 public class Monitor {
     private static final String TAG = Monitor.class.getSimpleName();
+    private static final String SOMETHING_WRONG = "Something wrong...";
 
     public static final int ACTION_FAIL = 1;
-    public static final int ACTION_READY_PORT_SUCCESS = 1 << 1;
-    public static final int ACTION_UNREADY_PORT_SUCCESS = 1 << 2;
+    public static final int ACTION_PORT_READY = 1 << 1;
+    public static final int ACTION_PORT_UNREADY = 1 << 2;
 
     private final Handler mHandler;
     private final ExecutorService mExecutor;
@@ -50,7 +48,7 @@ public class Monitor {
         }
     }
 
-    public boolean try2monitor(){
+    public boolean switch2Ready(){
         final int index = mCurrent.get();
 
         if(mAssignIndex == index){
@@ -62,7 +60,7 @@ public class Monitor {
         }
     }
 
-    public boolean cancelMonitor(){
+    public boolean switch2Unready(){
         final int index = mCurrent.get();
 
         if(mAssignIndex == index){
@@ -98,47 +96,37 @@ public class Monitor {
                     return;
                 }
 
-                final MonitorResult result = CommandExecutor.execute(true, mCommands);
-                if (result.success) {
-                    final MonitorResult result2 = CommandExecutor.execute(false, Config.CHECK_MONITOR);
-                    if (result2.success) {
+                final MonitorResult setResult = CommandExecutor.execute(true, mCommands);
+                if (setResult.success) {
+                    final MonitorResult checkResult = CommandExecutor.execute(false, Config.CHECK_MONITOR);
+                    if (checkResult.success) {
                         if (mMakeReady) {
-                            if (verifyPort(result2, Config.PORT)) {
+                            if (portIsValid(checkResult)) {
                                 portReady();
                                 return;
                             }
-                        } else if (verifyPort(result2, Config.EOF_PORT)) {
+                        } else if (!portIsValid(checkResult)) {
                             portUnReady();
                             return;
                         }
-
-                        fail("fail to gain root authority");
-                        return;
                     }
                 }
 
-                fail("fail to execute");
+                fail(SOMETHING_WRONG);
             }
         }
     }
-    private boolean verifyPort(@NonNull MonitorResult result, int target){
+
+    private boolean portIsValid(@NonNull MonitorResult result){
         final String current = result.message;
 
-        if(target == Config.PORT) {
-            try {
-                return !TextUtils.isEmpty(current) && Integer.parseInt(current) == target;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }else if(target == Config.EOF_PORT){
-            try {
-                return TextUtils.isEmpty(current) || Integer.parseInt(current) == target;
-            }catch (NumberFormatException e) {
-                return true;
-            }
-        }
+        try{
+            return !TextUtils.isEmpty(current) && Integer.parseInt(current) == Config.PORT;
+        }catch (NumberFormatException e){
+            e.printStackTrace();
 
-        throw new IllegalArgumentException();
+            return false;
+        }
     }
 
     private class CheckMonitor implements Runnable{
@@ -155,30 +143,30 @@ public class Monitor {
                     return;
                 }
 
-                final MonitorResult result = CommandExecutor.execute(false, Config.CHECK_MONITOR);
+                final MonitorResult checkResult = CommandExecutor.execute(false, Config.CHECK_MONITOR);
 
-                if (result.success) {
-                    if (verifyPort(result, Config.PORT)) {
+                if (checkResult.success) {
+                    if (portIsValid(checkResult)) {
                         portReady();
                     } else {
                         portUnReady();
                     }
                 } else {
-                    fail("fail");
+                    fail(SOMETHING_WRONG);
                 }
             }
         }
     }
 
     private void portReady(){
-        mHandler.sendEmptyMessage(ACTION_READY_PORT_SUCCESS);
+        mHandler.sendEmptyMessage(ACTION_PORT_READY);
     }
 
     private void portUnReady(){
-        mHandler.sendEmptyMessage(ACTION_UNREADY_PORT_SUCCESS);
+        mHandler.sendEmptyMessage(ACTION_PORT_UNREADY);
     }
 
-    private void fail(String data){
+    private void fail(@NonNull String data){
         final Message message = new Message();
         message.what = ACTION_FAIL;
         message.obj = data;
@@ -194,8 +182,8 @@ public class Monitor {
             mAssignIndex = mCurrent.incrementAndGet();
             final int[] messageWhat = new int[]{
                     ACTION_FAIL,
-                    ACTION_READY_PORT_SUCCESS,
-                    ACTION_UNREADY_PORT_SUCCESS
+                    ACTION_PORT_READY,
+                    ACTION_PORT_UNREADY
             };
 
             for (final int what : messageWhat) {

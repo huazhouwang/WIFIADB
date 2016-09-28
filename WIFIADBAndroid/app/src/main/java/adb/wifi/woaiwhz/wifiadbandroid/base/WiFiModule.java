@@ -53,7 +53,7 @@ public class WiFiModule {
     }
 
     public boolean isReady(){
-        boolean enable = mWifiManager.isWifiEnabled();
+        boolean enable = isEnable();
 
         if(enable){
             final NetworkInfo.State state = mConnectivityManager
@@ -68,9 +68,13 @@ public class WiFiModule {
     private static String format(final int ip) {
         final String SPLIT = ".";
 
-        return (ip & 0xFF ) + SPLIT +
-                ((ip >> 8 ) & 0xFF) + SPLIT +
-                ((ip >> 16 ) & 0xFF) + SPLIT +
-                ( ip >> 24 & 0xFF) ;
+        try {
+            return  (ip & 0xFF) + SPLIT +
+                    ((ip >> 8) & 0xFF) + SPLIT +
+                    ((ip >> 16) & 0xFF) + SPLIT +
+                    (ip >> 24 & 0xFF);
+        }catch (Exception e){
+            return null;
+        }
     }
 }

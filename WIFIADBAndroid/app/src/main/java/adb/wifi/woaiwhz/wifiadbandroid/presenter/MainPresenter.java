@@ -9,12 +9,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
+import adb.wifi.woaiwhz.wifiadbandroid.base.Monitor;
 import adb.wifi.woaiwhz.wifiadbandroid.base.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
-import adb.wifi.woaiwhz.wifiadbandroid.tools.Monitor;
 
 /**
  * Created by huazhou.whz on 2016/9/14.
@@ -54,18 +53,18 @@ public class MainPresenter {
     }
 
     private void wifiReady(){
-        if(mState != State.WIFI_READY) {
+        if(mState < State.WIFI_READY) {
             mState = State.WIFI_READY;
-//            mViewLayer.onWifiReady();
             checkPortState();
         }
     }
 
     private void wifiNoReady(){
         if(mState != State.WIFI_UNREADY) {
+            //若最开始时就是 WIFI_UNREADY 就无需通知
             if(mState != State.INIT) {
                 mViewLayer.onWifiUnready();
-            }// TODO: 2016/9/25  若最开始时就是 wifi_unready 就不须通知，这样实现不优雅
+            }
             mState = State.WIFI_UNREADY;
         }
     }
@@ -84,9 +83,9 @@ public class MainPresenter {
         }
 
         if (newState == State.PORT_UNREADY){
-            mRunning = mMonitor.cancelMonitor();
+            mRunning = mMonitor.switch2Unready();
         }else if(newState == State.PORT_READY){
-            mRunning = mMonitor.try2monitor();
+            mRunning = mMonitor.switch2Ready();
         }
 
         if(mRunning){
@@ -107,7 +106,7 @@ public class MainPresenter {
     }
 
     private boolean cannotRun(){
-        return mRunning || mState < State.WIFI_READY;
+        return mRunning || mState == State.WIFI_UNREADY;
     }
 
     public void onDestroy(){
@@ -116,7 +115,7 @@ public class MainPresenter {
     }
 
     private class MyHandler extends Handler{
-        public MyHandler(Looper looper) {
+        private MyHandler(Looper looper) {
             super(looper);
         }
 
@@ -125,11 +124,11 @@ public class MainPresenter {
             final int what = msg.what;
 
             switch (what){
-                case Monitor.ACTION_READY_PORT_SUCCESS:
+                case Monitor.ACTION_PORT_READY:
                     onPortReady();
                     break;
 
-                case Monitor.ACTION_UNREADY_PORT_SUCCESS:
+                case Monitor.ACTION_PORT_UNREADY:
                     onPortUnready();
                     break;
 
@@ -162,10 +161,6 @@ public class MainPresenter {
     }
 
     private void onFail(String message){
-        if(TextUtils.isEmpty(message)){
-            message = "Something wrong";
-        }
-
         mViewLayer.onActionFail(message);
     }
 
@@ -179,7 +174,6 @@ public class MainPresenter {
                 }
             }else if(mState >= State.WIFI_READY){
                 wifiNoReady();
-                mViewLayer.pageLoading(false);
                 mMonitor.interrupt();
                 mRunning = false;
             }
@@ -190,7 +184,6 @@ public class MainPresenter {
     public interface MainView{
         void pageLoading(boolean show);
         void onWifiUnready();
-//        void onWifiReady();
         void onPortReady(String ip);
         void onPortUnready();
         void onActionFail(@NonNull String message);
