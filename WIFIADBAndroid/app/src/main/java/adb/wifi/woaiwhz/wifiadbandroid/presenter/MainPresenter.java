@@ -53,10 +53,11 @@ public class MainPresenter {
     }
 
     private void wifiReady(){
-        if(mState != State.WIFI_READY) {
+        if(mState < State.WIFI_READY) {
             mState = State.WIFI_READY;
-            checkPortState();
         }
+
+        checkPortState();
     }
 
     private void wifiNoReady(){
@@ -118,6 +119,7 @@ public class MainPresenter {
         @Override
         public void dispatchMessage(Message msg) {
             mRunning = false;
+            mViewLayer.pageLoading(false);// TODO: 2016/9/28 有没更好的
 
             final int what = msg.what;
             switch (what){

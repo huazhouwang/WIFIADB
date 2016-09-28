@@ -9,6 +9,8 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
+    <color name="ip_layout_bg_color">#212121</color>
+
     <color name="mask_background">#80757575</color>
     <color name="port_ready_primary">#03A9F4</color>
     <color name="port_ready_accent">#448AFF</color>

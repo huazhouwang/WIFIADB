@@ -2,45 +2,50 @@ package adb.wifi.woaiwhz.wifiadbandroid.base;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
+import android.support.v4.content.res.ResourcesCompat;
+
+import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
+import adb.wifi.woaiwhz.wifiadbandroid.R;
 
 /**
  * Created by huazhou.whz on 2016/9/17.
  */
 public class CircularRevealDrawable extends Drawable implements ValueAnimator.AnimatorUpdateListener,ValueAnimator.AnimatorListener{
     private static final int EOF_COLOR = Integer.MIN_VALUE;
+    private static final long DURATION = 600L;
 
-    private Paint mPaint;
+    private final Paint mPaint;
     private RectF mReact;
     private PointF mCenterPoint;
     private ValueAnimator mAnimator;
     private float mCurrentRadius;
 
-    private int mInitColor;
-    private int mColorWifiUnReady;
-    private int mColorPortUnReady;
-    private int mColorPortReady;
+    private final int mWhiteColor;
+    private final int mColorPortUnReady;
+    private final int mColorPortReady;
 
     private int mCurrentColor;
     private int mNextColor;
 
-    public CircularRevealDrawable(@NonNull SimpleArrayMap<Integer,Integer> stateColorMap) {
+    public CircularRevealDrawable() {
         super();
         mPaint = new Paint();
 
-        mInitColor = stateColorMap.get(State.INIT);
-        mColorWifiUnReady = stateColorMap.get(State.WIFI_UNREADY);
-        mColorPortReady = stateColorMap.get(State.PORT_READY);
-        mColorPortUnReady = stateColorMap.get(State.PORT_UNREADY);
+        final Resources resources = MyApp.getContext().getResources();
+        mWhiteColor = ResourcesCompat.getColor(resources,android.R.color.white,null);
+        mColorPortReady = ResourcesCompat.getColor(resources, R.color.port_ready_primary,null);
+        mColorPortUnReady = ResourcesCompat.getColor(resources,R.color.port_unready_primary,null);
 
-        mCurrentColor = mInitColor;
+        mCurrentColor = EOF_COLOR;
         mNextColor = EOF_COLOR;
     }
 
@@ -53,14 +58,14 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
         float centerY = (top + bottom) >> 1;
 
         mCenterPoint = new PointF(centerX,centerY);
-        final float maxRadius = (float) Math.sqrt(Math.pow(centerX,2) + Math.pow(centerY,2));
+        final float maxRadius = (float) Math.hypot(centerX,centerY);
 
         if(mAnimator != null && mAnimator.isRunning()){
             mAnimator.cancel();
         }
 
         mAnimator = ValueAnimator.ofFloat(0, maxRadius);
-        mAnimator.setDuration(500);
+        mAnimator.setDuration(DURATION);
         mAnimator.addUpdateListener(this);
         mAnimator.addListener(this);
 
@@ -73,40 +78,52 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
         return mNextColor != EOF_COLOR && mNextColor != mCurrentColor;
     }
 
-    public void changeState(@State.STATE int state){
-        switch (state){
-            case State.WIFI_UNREADY:
-                mNextColor = mColorWifiUnReady;
-                break;
+    private boolean canDraw(){
+        return mCurrentColor != EOF_COLOR;
+    }
 
+    public void changeState(@State.STATE int state){
+        if(mCurrentColor == EOF_COLOR){
+            mCurrentColor = getColor(state);
+            invalidateSelf();
+        }else {
+            mNextColor = getColor(state);
+
+            if(mAnimator != null && canReveal()) {
+                if(mAnimator.isRunning()){
+                    mAnimator.cancel();
+                }
+                mAnimator.start();
+            }
+        }
+    }
+
+    private int getColor(@State.STATE int state){
+        switch (state){
             case State.PORT_UNREADY:
-                mNextColor = mColorPortUnReady;
-                break;
+                return mColorPortUnReady;
 
             case State.PORT_READY:
-                mNextColor = mColorPortReady;
-                break;
+                return mColorPortReady;
 
             default:
-                break;
-        }
-
-        if(mAnimator != null && canReveal()) {
-            if(mAnimator.isRunning()){
-                mAnimator.cancel();
-            }
-            mAnimator.start();
+                return EOF_COLOR;
         }
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        mPaint.setColor(mCurrentColor);
-        canvas.drawRect(mReact,mPaint);
+    public void draw(@NonNull Canvas canvas) {
+        if(canDraw()) {
+            mPaint.setColor(mCurrentColor);
+            canvas.drawRect(mReact, mPaint);
 
-        if(canReveal()){
-            mPaint.setColor(mNextColor);
-            canvas.drawCircle(mCenterPoint.x, mCenterPoint.y, mCurrentRadius, mPaint);
+            if (canReveal()) {
+                mPaint.setColor(mNextColor);
+                canvas.drawCircle(mCenterPoint.x, mCenterPoint.y, mCurrentRadius, mPaint);
+            }
+        }else {
+            mPaint.setColor(mWhiteColor);
+            canvas.drawRect(mReact,mPaint);
         }
     }
 
@@ -122,7 +139,7 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
 
     @Override
     public int getOpacity() {
-        return 0;
+        return PixelFormat.UNKNOWN;
     }
 
     @Override

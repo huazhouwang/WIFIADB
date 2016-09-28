@@ -4,31 +4,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activity.MainActivity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     >
 
     <RelativeLayout
-        android:id="@+id/reveal_holder"
+        android:id="@+id/reveal_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="?attr/actionBarSize"
         android:visibility="gone"
-        android:clipToPadding="true"
         tools:visibility="visible"
+        tools:background="@color/port_ready_primary"
         >
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="6dp"
+            android:layout_height="5dp"
             android:background="@drawable/bg_toolbar_shadow"
             />
 
         <ImageButton
             android:id="@+id/monitor_button"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="270dp"
+            android:layout_height="270dp"
             android:layout_centerInParent="true"
+            android:src="@drawable/src_center_bn_solid"
             android:background="@drawable/bg_button_shadow"
             />
 
@@ -42,6 +41,8 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:background="@drawable/ip_layout_background"
+            android:visibility="gone"
+            tools:visibility="visible"
             >
 
             <TextView
@@ -60,6 +61,7 @@
                 android:textColor="@color/icons"
                 tools:text="192.168.1.11"/>
         </LinearLayout>
+
     </RelativeLayout>
 
     <android.support.v7.widget.Toolbar
@@ -88,44 +90,15 @@
         android:visibility="visible"
         tools:visibility="gone"/>
 
-    <!--</LinearLayout>-->
-
-    <!--<include-->
-        <!--layout="@layout/splash_layout"-->
-        <!--tools:visibility="gone"/>-->
-
-    <!--<View-->
-        <!--android:id="@+id/mask"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:visibility="gone"-->
-        <!--/>-->
-
-    <!--<FrameLayout-->
-        <!--android:id="@+id/splash_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--&gt;-->
-
-
-
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginTop="?actionBarSize"-->
-            <!--android:background="?attr/colorPrimary"-->
-            <!--tools:visibility="gone"-->
-            <!--/>-->
-
-        <!--<android.support.v7.widget.SwitchCompat-->
-            <!--android:id="@+id/switch_real"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:scaleX="@integer/switch_max_scale"-->
-            <!--android:scaleY="@integer/switch_max_scale"-->
-            <!--tools:visibility="gone"-->
-            <!--/>-->
-
-    <!--</FrameLayout>-->
+    <FrameLayout
+        android:id="@+id/mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/Widget.AppCompat.ProgressBar" />
+    </FrameLayout>
 </merge>
