@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (id){
             case R.id.monitor_button:
-                mPresenter.togglePortState();
+                mPresenter.toggle();
                 break;
 
             default:

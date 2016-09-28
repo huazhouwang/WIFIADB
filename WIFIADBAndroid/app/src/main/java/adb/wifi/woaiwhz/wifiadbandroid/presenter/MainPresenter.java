@@ -53,7 +53,7 @@ public class MainPresenter {
     }
 
     private void wifiReady(){
-        if(mState < State.WIFI_READY) {
+        if(mState != State.WIFI_READY) {
             mState = State.WIFI_READY;
             checkPortState();
         }
@@ -69,7 +69,7 @@ public class MainPresenter {
         }
     }
 
-    public void togglePortState(){
+    public void toggle(){
         if(mState == State.PORT_READY){
             changePort(State.PORT_UNREADY);
         }else if(mState == State.PORT_UNREADY){
@@ -78,7 +78,7 @@ public class MainPresenter {
     }
 
     private void changePort(@State.STATE int newState){
-        if(cannotRun()){
+        if(mRunning){
             return;
         }
 
@@ -94,7 +94,7 @@ public class MainPresenter {
     }
 
     private void checkPortState(){
-        if (cannotRun()){
+        if (mRunning){
             return;
         }
 
@@ -103,10 +103,6 @@ public class MainPresenter {
         if(mRunning) {
             mViewLayer.pageLoading(true);
         }
-    }
-
-    private boolean cannotRun(){
-        return mRunning || mState == State.WIFI_UNREADY;
     }
 
     public void onDestroy(){
@@ -121,8 +117,9 @@ public class MainPresenter {
 
         @Override
         public void dispatchMessage(Message msg) {
-            final int what = msg.what;
+            mRunning = false;
 
+            final int what = msg.what;
             switch (what){
                 case Monitor.ACTION_PORT_READY:
                     onPortReady();
@@ -140,9 +137,6 @@ public class MainPresenter {
                 default:
                     break;
             }
-
-            mViewLayer.pageLoading(false);
-            mRunning = false;
         }
     }
 
@@ -161,23 +155,22 @@ public class MainPresenter {
     }
 
     private void onFail(String message){
+        if(mState == State.WIFI_READY){
+            mState = State.INIT;
+            check();
+        }
+
         mViewLayer.onActionFail(message);
     }
 
     private class WifiChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final boolean wifiReady = WiFiModule.getInstance().isReady();
-            if(wifiReady){
-                if(mState == State.WIFI_UNREADY){
-                    wifiReady();
-                }
-            }else if(mState >= State.WIFI_READY){
-                wifiNoReady();
-                mMonitor.interrupt();
-                mRunning = false;
+            if(mState == State.INIT){
+                return;
             }
 
+            check();
         }
     }
 
