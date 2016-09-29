@@ -23,7 +23,7 @@
             />
 
         <ImageButton
-            android:id="@+id/monitor_button"
+            android:id="@+id/center_button"
             android:layout_width="270dp"
             android:layout_height="270dp"
             android:layout_centerInParent="true"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:orientation="horizontal"
-            android:layout_below="@id/monitor_button"
+            android:layout_below="@id/center_button"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:background="@drawable/ip_layout_background"

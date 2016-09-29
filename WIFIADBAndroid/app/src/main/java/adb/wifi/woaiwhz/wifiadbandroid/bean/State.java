@@ -1,4 +1,4 @@
-package adb.wifi.woaiwhz.wifiadbandroid.base;
+package adb.wifi.woaiwhz.wifiadbandroid.bean;
 
 import android.support.annotation.IntDef;
 

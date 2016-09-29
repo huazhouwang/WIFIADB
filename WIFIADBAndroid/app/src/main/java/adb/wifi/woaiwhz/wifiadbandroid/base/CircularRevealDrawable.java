@@ -10,16 +10,18 @@ import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.util.SparseArrayCompat;
 
 import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
-import adb.wifi.woaiwhz.wifiadbandroid.R;
 
 /**
  * Created by huazhou.whz on 2016/9/17.
  */
-public class CircularRevealDrawable extends Drawable implements ValueAnimator.AnimatorUpdateListener,ValueAnimator.AnimatorListener{
+public class CircularRevealDrawable extends Drawable
+        implements ValueAnimator.AnimatorUpdateListener,ValueAnimator.AnimatorListener{
     private static final int EOF_COLOR = Integer.MIN_VALUE;
     private static final long DURATION = 600L;
 
@@ -29,10 +31,10 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
     private ValueAnimator mAnimator;
     private float mCurrentRadius;
 
-    private final int mWhiteColor;
-    private final int mColorPortUnReady;
-    private final int mColorPortReady;
+    private final int mDefaultColor;
 
+    private final SparseArrayCompat<Integer> mColorMap;
+    private final Resources mResources;
     private int mCurrentColor;
     private int mNextColor;
 
@@ -40,11 +42,10 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
         super();
         mPaint = new Paint();
 
-        final Resources resources = MyApp.getContext().getResources();
-        mWhiteColor = ResourcesCompat.getColor(resources,android.R.color.white,null);
-        mColorPortReady = ResourcesCompat.getColor(resources, R.color.port_ready_primary,null);
-        mColorPortUnReady = ResourcesCompat.getColor(resources,R.color.port_unready_primary,null);
+        mResources = MyApp.getContext().getResources();
+        mDefaultColor = ResourcesCompat.getColor(mResources,android.R.color.white,null);
 
+        mColorMap = new SparseArrayCompat<>();
         mCurrentColor = EOF_COLOR;
         mNextColor = EOF_COLOR;
     }
@@ -74,6 +75,11 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
         }
     }
 
+    public void putColor(int index,@ColorRes int colorRes){
+        final int color = ResourcesCompat.getColor(mResources,colorRes,null);
+        mColorMap.put(index,color);
+    }
+
     private boolean canReveal(){
         return mNextColor != EOF_COLOR && mNextColor != mCurrentColor;
     }
@@ -82,12 +88,12 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
         return mCurrentColor != EOF_COLOR;
     }
 
-    public void changeState(@State.STATE int state){
+    public void changeState(int index){
         if(mCurrentColor == EOF_COLOR){
-            mCurrentColor = getColor(state);
+            mCurrentColor = getColor(index);
             invalidateSelf();
         }else {
-            mNextColor = getColor(state);
+            mNextColor = getColor(index);
 
             if(mAnimator != null && canReveal()) {
                 if(mAnimator.isRunning()){
@@ -98,17 +104,8 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
         }
     }
 
-    private int getColor(@State.STATE int state){
-        switch (state){
-            case State.PORT_UNREADY:
-                return mColorPortUnReady;
-
-            case State.PORT_READY:
-                return mColorPortReady;
-
-            default:
-                return EOF_COLOR;
-        }
+    private int getColor(int index){
+        return mColorMap.get(index,mDefaultColor);
     }
 
     @Override
@@ -122,7 +119,7 @@ public class CircularRevealDrawable extends Drawable implements ValueAnimator.An
                 canvas.drawCircle(mCenterPoint.x, mCenterPoint.y, mCurrentRadius, mPaint);
             }
         }else {
-            mPaint.setColor(mWhiteColor);
+            mPaint.setColor(mDefaultColor);
             canvas.drawRect(mReact,mPaint);
         }
     }

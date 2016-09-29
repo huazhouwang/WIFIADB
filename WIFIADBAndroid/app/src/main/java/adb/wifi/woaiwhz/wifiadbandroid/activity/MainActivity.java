@@ -25,7 +25,7 @@ import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
 import adb.wifi.woaiwhz.wifiadbandroid.R;
 import adb.wifi.woaiwhz.wifiadbandroid.base.CircularRevealDrawable;
 import adb.wifi.woaiwhz.wifiadbandroid.base.OnTouchInterceptor;
-import adb.wifi.woaiwhz.wifiadbandroid.base.State;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
 import adb.wifi.woaiwhz.wifiadbandroid.presenter.MainPresenter;
 
@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity
         implements MainPresenter.MainView,View.OnClickListener,CompoundButton.OnCheckedChangeListener{
     private View mSplashContainer;
     private SwitchCompat mSplashSwitch;
-
     private View mRevealHolderView;
     private View mMaskView;
     private View mLoading;
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         mSplashSwitch = $(R.id.splash_switch_wifi);
         mRevealHolderView = $(R.id.reveal_layout);
         mMaskView = $(R.id.mask);
-        mCenterButton = $(R.id.monitor_button);
+        mCenterButton = $(R.id.center_button);
         mLoading = $(R.id.loading);
         mIpValue = $(R.id.ip_value);
         mIpContainer = $(R.id.ip_layout);
@@ -71,6 +70,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
 
         mRevelDrawable = new CircularRevealDrawable();
+        mRevelDrawable.putColor(State.PORT_READY,R.color.port_ready_primary);
+        mRevelDrawable.putColor(State.PORT_UNREADY,R.color.port_unready_primary);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mRevealHolderView.setBackground(mRevelDrawable);
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity
 
         if (!isAnimateReady() && hasFocus) {
             initAnimate();
-            mPresenter.check();
+            mPresenter.onStart();
         }
     }
 
@@ -203,15 +204,15 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         if(mPresenter == null){
             mPresenter = new MainPresenter(this);
         }
 
         if(isAnimateReady()) {
-            mPresenter.check();
+            mPresenter.onStart();
         }
     }
 
@@ -221,9 +222,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mPresenter.onDestroy();
+    protected void onStop() {
+        super.onStop();
+        mPresenter.onStop();
     }
 
     @Override
@@ -308,8 +309,14 @@ public class MainActivity extends AppCompatActivity
         final int id = v.getId();
 
         switch (id){
-            case R.id.monitor_button:
+            case R.id.center_button:
                 mPresenter.toggle();
+                break;
+
+            case R.id.splash_switch_wifi:
+                final boolean isChecked = mSplashSwitch.isChecked();
+                WiFiModule.getInstance().enable(isChecked);
+                mSwitch.setChecked(isChecked);
                 break;
 
             default:
@@ -319,11 +326,19 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+        final int id = buttonView.getId();
 
-        WiFiModule.getInstance().enable(isChecked);
+        switch (id){
+            case R.id.splash_switch_wifi:
+                mSwitch.setChecked(isChecked);
+                break;
 
-        mSwitch.setChecked(isChecked);
+            default:
+                break;
+        }
     }
+
+
 
     private boolean isAnimateReady(){
         return mAnimate2WifiUnReady != null && mAnimate2WifiReady != null;

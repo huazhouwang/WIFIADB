@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 
 import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
 import adb.wifi.woaiwhz.wifiadbandroid.base.Monitor;
-import adb.wifi.woaiwhz.wifiadbandroid.base.State;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
 
 /**
@@ -35,11 +35,15 @@ public class MainPresenter {
 
         mRunning = false;
         mState = State.INIT;
+
+    }
+
+    public void onStart(){
         MyApp.getContext().registerReceiver(mReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
-    public void check(){
+    private void checkNow(){
         if(mRunning){
             return;
         }
@@ -106,7 +110,7 @@ public class MainPresenter {
         }
     }
 
-    public void onDestroy(){
+    public void onStop(){
         mMonitor.interrupt();
         MyApp.getContext().unregisterReceiver(mReceiver);
     }
@@ -159,7 +163,7 @@ public class MainPresenter {
     private void onFail(String message){
         if(mState == State.WIFI_READY){
             mState = State.INIT;
-            check();
+            onStart();
         }
 
         mViewLayer.onActionFail(message);
@@ -168,11 +172,11 @@ public class MainPresenter {
     private class WifiChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(mState == State.INIT){
-                return;
-            }
+//            if(mState == State.INIT){
+//                return;
+//            }
 
-            check();
+            checkNow();
         }
     }
 

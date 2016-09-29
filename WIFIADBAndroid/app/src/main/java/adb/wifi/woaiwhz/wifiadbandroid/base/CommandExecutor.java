@@ -9,6 +9,8 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 
 import adb.wifi.woaiwhz.wifiadbandroid.BuildConfig;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.Config;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.MonitorResult;
 
 /**
  * Created by huazhou.whz on 2016/9/14.
@@ -16,7 +18,8 @@ import adb.wifi.woaiwhz.wifiadbandroid.BuildConfig;
 public class CommandExecutor {
 
     @WorkerThread
-    public static @NonNull MonitorResult execute(final boolean needRoot, @NonNull final String[] commands) {
+    public static @NonNull
+    MonitorResult execute(final boolean needRoot, @NonNull final String[] commands) {
         Process process = null;
         DataOutputStream output2Process = null;
         BufferedReader successReader = null;

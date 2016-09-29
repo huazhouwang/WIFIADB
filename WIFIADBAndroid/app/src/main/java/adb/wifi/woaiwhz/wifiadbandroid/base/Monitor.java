@@ -11,6 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import adb.wifi.woaiwhz.wifiadbandroid.BuildConfig;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.Config;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.MonitorResult;
 
 /**
  * Created by huazhou.whz on 2016/9/13.

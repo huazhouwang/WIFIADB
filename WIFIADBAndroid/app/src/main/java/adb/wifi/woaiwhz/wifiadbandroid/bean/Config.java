@@ -1,4 +1,4 @@
-package adb.wifi.woaiwhz.wifiadbandroid.base;
+package adb.wifi.woaiwhz.wifiadbandroid.bean;
 
 /**
  * Created by huazhou.whz on 2016/9/14.
