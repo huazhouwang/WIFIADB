@@ -7,7 +7,9 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.TypeEvaluator;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -15,9 +17,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Property;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -39,7 +44,7 @@ import adb.wifi.woaiwhz.wifiadbandroid.bean.YProperty;
 import adb.wifi.woaiwhz.wifiadbandroid.presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity
-        implements MainPresenter.MainView,View.OnClickListener,CompoundButton.OnCheckedChangeListener{
+        implements MainPresenter.MainView,View.OnClickListener,CompoundButton.OnCheckedChangeListener,PopupMenu.OnMenuItemClickListener{
     private View mSplashContainer;
     private View mRevealHolderView;
     private View mMaskView;
@@ -52,7 +57,9 @@ public class MainActivity extends AppCompatActivity
     private SwitchCompat mToolbarSwitch;
     private View mIconPortReady;
     private View mIconPortUnready;
+    private View mShowMenu;
 
+    private PopupMenu mPopupMenu;
     private CircularRevealDrawable mRevelDrawable;
     private MainPresenter mPresenter;
     private SwitchCompat mCurrentSwitch;
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity
         mIpContainer = $(R.id.ip_layout);
         mToolbarSwitch = $(R.id.switch_real);
         mToolbar = $(R.id.toolbar);
+        mShowMenu = $(R.id.main_menu);
 
         init();
     }
@@ -98,6 +106,7 @@ public class MainActivity extends AppCompatActivity
 
         mMaskView.setOnTouchListener(new OnTouchInterceptor());
         mCenterButton.setOnClickListener(this);
+        mShowMenu.setOnClickListener(this);
 
         mSplashSwitch.setOnCheckedChangeListener(this);
         mToolbarSwitch.setOnCheckedChangeListener(this);
@@ -357,6 +366,14 @@ public class MainActivity extends AppCompatActivity
         }else if(v == mCurrentSwitch){
             final boolean isChecked = mCurrentSwitch.isChecked();
             WiFiModule.getInstance().enable(isChecked);
+        }else if(v == mShowMenu){
+            if(mPopupMenu == null){
+                mPopupMenu = new PopupMenu(this,mShowMenu);
+                mPopupMenu.getMenuInflater().inflate(R.menu.menu_main,mPopupMenu.getMenu());
+                mPopupMenu.setOnMenuItemClickListener(this);
+            }
+
+            mPopupMenu.show();
         }
     }
 
@@ -392,5 +409,34 @@ public class MainActivity extends AppCompatActivity
         }else {
             mWifiUnreadyAnimate.start();
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        final int id = item.getItemId();
+
+        switch (id){
+            case R.id.about:
+                browse("https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid");
+                return true;
+
+            case R.id.get_intellij_plugin:
+                browse("https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin");
+                return true;
+
+            default:
+                return false;
+
+        }
+    }
+
+    private void browse(String url){
+        if(TextUtils.isEmpty(url)){
+            return;
+        }
+
+        final Uri uri = Uri.parse(url);
+        final Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
     }
 }

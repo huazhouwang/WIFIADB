@@ -58,7 +58,7 @@
             android:id="@+id/ip_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="32dp"
             android:orientation="horizontal"
             android:layout_below="@id/center_container"
             android:layout_centerHorizontal="true"
@@ -82,6 +82,19 @@
                 android:textColor="@color/icons"
                 tools:text="192.168.1.11 : 5555"/>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/main_menu"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:srcCompat="@drawable/ic_menu"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/ic_menu_margin_side"
+            android:layout_marginEnd="@dimen/ic_menu_margin_side"
+            android:layout_marginBottom="@dimen/ic_menu_margin_side"
+            />
 
     </RelativeLayout>
 
