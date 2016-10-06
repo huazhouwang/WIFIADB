@@ -356,7 +356,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onActionFail(@NonNull String message) {
         Snackbar.make(mRevealHolderView,message,Snackbar.LENGTH_SHORT).show();
-        // TODO: 2016/9/28 dismiss loading
     }
 
     @Override
