@@ -15,7 +15,7 @@ public class ColorProperty extends Property<GradientDrawable,Integer> {
 
     @Override
     public Integer get(GradientDrawable object) {
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     @Override

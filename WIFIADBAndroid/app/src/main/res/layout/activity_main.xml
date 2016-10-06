@@ -22,14 +22,37 @@
             android:background="@drawable/bg_toolbar_shadow"
             />
 
-        <ImageButton
-            android:id="@+id/center_button"
-            android:layout_width="270dp"
-            android:layout_height="270dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/src_center_bn_solid"
-            android:background="@drawable/bg_button_shadow"
-            />
+        <FrameLayout
+            android:id="@+id/center_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <ImageButton
+                android:id="@+id/center_button"
+                android:layout_width="280dp"
+                android:layout_height="280dp"
+                android:layout_gravity="center"
+                android:src="@drawable/src_center_bn_solid"
+                android:background="@drawable/bg_button_shadow"
+                />
+
+            <ImageView
+                android:id="@+id/ic_port_ready"
+                android:layout_width="@dimen/ic_port_size"
+                android:layout_height="@dimen/ic_port_size"
+                app:srcCompat="@drawable/ic_port_ready"
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:id="@+id/ic_port_unready"
+                android:layout_width="@dimen/ic_port_size"
+                android:layout_height="@dimen/ic_port_size"
+                app:srcCompat="@drawable/ic_port_unready"
+                android:layout_gravity="center"
+                tools:visibility="gone"
+                />
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/ip_layout"
@@ -37,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:orientation="horizontal"
-            android:layout_below="@id/center_button"
+            android:layout_below="@id/center_container"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:background="@drawable/ip_layout_background"
@@ -57,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/icons"
-                tools:text="192.168.1.11"/>
+                tools:text="192.168.1.11 : 5555"/>
         </LinearLayout>
 
     </RelativeLayout>

@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 
 import adb.wifi.woaiwhz.wifiadbandroid.MyApp;
 import adb.wifi.woaiwhz.wifiadbandroid.base.Monitor;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.Config;
 import adb.wifi.woaiwhz.wifiadbandroid.bean.State;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
 
@@ -148,7 +149,7 @@ public class MainPresenter {
     private void onPortReady() {
         if(mState != State.PORT_READY) {
             mState = State.PORT_READY;
-            mViewLayer.onPortReady(WiFiModule.getInstance().getIp());
+            mViewLayer.onPortReady(WiFiModule.getInstance().getIp() + " : " + Config.PORT);
         }
     }
 

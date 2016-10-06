@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private SwitchCompat mSplashSwitch;
     private SwitchCompat mToolbarSwitch;
+    private View mIconPortReady;
+    private View mIconPortUnready;
 
     private CircularRevealDrawable mRevelDrawable;
     private MainPresenter mPresenter;
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity
         mRevealHolderView = $(R.id.reveal_layout);
         mMaskView = $(R.id.mask);
         mCenterButton = $(R.id.center_button);
+        mIconPortReady = $(R.id.ic_port_ready);
+        mIconPortUnready = $(R.id.ic_port_unready);
         mLoading = $(R.id.loading);
         mIpValue = $(R.id.ip_value);
         mIpContainer = $(R.id.ip_layout);
@@ -132,8 +136,14 @@ public class MainActivity extends AppCompatActivity
 
         mPortReadyAnimate = new AnimatorSet();
         mPortReadyAnimate.setInterpolator(interpolator);
+
+        AnimatorSet iconPortReadyAnimateSet = new AnimatorSet();
+        iconPortReadyAnimateSet.play(ObjectAnimator.ofFloat(mIconPortUnready,alphaProperty,0f))
+                .before(ObjectAnimator.ofFloat(mIconPortReady,alphaProperty,1f));
+
         mPortReadyAnimate.play(readyCenterButtonColor)
-                .with(ObjectAnimator.ofFloat(mIpContainer,alphaProperty,1f));
+                .with(ObjectAnimator.ofFloat(mIpContainer,alphaProperty,1f))
+                .with(iconPortReadyAnimateSet);
 
         mPortReadyAnimate.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -145,10 +155,16 @@ public class MainActivity extends AppCompatActivity
         final ObjectAnimator unreadyCenterButton = ObjectAnimator.ofInt(centerDrawable,colorProperty,portReadyAccent,portUnreadyAccent);
         unreadyCenterButton.setEvaluator(typeEvaluator);
 
+        AnimatorSet iconPortUnreadyAnimateSet = new AnimatorSet();
+        iconPortUnreadyAnimateSet.play(ObjectAnimator.ofFloat(mIconPortReady,alphaProperty,0f))
+                .before(ObjectAnimator.ofFloat(mIconPortUnready,alphaProperty,1f));
+
         mPortUnreadyAnimate = new AnimatorSet();
         mPortUnreadyAnimate.setInterpolator(interpolator);
         mPortUnreadyAnimate.play(unreadyCenterButton)
-                .with(ObjectAnimator.ofFloat(mIpContainer,alphaProperty,0f));
+                .with(ObjectAnimator.ofFloat(mIpContainer,alphaProperty,0f))
+                .with(iconPortUnreadyAnimateSet);
+
 
         mPortUnreadyAnimate.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -298,13 +314,13 @@ public class MainActivity extends AppCompatActivity
     public void onPortReady(String ip) {
         onWifiReady();
         mIpValue.setText(ip);
-        portStateAnimate(false);
+        portStateAnimate(true);
     }
 
     @Override
     public void onPortUnready() {
         onWifiReady();
-        portStateAnimate(true);
+        portStateAnimate(false);
     }
 
     private void portStateAnimate(boolean ready){

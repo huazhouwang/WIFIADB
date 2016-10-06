@@ -6,7 +6,7 @@
     <size android:width="@dimen/ip_layout_width"
         android:height="@dimen/ip_layout_height"/>
 
-    <solid android:color="@color/ip_layout_bg_color"/>
+    <solid android:color="@color/dark"/>
 
     <corners android:radius="@dimen/ip_layout_height"/>
 </shape>

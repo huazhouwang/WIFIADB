@@ -9,13 +9,11 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
-    <color name="ip_layout_bg_color">#212121</color>
+    <color name="dark">#212121</color>
+    <color name="light">#FAFAFA</color>
 
-    <color name="mask_background">#80757575</color>
-    <color name="port_ready_primary">#03A9F4</color>
-    <color name="port_ready_accent">#448AFF</color>
-    <color name="port_unready_primary">#F36C60</color>
-    <color name="port_unready_accent">#E51C23</color>
-    <color name="wifi_unready_primary">#ffffff</color>
-    <color name="wifi_unready_accent">#212121</color>
+    <color name="port_ready_primary">#448AFF</color>
+    <color name="port_ready_accent">#2196F3</color>
+    <color name="port_unready_primary">#B71C1C</color>
+    <color name="port_unready_accent">#E53935</color>
 </resources>

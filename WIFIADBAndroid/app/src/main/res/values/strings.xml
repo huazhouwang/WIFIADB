@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">WIFIADBAndroid</string>
-    <string name="ip_title">IP :</string>
+    <string name="ip_title">PORT :</string>
     <string name="wifi_no_ready">WIFI IS UNREADY</string>
 </resources>
