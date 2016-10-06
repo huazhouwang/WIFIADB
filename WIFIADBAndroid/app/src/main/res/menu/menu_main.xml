@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/about"
         android:title="@string/menu_title_about"/>
+
+    <item
+        android:id="@+id/get_start"
+        android:title="@string/menu_title_get_start"/>
 
     <item
         android:id="@+id/get_intellij_plugin"

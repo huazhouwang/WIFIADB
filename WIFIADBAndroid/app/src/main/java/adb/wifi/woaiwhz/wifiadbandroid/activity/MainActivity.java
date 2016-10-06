@@ -415,6 +415,10 @@ public class MainActivity extends AppCompatActivity
         final int id = item.getItemId();
 
         switch (id){
+            case R.id.get_start:
+                browse("https://github.com/Sausure/WIFIADB");
+                return true;
+
             case R.id.about:
                 browse("https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid");
                 return true;

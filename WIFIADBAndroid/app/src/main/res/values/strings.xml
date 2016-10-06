@@ -4,4 +4,5 @@
     <string name="wifi_no_ready">WIFI IS UNREADY</string>
     <string name="menu_title_about">About</string>
     <string name="menu_title_get_more">Get IntelliJ Plugin</string>
+    <string name="menu_title_get_start">How to use</string>
 </resources>
