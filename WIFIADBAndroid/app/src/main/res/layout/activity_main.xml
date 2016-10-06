@@ -41,8 +41,6 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:background="@drawable/ip_layout_background"
-            android:visibility="gone"
-            tools:visibility="visible"
             >
 
             <TextView

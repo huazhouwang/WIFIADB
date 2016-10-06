@@ -3,20 +3,24 @@ package adb.wifi.woaiwhz.wifiadbandroid.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
+import android.animation.TypeEvaluator;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,29 +29,37 @@ import adb.wifi.woaiwhz.wifiadbandroid.R;
 import adb.wifi.woaiwhz.wifiadbandroid.base.CircularRevealDrawable;
 import adb.wifi.woaiwhz.wifiadbandroid.base.OnTouchInterceptor;
 import adb.wifi.woaiwhz.wifiadbandroid.base.WiFiModule;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.AlphaProperty;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.BottomProperty;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.ColorProperty;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.ScaleProperty;
 import adb.wifi.woaiwhz.wifiadbandroid.bean.State;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.XProperty;
+import adb.wifi.woaiwhz.wifiadbandroid.bean.YProperty;
 import adb.wifi.woaiwhz.wifiadbandroid.presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity
         implements MainPresenter.MainView,View.OnClickListener,CompoundButton.OnCheckedChangeListener{
     private View mSplashContainer;
-    private SwitchCompat mSplashSwitch;
     private View mRevealHolderView;
     private View mMaskView;
     private View mLoading;
     private TextView mIpValue;
     private ImageButton mCenterButton;
     private View mIpContainer;
-    private SwitchCompat mToolbarSwitch;
-    private MainPresenter mPresenter;
-    private CircularRevealDrawable mRevelDrawable;
     private Toolbar mToolbar;
+    private SwitchCompat mSplashSwitch;
+    private SwitchCompat mToolbarSwitch;
 
-
+    private CircularRevealDrawable mRevelDrawable;
+    private MainPresenter mPresenter;
     private SwitchCompat mCurrentSwitch;
     private SwitchCompat mHidingSwitch;
     private AnimatorSet mWifiReadyAnimate;
     private AnimatorSet mWifiUnreadyAnimate;
+
+    private AnimatorSet mPortReadyAnimate;
+    private AnimatorSet mPortUnreadyAnimate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +113,52 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // TODO: 2016/10/6 尝试去掉 splashSwitch 和 toolbarSwitch 的区分，只有 current 和 hiding
     private void initAnimate(){
+        initWifiStateAnimate();
+        initPortStateAnimate();
+    }
+
+    private void initPortStateAnimate(){
+        final GradientDrawable centerDrawable = (GradientDrawable) mCenterButton.getDrawable();
+        final int portReadyAccent = ResourcesCompat.getColor(getResources(),R.color.port_ready_accent,null);
+        final int portUnreadyAccent = ResourcesCompat.getColor(getResources(),R.color.port_unready_accent,null);
+        final Property<GradientDrawable,Integer> colorProperty = new ColorProperty(Integer.class,"colorProperty");
+        final Property<View,Float> alphaProperty = new AlphaProperty(Float.class,"alphaProperty");
+        final Interpolator interpolator = new AccelerateDecelerateInterpolator();
+        final TypeEvaluator typeEvaluator = new ArgbEvaluator();
+
+        final ObjectAnimator readyCenterButtonColor = ObjectAnimator.ofInt(centerDrawable,colorProperty,portUnreadyAccent,portReadyAccent);
+        readyCenterButtonColor.setEvaluator(typeEvaluator);
+
+        mPortReadyAnimate = new AnimatorSet();
+        mPortReadyAnimate.setInterpolator(interpolator);
+        mPortReadyAnimate.play(readyCenterButtonColor)
+                .with(ObjectAnimator.ofFloat(mIpContainer,alphaProperty,1f));
+
+        mPortReadyAnimate.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mRevelDrawable.changeState(State.PORT_READY);
+            }
+        });
+
+        final ObjectAnimator unreadyCenterButton = ObjectAnimator.ofInt(centerDrawable,colorProperty,portReadyAccent,portUnreadyAccent);
+        unreadyCenterButton.setEvaluator(typeEvaluator);
+
+        mPortUnreadyAnimate = new AnimatorSet();
+        mPortUnreadyAnimate.setInterpolator(interpolator);
+        mPortUnreadyAnimate.play(unreadyCenterButton)
+                .with(ObjectAnimator.ofFloat(mIpContainer,alphaProperty,0f));
+
+        mPortUnreadyAnimate.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mRevelDrawable.changeState(State.PORT_UNREADY);
+            }
+        });
+    }
+
+    private void initWifiStateAnimate(){
         final int toolbarBottom = mToolbar.getBottom();
         final int splashBottom = mSplashContainer.getBottom();
         final float noScale = getResources().getInteger(R.integer.switch_no_scale);
@@ -113,6 +169,10 @@ public class MainActivity extends AppCompatActivity
         final float smallSwitchY = mToolbarSwitch.getY();
         final long duration = 600L;
         final TimeInterpolator interpolator = new AccelerateDecelerateInterpolator();
+        final Property<View,Float> xProperty = new XProperty(Float.class,"xProperty");
+        final Property<View,Float> yProperty = new YProperty(Float.class,"yProperty");
+        final Property<View,Integer> bottomProperty = new BottomProperty(Integer.class,"bottomProperty");
+        final Property<View,Float> scaleProperty = new ScaleProperty(Float.class,"scaleProperty");
 
         mWifiReadyAnimate = new AnimatorSet();
         mWifiReadyAnimate.play(ObjectAnimator.ofFloat(mSplashSwitch,scaleProperty,maxScale,noScale))
@@ -176,58 +236,6 @@ public class MainActivity extends AppCompatActivity
         mToolbar.setVisibility(View.GONE);
     }
 
-    // TODO: 2016/9/25 改成静态类
-    private static Property<View,Float> xProperty = new Property<View, Float>(Float.class,"xProperty") {
-        @Override
-        public Float get(View object) {
-            return object.getX();
-        }
-
-        @Override
-        public void set(View object, Float value) {
-            object.setX(value);
-        }
-    };
-
-    private static Property<View,Float> yProperty = new Property<View, Float>(Float.class,"yProperty") {
-        @Override
-        public Float get(View object) {
-            return object.getY();
-        }
-
-        @Override
-        public void set(View object, Float value) {
-            object.setY(value);
-        }
-    };
-
-    private static Property<View,Integer> bottomProperty = new Property<View, Integer>(Integer.class,"bottomProperty") {
-        @Override
-        public Integer get(View object) {
-            return object.getBottom();
-        }
-
-        @Override
-        public void set(View object, Integer value) {
-            object.setBottom(value);
-        }
-    };
-
-
-    private static Property<View,Float> scaleProperty = new Property<View, Float>(Float.class,"scaleProperty") {
-        @Override
-        public Float get(View object) {
-            return object.getScaleX();
-        }
-
-        @Override
-        public void set(View object, Float value) {
-            object.setScaleX(value);
-            object.setScaleY(value);
-        }
-    };
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -278,55 +286,46 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onWifiUnready() {
         mCurrentSwitch.setChecked(false);
-        mIpContainer.setVisibility(View.GONE);
-        mIpValue.setText(null);
-        startSplashAnimate(false);
-        hideMask();
+        wifiStateAnimate(false);
     }
-
 
     private void onWifiReady() {
         mCurrentSwitch.setChecked(true);
-        startSplashAnimate(true);
+        wifiStateAnimate(true);
     }
 
     @Override
     public void onPortReady(String ip) {
         onWifiReady();
         mIpValue.setText(ip);
-        showIpContainer();
-
-        mRevelDrawable.changeState(State.PORT_READY);
-    }
-
-    private void showIpContainer(){
-        mIpContainer.setAlpha(0f);
-        mIpContainer.setVisibility(View.VISIBLE);
-
-        ViewCompat.animate(mIpContainer)
-                .alpha(1f)
-                .setDuration(300)
-                .start();
+        portStateAnimate(false);
     }
 
     @Override
     public void onPortUnready() {
         onWifiReady();
-
-        hideIpContainer();
-        mRevelDrawable.changeState(State.PORT_UNREADY);
+        portStateAnimate(true);
     }
 
-    private void hideIpContainer(){
-        ViewCompat.animate(mIpContainer)
-                .alpha(0f)
-                .setDuration(300)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        mIpContainer.setVisibility(View.GONE);
-                    }
-                }).start();
+    private void portStateAnimate(boolean ready){
+        if(!isAnimateReady()){
+            return;
+        }
+
+        if(mPortReadyAnimate.isRunning()){
+            mPortReadyAnimate.cancel();
+        }
+
+        if(mPortUnreadyAnimate.isRunning()){
+            mPortUnreadyAnimate.cancel();
+        }
+
+        if(ready){
+            mPortReadyAnimate.start();
+        }else {
+            mPortUnreadyAnimate.start();
+        }
+
     }
 
     @Override
@@ -354,20 +353,21 @@ public class MainActivity extends AppCompatActivity
         mHidingSwitch.setChecked(isChecked);
     }
 
-
-
     private boolean isAnimateReady(){
-        return mWifiUnreadyAnimate != null && mWifiReadyAnimate != null;
+        //只需判断一个就好
+        return mWifiUnreadyAnimate != null;
     }
 
-    private void startSplashAnimate(boolean ready){
+    private void wifiStateAnimate(boolean ready){
         if(!isAnimateReady()){
             return;
         }
 
         if(mWifiReadyAnimate.isRunning()){
             mWifiReadyAnimate.cancel();
-        }else if(mWifiUnreadyAnimate.isRunning()){
+        }
+
+        if(mWifiUnreadyAnimate.isRunning()){
             mWifiUnreadyAnimate.cancel();
         }
 

@@ -35,7 +35,6 @@ public class MainPresenter {
 
         mRunning = false;
         mState = State.INIT;
-
     }
 
     public void onStart(){
@@ -172,10 +171,6 @@ public class MainPresenter {
     private class WifiChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            if(mState == State.INIT){
-//                return;
-//            }
-
             checkNow();
         }
     }
