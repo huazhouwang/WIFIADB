@@ -80,20 +80,20 @@
             android:layout_gravity="center_vertical|end"
             android:layout_marginRight="@dimen/small_switch_margin_right"
             android:layout_marginEnd="@dimen/small_switch_margin_right"
-            android:visibility="visible"
             />
 
     </android.support.v7.widget.Toolbar>
 
     <include
         layout="@layout/splash_layout"
-        android:visibility="visible"
         tools:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/mask"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
         <ProgressBar
             android:id="@+id/loading"
             android:layout_width="wrap_content"
