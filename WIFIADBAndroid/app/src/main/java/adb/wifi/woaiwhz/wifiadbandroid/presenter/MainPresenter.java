@@ -123,7 +123,7 @@ public class MainPresenter {
         @Override
         public void dispatchMessage(Message msg) {
             mRunning = false;
-            mViewLayer.pageLoading(false);// TODO: 2016/9/28 有没更好的
+            mViewLayer.pageLoading(false);
 
             final int what = msg.what;
             switch (what){

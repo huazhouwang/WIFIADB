@@ -44,7 +44,9 @@ import adb.wifi.woaiwhz.wifiadbandroid.bean.YProperty;
 import adb.wifi.woaiwhz.wifiadbandroid.presenter.MainPresenter;
 
 public class MainActivity extends AppCompatActivity
-        implements MainPresenter.MainView,View.OnClickListener,CompoundButton.OnCheckedChangeListener,PopupMenu.OnMenuItemClickListener{
+        implements MainPresenter.MainView,View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener,PopupMenu.OnMenuItemClickListener{
+
     private View mSplashContainer;
     private View mRevealHolderView;
     private View mMaskView;
@@ -157,7 +159,13 @@ public class MainActivity extends AppCompatActivity
         mPortReadyAnimate.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                showMaskWithoutLoading();
                 mRevelDrawable.changeState(State.PORT_READY);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                hideMask();
             }
         });
 
@@ -178,7 +186,13 @@ public class MainActivity extends AppCompatActivity
         mPortUnreadyAnimate.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                showMaskWithoutLoading();
                 mRevelDrawable.changeState(State.PORT_UNREADY);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                hideMask();
             }
         });
     }
@@ -212,6 +226,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onAnimationStart(Animator animation) {
                 mRevealHolderView.setVisibility(View.VISIBLE);
+                showMaskWithoutLoading();
             }
 
             @Override
@@ -226,6 +241,8 @@ public class MainActivity extends AppCompatActivity
 
                 mCurrentSwitch = mToolbarSwitch;
                 mHidingSwitch = mSplashSwitch;
+
+                hideMask();
             }
         });
 
@@ -237,6 +254,11 @@ public class MainActivity extends AppCompatActivity
                 .with(ObjectAnimator.ofInt(mToolbar,bottomProperty,toolbarBottom,splashBottom));
 
         mWifiUnreadyAnimate.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                showMaskWithoutLoading();
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 mSplashContainer.setVisibility(View.VISIBLE);
@@ -251,6 +273,7 @@ public class MainActivity extends AppCompatActivity
                 mCurrentSwitch = mSplashSwitch;
                 mHidingSwitch = mToolbarSwitch;
 
+                hideMask();
                 Snackbar.make(mRevealHolderView,R.string.wifi_no_ready,Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -288,23 +311,29 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void pageLoading(boolean show) {
         if(show){
-            showMask(true);
+            showMaskWithLoading();
         }else {
             hideMask();
         }
     }
 
-    private void hideMask(){
-        mMaskView.setVisibility(View.GONE);
+    private void showMaskWithLoading(){
+        setVisible(mLoading,View.VISIBLE);
+        setVisible(mMaskView,View.VISIBLE);
     }
 
-    private void showMask(boolean withLoading){
-        mMaskView.setVisibility(View.VISIBLE);
+    private void showMaskWithoutLoading(){
+        setVisible(mLoading,View.GONE);
+        setVisible(mMaskView,View.VISIBLE);
+    }
 
-        if(withLoading){
-            mLoading.setVisibility(View.VISIBLE);
-        }else{
-            mLoading.setVisibility(View.GONE);
+    private void hideMask(){
+        setVisible(mMaskView,View.GONE);
+    }
+
+    private void setVisible(@NonNull View view,int visibility){
+        if(view.getVisibility() != visibility){
+            view.setVisibility(visibility);
         }
     }
 
