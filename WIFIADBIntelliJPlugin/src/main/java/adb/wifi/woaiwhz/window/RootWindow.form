@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="adb.wifi.woaiwhz.window.RootWindowHolder">
+  <grid id="27dc6" binding="mRoot" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="3" y="4" width="435" height="421"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="74cd4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none" title="Enter a new port address"/>
+        <children>
+          <component id="8620f" class="javax.swing.JTextField" binding="mIP_1">
+            <constraints/>
+            <properties>
+              <columns value="3"/>
+              <horizontalAlignment value="0"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="74439" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <horizontalTextPosition value="11"/>
+              <text value="."/>
+            </properties>
+          </component>
+          <component id="b9085" class="javax.swing.JTextField" binding="mIP_2">
+            <constraints/>
+            <properties>
+              <columns value="3"/>
+              <horizontalAlignment value="0"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="9b70a" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <text value="."/>
+            </properties>
+          </component>
+          <component id="a0b06" class="javax.swing.JTextField" binding="mIP_3">
+            <constraints/>
+            <properties>
+              <columns value="3"/>
+              <horizontalAlignment value="0"/>
+            </properties>
+          </component>
+          <component id="2ea88" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <text value="."/>
+            </properties>
+          </component>
+          <component id="97a48" class="javax.swing.JTextField" binding="mIP_4">
+            <constraints/>
+            <properties>
+              <columns value="3"/>
+              <horizontalAlignment value="0"/>
+            </properties>
+          </component>
+          <component id="d8923" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <text value=":"/>
+            </properties>
+          </component>
+          <component id="1d171" class="javax.swing.JTextField" binding="mPort">
+            <constraints/>
+            <properties>
+              <columns value="5"/>
+              <horizontalAlignment value="0"/>
+              <text value="5555"/>
+            </properties>
+          </component>
+          <component id="d7e60" class="javax.swing.JButton" binding="mConnectButton">
+            <constraints/>
+            <properties>
+              <text value="Connect"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="9cdc8" layout-manager="CardLayout" hgap="0" vgap="0">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none" title="manage devices"/>
+        <children>
+          <grid id="f499b" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <card name="Card1"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="da1a1" class="javax.swing.JLabel">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <horizontalAlignment value="0"/>
+                  <text value="There is no devices connected by wifi"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <component id="25137" class="javax.swing.JList" binding="list1" default-binding="true">
+            <constraints>
+              <card name="Card2"/>
+            </constraints>
+            <properties/>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

@@ -26,6 +26,13 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
+        <defaultProjectTypeProvider type="Android"/>
+        <toolWindow
+                id="WiFi Adb Plugin"
+                icon="/icons/icon.png"
+                anchor="right"
+                factoryClass="adb.wifi.woaiwhz.window.RootWindowHolder"
+                />
     </extensions>
 
     <application-components>
@@ -37,18 +44,6 @@
     <depends>org.jetbrains.android</depends>
 
     <actions>
-        <group id="WIFI.ADB.PLUGIN" text="WIFIADB" description="simple connect">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="Myplugin.Textboxes" class="adb.wifi.woaiwhz.SimpleConnection" text="WIFI ADB" description="connect adb without usb"/>
-        </group>
-
-        <!--<action id="MyPlugin.Wifi.Adb"-->
-                <!--text="WIFI_ADB"-->
-                <!--class="adb.wifi.woaiwhz.SimpleConnection"-->
-                <!--description="connect adb without usb">-->
-            <!--<add-to-group group-id="MainMenu" anchor="last"/>-->
-            <!--<add-to-group group-id="NavBarToolBar" anchor="first"/>-->
-        <!--</action>-->
     </actions>
 
 </idea-plugin>
