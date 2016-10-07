@@ -445,11 +445,11 @@ public class MainActivity extends AppCompatActivity
 
         switch (id){
             case R.id.get_start:
-                browse("https://github.com/Sausure/WIFIADB");
+                browse("https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/README.md");
                 return true;
 
             case R.id.about:
-                browse("https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid");
+                browse("https://github.com/Sausure/WIFIADB/blob/master/README.md");
                 return true;
 
             case R.id.get_intellij_plugin:
