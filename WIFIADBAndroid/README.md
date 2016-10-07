@@ -11,7 +11,7 @@
 ## Demon
 ![](https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/art/demonstrate.gif)
 
->If you have some questions or advices,I hope you can tell me by issues.
+>If you have some questions or advices,I hope you can tell me by [issues](https://github.com/Sausure/WIFIADB/issues).
 
 ##License
 
