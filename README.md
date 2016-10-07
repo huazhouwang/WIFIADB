@@ -3,7 +3,7 @@
 <br>
 <img src="https://github.com/Sausure/WIFIADB/blob/master/art/icon.png" width="200px" height="200px">
 <br>
-There are two projects in this repository.
+There are two projects in this repository.<br>
 The first one is an android project,and the second is an intellij plugin project.
 > Developing
 
