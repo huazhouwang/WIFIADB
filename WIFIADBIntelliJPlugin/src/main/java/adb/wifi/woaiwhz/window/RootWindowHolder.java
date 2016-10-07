@@ -1,9 +1,6 @@
 package adb.wifi.woaiwhz.window;
 
-import adb.wifi.woaiwhz.base.Config;
-import adb.wifi.woaiwhz.base.CustomInputVerifier;
-import adb.wifi.woaiwhz.base.Notify;
-import adb.wifi.woaiwhz.base.NumberDocumentFilter;
+import adb.wifi.woaiwhz.base.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -13,13 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 /**
  * Created by huazhou.whz on 2016/10/7.
  */
-public class RootWindowHolder implements ToolWindowFactory{
+public class RootWindowHolder implements ToolWindowFactory,ActionListener{
     private JPanel mRoot;
     private JTextField mIP_1;
     private JTextField mIP_2;
@@ -28,7 +24,10 @@ public class RootWindowHolder implements ToolWindowFactory{
     private JTextField mPort;
     private JTextField[] mIPTexts;
     private JButton mConnectButton;
-    private JList list1;
+    private JList mConnectedDevices;
+    private JPanel mEmptyView;
+    private JPanel mDownContainer;
+    private JLabel mGetHelp;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -51,11 +50,14 @@ public class RootWindowHolder implements ToolWindowFactory{
         initIpText();
         initPortText();
         initConnectButton();
-        listenOtherKeyInput();
+        initOthersComponent();
+        listenOthersKeyInput();
+        mDownContainer.remove(mEmptyView);
     }
 
     private void initConnectButton(){
-        // TODO: 2016/10/7
+        mConnectButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        mConnectButton.addActionListener(this);
     }
 
     private void initPortText(){
@@ -84,7 +86,7 @@ public class RootWindowHolder implements ToolWindowFactory{
         }
     }
 
-    private void listenOtherKeyInput(){
+    private void listenOthersKeyInput(){
         final JTextField[] textFields = new JTextField[]{
                 mIP_1,mIP_2,mIP_3,mIP_4,mPort
         };
@@ -98,8 +100,7 @@ public class RootWindowHolder implements ToolWindowFactory{
                 final int key = e.getKeyChar();
 
                 if(key == KeyEvent.VK_ENTER){
-                    // TODO: 2016/10/7
-                    Notify.alert("enter");
+                    handleConnection();
                 }
             }
 
@@ -130,7 +131,26 @@ public class RootWindowHolder implements ToolWindowFactory{
             if(field == mIP_4 || field == mPort){
                 return;
             }
+
             field.addKeyListener(autoFocusNext);
         }
+    }
+
+    private void initOthersComponent() {
+        mGetHelp.addMouseListener(new LaunchWebWhenClick(Config.HELP));
+        mGetHelp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        final Object source = e.getSource();
+
+        if(source == mConnectButton){
+            handleConnection();
+        }
+    }
+
+    private void handleConnection(){
+        // TODO: 2016/10/7
     }
 }

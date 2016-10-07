@@ -5,5 +5,6 @@ package adb.wifi.woaiwhz.base;
  */
 public interface Config {
     String TITLE = "Wifi Adb Plugin";
+    String HELP = "https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin";
     int DEFAULT_PORT = 5555;
 }

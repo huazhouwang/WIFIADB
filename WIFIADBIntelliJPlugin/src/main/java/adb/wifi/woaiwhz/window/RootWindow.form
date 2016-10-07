@@ -83,12 +83,12 @@
           </component>
         </children>
       </grid>
-      <grid id="9cdc8" layout-manager="CardLayout" hgap="0" vgap="0">
+      <grid id="9cdc8" binding="mDownContainer" layout-manager="CardLayout" hgap="0" vgap="0">
         <constraints border-constraint="Center"/>
         <properties/>
-        <border type="none" title="manage devices"/>
+        <border type="none" title="Manage devices"/>
         <children>
-          <grid id="f499b" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="f499b" binding="mEmptyView" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <card name="Card1"/>
             </constraints>
@@ -104,12 +104,34 @@
               </component>
             </children>
           </grid>
-          <component id="25137" class="javax.swing.JList" binding="list1" default-binding="true">
+          <grid id="dc798" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
-              <card name="Card2"/>
+              <card name="Card3"/>
             </constraints>
             <properties/>
-          </component>
+            <border type="none"/>
+            <children>
+              <component id="25137" class="javax.swing.JList" binding="mConnectedDevices">
+                <constraints border-constraint="Center"/>
+                <properties/>
+              </component>
+              <grid id="54fcb" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="South"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="e9b27" class="javax.swing.JLabel" binding="mGetHelp">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <horizontalAlignment value="0"/>
+                      <horizontalTextPosition value="0"/>
+                      <text value="&lt;html&gt;Get &lt;font color=&quot;#F44336&quot;&gt;&lt;u&gt;H&lt;/u&gt;&lt;/font&gt;elp&lt;/html&gt;"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
         </children>
       </grid>
     </children>
