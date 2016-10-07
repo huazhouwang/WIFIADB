@@ -87,7 +87,7 @@
             android:id="@+id/main_menu"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            app:srcCompat="@drawable/ic_menu"
+            app:srcCompat="@drawable/ic_help"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
