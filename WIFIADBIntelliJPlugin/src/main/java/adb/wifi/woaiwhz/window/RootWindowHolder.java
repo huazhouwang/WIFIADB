@@ -1,6 +1,9 @@
 package adb.wifi.woaiwhz.window;
 
 import adb.wifi.woaiwhz.base.*;
+import adb.wifi.woaiwhz.listener.CustomInputVerifier;
+import adb.wifi.woaiwhz.listener.LaunchWebBrowser;
+import adb.wifi.woaiwhz.listener.NumberDocumentFilter;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -64,8 +67,7 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
         final NumberDocumentFilter documentFilter = new NumberDocumentFilter(5);
         final InputVerifier verifier = new CustomInputVerifier(1 << 16,5555);
 
-        mPort.addKeyListener(documentFilter);
-        mPort.setDocument(documentFilter);
+        documentFilter.bind(mPort);
         mPort.setInputVerifier(verifier);
 
         mPort.setText(String.valueOf(Config.DEFAULT_PORT));
@@ -80,8 +82,7 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
             final NumberDocumentFilter documentFilter = new NumberDocumentFilter(3);
             final InputVerifier verifier = new CustomInputVerifier(1 << 8);
 
-            item.addKeyListener(documentFilter);
-            item.setDocument(documentFilter);
+            documentFilter.bind(item);
             item.setInputVerifier(verifier);
         }
     }
@@ -137,7 +138,7 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
     }
 
     private void initOthersComponent() {
-        mGetHelp.addMouseListener(new LaunchWebWhenClick(Config.HELP));
+        mGetHelp.addMouseListener(new LaunchWebBrowser(Config.HELP));
         mGetHelp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 

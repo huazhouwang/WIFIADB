@@ -1,4 +1,4 @@
-package adb.wifi.woaiwhz.base;
+package adb.wifi.woaiwhz.dispatch;
 
 import com.intellij.openapi.application.ApplicationManager;
 import org.jetbrains.annotations.NotNull;

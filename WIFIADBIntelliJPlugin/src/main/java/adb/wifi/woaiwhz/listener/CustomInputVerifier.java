@@ -1,5 +1,6 @@
-package adb.wifi.woaiwhz.base;
+package adb.wifi.woaiwhz.listener;
 
+import adb.wifi.woaiwhz.component.Notify;
 import org.apache.http.util.TextUtils;
 
 import javax.swing.*;

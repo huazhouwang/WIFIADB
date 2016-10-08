@@ -1,5 +1,6 @@
-package adb.wifi.woaiwhz.base;
+package adb.wifi.woaiwhz.listener;
 
+import adb.wifi.woaiwhz.component.Notify;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -9,10 +10,10 @@ import java.awt.event.MouseListener;
 /**
  * Created by huazhou.whz on 2016/10/7.
  */
-public class LaunchWebWhenClick implements MouseListener {
+public class LaunchWebBrowser implements MouseListener {
     private final String mUrl;
 
-    public LaunchWebWhenClick(@NotNull String url){
+    public LaunchWebBrowser(@NotNull String url){
         mUrl = url;
     }
 

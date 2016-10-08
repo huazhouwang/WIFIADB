@@ -1,7 +1,7 @@
 package adb.wifi.woaiwhz;
 
 import adb.wifi.woaiwhz.base.Action;
-import adb.wifi.woaiwhz.base.CommandExecute;
+import adb.wifi.woaiwhz.component.CommandExecute;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;

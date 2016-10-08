@@ -1,5 +1,8 @@
-package adb.wifi.woaiwhz.base;
+package adb.wifi.woaiwhz.listener;
 
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -25,6 +28,11 @@ public class NumberDocumentFilter extends PlainDocument implements KeyListener{
         }
 
         super.insertString(offs, newString, a);
+    }
+
+    public void bind(@NotNull JTextField textField){
+        textField.addKeyListener(this);
+        textField.setDocument(this);
     }
 
     @Override

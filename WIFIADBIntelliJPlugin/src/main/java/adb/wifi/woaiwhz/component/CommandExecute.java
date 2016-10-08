@@ -1,4 +1,4 @@
-package adb.wifi.woaiwhz.base;
+package adb.wifi.woaiwhz.component;
 
 import org.apache.http.util.TextUtils;
 
