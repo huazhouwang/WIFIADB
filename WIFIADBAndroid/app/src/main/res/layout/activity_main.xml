@@ -83,19 +83,6 @@
                 tools:text="192.168.1.11 : 5555"/>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/main_menu"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            app:srcCompat="@drawable/ic_help"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="@dimen/ic_menu_margin_side"
-            android:layout_marginEnd="@dimen/ic_menu_margin_side"
-            android:layout_marginBottom="@dimen/ic_menu_margin_side"
-            />
-
     </RelativeLayout>
 
     <android.support.v7.widget.Toolbar
@@ -107,13 +94,23 @@
         app:titleTextColor="@android:color/white"
         >
 
+        <ImageView
+            android:id="@+id/main_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            app:srcCompat="@drawable/ic_more"
+            android:layout_marginRight="@dimen/toolbar_item_margin_right"
+            android:layout_marginEnd="@dimen/toolbar_item_margin_right"
+            />
+
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switch_real"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
-            android:layout_marginRight="@dimen/small_switch_margin_right"
-            android:layout_marginEnd="@dimen/small_switch_margin_right"
+            android:layout_marginRight="@dimen/toolbar_item_margin_right"
+            android:layout_marginEnd="@dimen/toolbar_item_margin_right"
             />
 
     </android.support.v7.widget.Toolbar>
