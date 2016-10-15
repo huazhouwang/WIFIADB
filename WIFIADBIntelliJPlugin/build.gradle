@@ -17,11 +17,14 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.7
 
+repositories {
+    mavenCentral()
+}
 
-//dependencies {
-//    compile 'junit:junit:4.12'
-//    compile 'org.mockito:mockito-all:1.10.19'
-//}
+dependencies {
+    compile 'junit:junit:4.12'
+    compile 'org.mockito:mockito-all:1.10.19'
+}
 
 intellij {
     version '14.1.5'

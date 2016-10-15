@@ -1,6 +1,5 @@
-package adb.wifi.woaiwhz.component;
+package adb.wifi.woaiwhz.base;
 
-import adb.wifi.woaiwhz.base.Config;
 import adb.wifi.woaiwhz.dispatch.Executor;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroup;

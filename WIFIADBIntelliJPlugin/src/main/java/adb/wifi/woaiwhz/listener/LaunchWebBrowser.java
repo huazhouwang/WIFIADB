@@ -1,6 +1,6 @@
 package adb.wifi.woaiwhz.listener;
 
-import adb.wifi.woaiwhz.component.Notify;
+import adb.wifi.woaiwhz.base.Notify;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

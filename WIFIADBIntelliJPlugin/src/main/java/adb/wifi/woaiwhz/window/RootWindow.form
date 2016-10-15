@@ -2,134 +2,165 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="adb.wifi.woaiwhz.window.RootWindowHolder">
   <grid id="27dc6" binding="mRoot" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="3" y="4" width="435" height="421"/>
+      <xy x="3" y="4" width="463" height="460"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="74cd4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
-        <constraints border-constraint="North"/>
-        <properties/>
-        <border type="none" title="Enter a new port address"/>
-        <children>
-          <component id="8620f" class="javax.swing.JTextField" binding="mIP_1">
-            <constraints/>
-            <properties>
-              <columns value="3"/>
-              <horizontalAlignment value="0"/>
-              <text value=""/>
-            </properties>
-          </component>
-          <component id="74439" class="javax.swing.JLabel">
-            <constraints/>
-            <properties>
-              <horizontalTextPosition value="11"/>
-              <text value="."/>
-            </properties>
-          </component>
-          <component id="b9085" class="javax.swing.JTextField" binding="mIP_2">
-            <constraints/>
-            <properties>
-              <columns value="3"/>
-              <horizontalAlignment value="0"/>
-              <text value=""/>
-            </properties>
-          </component>
-          <component id="9b70a" class="javax.swing.JLabel">
-            <constraints/>
-            <properties>
-              <text value="."/>
-            </properties>
-          </component>
-          <component id="a0b06" class="javax.swing.JTextField" binding="mIP_3">
-            <constraints/>
-            <properties>
-              <columns value="3"/>
-              <horizontalAlignment value="0"/>
-            </properties>
-          </component>
-          <component id="2ea88" class="javax.swing.JLabel">
-            <constraints/>
-            <properties>
-              <text value="."/>
-            </properties>
-          </component>
-          <component id="97a48" class="javax.swing.JTextField" binding="mIP_4">
-            <constraints/>
-            <properties>
-              <columns value="3"/>
-              <horizontalAlignment value="0"/>
-            </properties>
-          </component>
-          <component id="d8923" class="javax.swing.JLabel">
-            <constraints/>
-            <properties>
-              <text value=":"/>
-            </properties>
-          </component>
-          <component id="1d171" class="javax.swing.JTextField" binding="mPort">
-            <constraints/>
-            <properties>
-              <columns value="5"/>
-              <horizontalAlignment value="0"/>
-              <text value="5555"/>
-            </properties>
-          </component>
-          <component id="d7e60" class="javax.swing.JButton" binding="mConnectButton">
-            <constraints/>
-            <properties>
-              <text value="Connect"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
-      <grid id="9cdc8" binding="mDownContainer" layout-manager="CardLayout" hgap="0" vgap="0">
+      <component id="7244e" class="javax.swing.JLabel" binding="mHelpLabel">
+        <constraints border-constraint="South"/>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
+          <text value="&lt;html&gt;Get &lt;font color=&quot;#F44336&quot;&gt;&lt;u&gt;H&lt;/u&gt;&lt;/font&gt;elp&lt;/html&gt;"/>
+        </properties>
+      </component>
+      <grid id="6c592" binding="mCenterLayout" layout-manager="CardLayout" hgap="0" vgap="0">
         <constraints border-constraint="Center"/>
         <properties/>
-        <border type="none" title="Manage devices"/>
+        <border type="none"/>
         <children>
-          <grid id="f499b" binding="mEmptyView" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="5bdb6" binding="mFunctionLayout" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <card name="Card1"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="da1a1" class="javax.swing.JLabel">
+              <grid id="74cd4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none" title="Enter a new port address"/>
+                <children>
+                  <component id="8620f" class="javax.swing.JTextField" binding="mIP_1">
+                    <constraints/>
+                    <properties>
+                      <columns value="2"/>
+                      <horizontalAlignment value="0"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="74439" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <horizontalTextPosition value="11"/>
+                      <text value="."/>
+                    </properties>
+                  </component>
+                  <component id="b9085" class="javax.swing.JTextField" binding="mIP_2">
+                    <constraints/>
+                    <properties>
+                      <columns value="2"/>
+                      <horizontalAlignment value="0"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="9b70a" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <text value="."/>
+                    </properties>
+                  </component>
+                  <component id="a0b06" class="javax.swing.JTextField" binding="mIP_3">
+                    <constraints/>
+                    <properties>
+                      <columns value="2"/>
+                      <horizontalAlignment value="0"/>
+                    </properties>
+                  </component>
+                  <component id="2ea88" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <text value="."/>
+                    </properties>
+                  </component>
+                  <component id="97a48" class="javax.swing.JTextField" binding="mIP_4">
+                    <constraints/>
+                    <properties>
+                      <columns value="2"/>
+                      <horizontalAlignment value="0"/>
+                    </properties>
+                  </component>
+                  <component id="d8923" class="javax.swing.JLabel">
+                    <constraints/>
+                    <properties>
+                      <text value=":"/>
+                    </properties>
+                  </component>
+                  <component id="1d171" class="javax.swing.JTextField" binding="mPort">
+                    <constraints/>
+                    <properties>
+                      <columns value="4"/>
+                      <horizontalAlignment value="0"/>
+                      <text value="5555"/>
+                    </properties>
+                  </component>
+                  <component id="d7e60" class="javax.swing.JButton" binding="mConnectButton">
+                    <constraints/>
+                    <properties>
+                      <text value="Connect"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="1e803" binding="mContentLayout" layout-manager="CardLayout" hgap="0" vgap="0">
                 <constraints border-constraint="Center"/>
-                <properties>
-                  <horizontalAlignment value="0"/>
-                  <text value="There is no devices connected by wifi"/>
-                </properties>
-              </component>
+                <properties/>
+                <border type="none" title="Manage devices"/>
+                <children>
+                  <grid id="90bc8" binding="mEmptyLayout" layout-manager="BorderLayout" hgap="0" vgap="0">
+                    <constraints>
+                      <card name="Card1"/>
+                    </constraints>
+                    <properties>
+                      <enabled value="true"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="da1a1" class="javax.swing.JLabel">
+                        <constraints border-constraint="Center"/>
+                        <properties>
+                          <horizontalAlignment value="0"/>
+                          <horizontalTextPosition value="0"/>
+                          <text value="There is no devices connected over wifi"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
             </children>
           </grid>
-          <grid id="dc798" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="5d555" binding="mLoadingLayout" layout-manager="GridBagLayout">
             <constraints>
               <card name="Card3"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="25137" class="javax.swing.JList" binding="mConnectedDevices">
-                <constraints border-constraint="Center"/>
-                <properties/>
+              <component id="3de13" class="javax.swing.JProgressBar">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <borderPainted value="false"/>
+                  <enabled value="true"/>
+                  <indeterminate value="true"/>
+                  <orientation value="0"/>
+                </properties>
               </component>
-              <grid id="54fcb" layout-manager="BorderLayout" hgap="0" vgap="0">
-                <constraints border-constraint="South"/>
-                <properties/>
-                <border type="none"/>
-                <children>
-                  <component id="e9b27" class="javax.swing.JLabel" binding="mGetHelp">
-                    <constraints border-constraint="Center"/>
-                    <properties>
-                      <horizontalAlignment value="0"/>
-                      <horizontalTextPosition value="0"/>
-                      <text value="&lt;html&gt;Get &lt;font color=&quot;#F44336&quot;&gt;&lt;u&gt;H&lt;/u&gt;&lt;/font&gt;elp&lt;/html&gt;"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
+              <component id="84bc1" class="javax.swing.JLabel" binding="mProgressTip">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="10" left="0" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <horizontalAlignment value="0"/>
+                  <horizontalTextPosition value="0"/>
+                  <text value="Loading"/>
+                </properties>
+              </component>
             </children>
           </grid>
         </children>

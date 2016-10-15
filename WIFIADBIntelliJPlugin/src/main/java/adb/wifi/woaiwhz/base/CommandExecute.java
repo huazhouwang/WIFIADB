@@ -1,4 +1,4 @@
-package adb.wifi.woaiwhz.component;
+package adb.wifi.woaiwhz.base;
 
 import org.apache.http.util.TextUtils;
 
@@ -14,7 +14,7 @@ public class CommandExecute {
         Process process = null;
         BufferedReader successReader = null;
         BufferedReader errorReader = null;
-        String result = null;
+        String result;
 
         try {
             process = Runtime.getRuntime().exec(command);
@@ -49,7 +49,6 @@ public class CommandExecute {
             return "";
         } finally {
             try {
-
                 if (successReader != null) {
                     successReader.close();
                 }

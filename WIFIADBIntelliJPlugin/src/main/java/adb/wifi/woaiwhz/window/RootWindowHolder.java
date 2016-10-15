@@ -1,10 +1,12 @@
 package adb.wifi.woaiwhz.window;
 
 import adb.wifi.woaiwhz.base.Config;
-import adb.wifi.woaiwhz.component.Notify;
+import adb.wifi.woaiwhz.base.Device;
+import adb.wifi.woaiwhz.base.Notify;
 import adb.wifi.woaiwhz.listener.CustomInputVerifier;
 import adb.wifi.woaiwhz.listener.LaunchWebBrowser;
 import adb.wifi.woaiwhz.listener.NumberDocumentFilter;
+import adb.wifi.woaiwhz.presenter.RootPresenter;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -12,6 +14,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.apache.http.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +26,7 @@ import java.awt.event.KeyListener;
 /**
  * Created by huazhou.whz on 2016/10/7.
  */
-public class RootWindowHolder implements ToolWindowFactory,ActionListener{
+public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPresenter.RootView{
     private JPanel mRoot;
     private JTextField mIP_1;
     private JTextField mIP_2;
@@ -32,10 +35,19 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
     private JTextField mPort;
     private JTextField[] mIPTexts;
     private JButton mConnectButton;
-    private JList mConnectedDevices;
-    private JPanel mEmptyView;
-    private JPanel mDownContainer;
-    private JLabel mGetHelp;
+    private JPanel mEmptyLayout;
+    private JLabel mHelpLabel;
+    private JPanel mContentLayout;
+    private JPanel mLoadingLayout;
+    private JPanel mCenterLayout;
+    private JPanel mFunctionLayout;
+    private JLabel mProgressTip;
+
+    private final RootPresenter mPresenter;
+
+    {
+        mPresenter = new RootPresenter(this);
+    }
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -51,7 +63,7 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
     }
 
     private void attach2Project(Project project){
-        // TODO: 2016/10/7
+        mPresenter.init(project);
     }
 
     private void init(){
@@ -60,7 +72,6 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
         initConnectButton();
         initOthersComponent();
         listenOthersKeyInput();
-        mDownContainer.remove(mEmptyView);
     }
 
     private void initConnectButton(){
@@ -143,8 +154,8 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
     }
 
     private void initOthersComponent() {
-        mGetHelp.addMouseListener(new LaunchWebBrowser(Config.HELP));
-        mGetHelp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        mHelpLabel.addMouseListener(new LaunchWebBrowser(Config.HELP));
+        mHelpLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     @Override
@@ -162,8 +173,10 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
             return;
         }
 
-        Notify.alert("success : " + gainIpAddressWithPortNumber());
-        cleanText();
+        final String deviceId = gainIpAddressWithPortNumber();
+//        Notify.alert("success : " + deviceId);
+        mPresenter.addDevice(deviceId);
+//        cleanText();
     }
 
     private String gainIpAddressWithPortNumber(){
@@ -229,5 +242,45 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener{
         }
 
         return true;
+    }
+
+    @Override
+    public void onADBEmpty() {
+
+    }
+
+    @Override
+    public void onADBComplete(String path) {
+
+    }
+
+    @Override
+    public void showLoading() {
+        mCenterLayout.removeAll();
+        mCenterLayout.add(mLoadingLayout);
+        mCenterLayout.updateUI();
+    }
+
+    @Override
+    public void hideLoading() {
+        mCenterLayout.removeAll();
+        mCenterLayout.add(mFunctionLayout);
+        mCenterLayout.updateUI();
+    }
+
+    @Override
+    public void refreshDevices(@Nullable Device[] devices) {
+        if (devices == null){
+            return;
+        }
+
+        for (Device device : devices){
+            Notify.alert(device.toString());
+        }
+    }
+
+    @Override
+    public void refreshProgressTip(@NotNull String tip) {
+        mProgressTip.setText(tip);
     }
 }
