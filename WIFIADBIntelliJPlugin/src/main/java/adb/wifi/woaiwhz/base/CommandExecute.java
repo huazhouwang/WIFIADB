@@ -29,10 +29,12 @@ public class CommandExecute {
 
             while (!TextUtils.isEmpty(line = successReader.readLine())) {
                 successBuilder.append(line);
+                successBuilder.append("\n");
             }
 
             while (!TextUtils.isEmpty(line = errorReader.readLine())) {
                 errorBuilder.append(line);
+                errorBuilder.append("\n");
             }
 
             if (!TextUtils.isEmpty(line = errorBuilder.toString())) {

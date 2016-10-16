@@ -3,6 +3,8 @@ package adb.wifi.woaiwhz.window;
 import adb.wifi.woaiwhz.base.Config;
 import adb.wifi.woaiwhz.base.Device;
 import adb.wifi.woaiwhz.base.Notify;
+import adb.wifi.woaiwhz.component.DevicesAdapter;
+import adb.wifi.woaiwhz.component.ListView;
 import adb.wifi.woaiwhz.listener.CustomInputVerifier;
 import adb.wifi.woaiwhz.listener.LaunchWebBrowser;
 import adb.wifi.woaiwhz.listener.NumberDocumentFilter;
@@ -22,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
 
 /**
  * Created by huazhou.whz on 2016/10/7.
@@ -43,10 +46,16 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPr
     private JPanel mFunctionLayout;
     private JLabel mProgressTip;
 
+    private final ListView mDevicesList;
+    private final DevicesAdapter mAdapter;
+
     private final RootPresenter mPresenter;
 
     {
         mPresenter = new RootPresenter(this);
+        mDevicesList = new ListView();
+        mAdapter = new DevicesAdapter();
+        mDevicesList.setAdapter(mAdapter);
     }
 
     @Override
@@ -64,6 +73,7 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPr
 
     private void attach2Project(Project project){
         mPresenter.init(project);
+        mPresenter.getAllDevices();
     }
 
     private void init(){
@@ -271,12 +281,16 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPr
     @Override
     public void refreshDevices(@Nullable Device[] devices) {
         if (devices == null){
+            mContentLayout.remove(mDevicesList);
+            mContentLayout.add(mEmptyLayout);
             return;
         }
 
-        for (Device device : devices){
-            Notify.alert(device.toString());
-        }
+        mContentLayout.remove(mEmptyLayout);
+        mContentLayout.add(mDevicesList);
+
+        mAdapter.addAll(Arrays.asList(devices));
+        mAdapter.notifyDataChange();
     }
 
     @Override
