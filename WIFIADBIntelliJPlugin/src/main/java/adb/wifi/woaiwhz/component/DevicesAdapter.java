@@ -7,6 +7,7 @@ import adb.wifi.woaiwhz.component.base.BaseAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,29 +74,32 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder> {
         }
     }
 
-    static abstract class BaseViewHolder<T extends Device> extends BaseAdapter.ViewHolder{
+    public static abstract class BaseViewHolder<T extends Device> extends BaseAdapter.ViewHolder{
         protected abstract void onBind(@NotNull T device);
     }
 
-    private static class RemoteDeviceHolder extends BaseViewHolder<RemoteDevice>{
-        private final JLabel mDeviceIdLabel;
+    public static class RemoteDeviceHolder extends BaseViewHolder<RemoteDevice>{
+
+        private JPanel mItemRoot;
+        private JLabel mDeviceIdLabel;
 
         private RemoteDeviceHolder(){
-            mDeviceIdLabel = new JLabel();
+
         }
 
         @Override
         protected void onBind(@NotNull RemoteDevice device) {
+            mItemRoot.setBorder(new TitledBorder(device.id));
             mDeviceIdLabel.setText("Remote = " + device.id);
         }
 
         @Override
         protected Component getItem() {
-            return mDeviceIdLabel;
+            return mItemRoot;
         }
     }
 
-    private static class LocalDeviceHolder extends BaseViewHolder<LocalDevice>{
+    public static class LocalDeviceHolder extends BaseViewHolder<LocalDevice>{
         private final JLabel mDeviceIdLabel;
 
         private LocalDeviceHolder(){

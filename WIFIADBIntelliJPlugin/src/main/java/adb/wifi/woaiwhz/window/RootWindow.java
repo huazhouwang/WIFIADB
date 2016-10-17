@@ -29,7 +29,7 @@ import java.util.Arrays;
 /**
  * Created by huazhou.whz on 2016/10/7.
  */
-public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPresenter.RootView{
+public class RootWindow implements ToolWindowFactory,ActionListener,RootPresenter.RootView{
     private JPanel mRoot;
     private JTextField mIP_1;
     private JTextField mIP_2;
@@ -293,7 +293,7 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPr
 
     @Override
     public void refreshDevices(@Nullable Device[] devices) {
-        if (devices == null){
+        if (devices == null || devices.length == 0){
             mContentLayout.removeAll();
             mContentLayout.add(mEmptyLayout);
             return;

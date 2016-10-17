@@ -31,7 +31,7 @@
                 id="WiFi Adb Plugin"
                 icon="/icons/icon.png"
                 anchor="right"
-                factoryClass="adb.wifi.woaiwhz.window.RootWindowHolder"
+                factoryClass="adb.wifi.woaiwhz.window.RootWindow"
                 />
     </extensions>
 
