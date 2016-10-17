@@ -3,13 +3,20 @@ package adb.wifi.woaiwhz.parser;
 import adb.wifi.woaiwhz.base.Config;
 import adb.wifi.woaiwhz.base.Notify;
 import adb.wifi.woaiwhz.base.Utils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by huazhou.whz on 2016/10/15.
  */
-public class ConnectDevice implements ICommand<String,Boolean> {
+public class ConnectDeviceCommand implements ICommand<String,Boolean> {
     private static final String CANNOT = "cannot";
     private static final String UNABLE = "unable";
+
+    private final String mDeviceId;
+
+    public ConnectDeviceCommand(@NotNull String deviceId){
+        mDeviceId = deviceId;
+    }
 
     @Override
     public Boolean parse(String s) {
@@ -36,7 +43,7 @@ public class ConnectDevice implements ICommand<String,Boolean> {
     }
 
     @Override
-    public String getCommand() {
-        return CONNECT_DEVICE;
+    public String getCommand(@NotNull String adbPath) {
+        return Utils.concat(adbPath,Config.SPACE,CONNECT_DEVICE,Config.SPACE,mDeviceId);
     }
 }

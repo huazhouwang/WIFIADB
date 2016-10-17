@@ -1,20 +1,22 @@
 package adb.wifi.woaiwhz.parser;
 
 import adb.wifi.woaiwhz.base.Config;
-import adb.wifi.woaiwhz.base.Device;
 import adb.wifi.woaiwhz.base.Notify;
 import adb.wifi.woaiwhz.base.Utils;
+import adb.wifi.woaiwhz.base.device.Device;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by huazhou.whz on 2016/10/15.
  */
 public class AllDevicesCommand implements ICommand<String,Device[]> {
+    private static String IP_PATTERN = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}:\\d{1,5}";
     private static String USELESS = "List of devices attached";
-    private static String INDEX_OF_STATE = "device";
+    private static String CONNECTED_STATE = "device";
     private static String INDEX_OF_PRODUCT = "product:";
     private static String INDEX_OF_MODEL = "model:";
     private static String INDEX_OF_DEVICE = "device:";
@@ -35,12 +37,20 @@ public class AllDevicesCommand implements ICommand<String,Device[]> {
                 final String[] items = line.split(Config.ANY_SPACES);
 
                 final String id = getItem(items,0);
-                final boolean state = getItem(items,1).equals(INDEX_OF_STATE);
-                final String product = getValue(getItem(items,2),INDEX_OF_PRODUCT);
-                final String model = getValue(getItem(items,3),INDEX_OF_MODEL);
-                final String device = getValue(getItem(items,4),INDEX_OF_DEVICE);
 
-                list.add(new Device(id,state,product,model,device));
+                final Device.Builder builder = verifyDeviceType(id);
+
+                if(builder == null){
+                    continue;
+                }
+
+                final Device device = builder.state(getItem(items,1).equals(CONNECTED_STATE))
+                        .product(getValue(getItem(items,2),INDEX_OF_PRODUCT))
+                        .model(getValue(getItem(items,3),INDEX_OF_MODEL))
+                        .device(getValue(getItem(items,4),INDEX_OF_DEVICE))
+                        .build();
+
+                list.add(device);
             }
 
             final Device[] devices = new Device[list.size()];
@@ -53,16 +63,16 @@ public class AllDevicesCommand implements ICommand<String,Device[]> {
         }
     }
 
+    private Device.Builder verifyDeviceType(String deviceId){
+        if (Utils.isBlank(deviceId)){
+            return null;
+        }
+
+        return new Device.Builder(Pattern.matches(IP_PATTERN,deviceId))
+                .id(deviceId);
+    }
+
     private String[] removeUseless(@NotNull String[] originalLines){
-//        if(originalLines.length > 0) {
-//            if (originalLines[0].contains(USELESS)) {
-//                final String[] lines = new String[originalLines.length - 1];
-//                System.arraycopy(originalLines, 1, lines, 0, lines.length);
-//                return lines;
-//            }
-//        }else {
-//            return originalLines;
-//        }
         final List<String> list = new ArrayList<String>();
 
         for (String line : originalLines){
@@ -96,8 +106,8 @@ public class AllDevicesCommand implements ICommand<String,Device[]> {
     }
 
     @Override
-    public String getCommand() {
-        return FIND_ALL_DEVICES;
+    public String getCommand(@NotNull String adbPath) {
+        return Utils.concat(adbPath, Config.SPACE, FIND_ALL_DEVICES);
     }
 
     private String getValue(@NotNull String line,@NotNull String key){
