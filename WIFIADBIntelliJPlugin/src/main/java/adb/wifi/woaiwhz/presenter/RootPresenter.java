@@ -1,11 +1,12 @@
 package adb.wifi.woaiwhz.presenter;
 
 import adb.wifi.woaiwhz.base.*;
+import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.dispatch.Executor;
 import adb.wifi.woaiwhz.dispatch.Handler;
 import adb.wifi.woaiwhz.dispatch.Message;
 import adb.wifi.woaiwhz.parser.AllDevicesCommand;
-import adb.wifi.woaiwhz.parser.ConnectDevice;
+import adb.wifi.woaiwhz.parser.ConnectDeviceCommand;
 import adb.wifi.woaiwhz.parser.ICommand;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -55,9 +56,8 @@ public class RootPresenter {
             public void run() {
                 mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connect to " + deviceId);
 
-                final ICommand<String,Boolean> command = new ConnectDevice();
-                final String commandString = Utils.concat(mAdbPath,Config.SPACE,command.getCommand(),Config.SPACE,deviceId);
-                final String result = CommandExecute.execute(commandString);
+                final ICommand<String,Boolean> command = new ConnectDeviceCommand(deviceId);
+                final String result = CommandExecute.execute(command.getCommand(mAdbPath));
                 final boolean connected = command.parse(result);
 
                 final Device device = new Device(deviceId,connected,null,null,null);
@@ -88,10 +88,9 @@ public class RootPresenter {
     private void realGetAllDevices(){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Refresh devices list");
 
-        final ICommand<String,Device[]> parser = new AllDevicesCommand();
-        final String command = Utils.concat(mAdbPath, Config.SPACE,parser.getCommand());
-        final String result = CommandExecute.execute(command);
-        final Device[] devices = parser.parse(result);
+        final ICommand<String,Device[]> command = new AllDevicesCommand();
+        final String result = CommandExecute.execute(command.getCommand(mAdbPath));
+        final Device[] devices = command.parse(result);
 
         final Message message = new Message(CustomHandler.GET_ALL_DEVICES,devices);
         mHandler.sendMessage(message);

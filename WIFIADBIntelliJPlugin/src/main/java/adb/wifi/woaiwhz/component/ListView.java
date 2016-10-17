@@ -18,6 +18,6 @@ public class ListView extends JPanel {
     public void setAdapter(BaseAdapter adapter){
         mAdapter = adapter;
         mAdapter.attach(this);
-        mAdapter.notifyDataChange();
+        mAdapter.notifyDataSetChange();
     }
 }

@@ -1,81 +1,111 @@
 package adb.wifi.woaiwhz.component.base;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
+import java.util.Queue;
 
 /**
- * Created by huazhou.whz on 2016/10/15.
+ * Created by huazhou.whz on 2016/10/17.
  */
-public abstract class BaseAdapter {
+public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
     private JPanel mContainer;
-    private final Set<Component> mComponentPool;
+    private final Map<Integer,Queue<T>> mComponentPool;
 
     {
-        mComponentPool = new HashSet<Component>();
+        mComponentPool = new HashMap<Integer, Queue<T>>();
     }
 
     public void attach(@NotNull JPanel container){
         if (mContainer != null){
             mContainer.removeAll();
             mContainer.updateUI();
-            mComponentPool.clear();
         }
 
         mContainer = container;
+        mComponentPool.clear();
     }
 
-    public void notifyDataChange(){
-        if(mContainer == null){
+    public void notifyDataSetChange() {
+        if (mContainer == null) {
             return;
         }
 
-        final Component[] convertItems = mContainer.getComponents();
-        mComponentPool.addAll(Arrays.asList(convertItems));
         mContainer.removeAll();
 
-        final int count = getCount();
+        final int count = getItemCount();
 
-        if(count <= 0){
+        if (count <= 0) {
             mContainer.updateUI();
             return;
         }
 
-        final Iterator<Component> iterator = mComponentPool.iterator();
-        final List<Component> newItems = new ArrayList<Component>();
+        final Map<Integer, Queue<T>> tmpMap = new HashMap<Integer, Queue<T>>();
 
-        for(int i = 0;i < count;++i){
-            final Component component;
+        for (int i = 0; i < count; ++i) {
+            final int viewType = getItemViewType(i);
+            Queue<T> queue = mComponentPool.get(viewType);
 
-            if(iterator.hasNext()) {
-                final Component convertItem = iterator.next();
-                component = getView(i, convertItem);
-
-                if (component == null) {
-                    throw new NullPointerException();
-                }
-            }else {
-                component = getView(i,null);
-
-                if (component == null) {
-                    throw new NullPointerException();
-                }else {
-                    newItems.add(component);
-                }
+            if (queue == null) {
+                queue = new ArrayDeque<T>();
+                mComponentPool.put(viewType, queue);
             }
 
-            mContainer.add(component,i);
+            Queue<T> tmpQueue = tmpMap.get(viewType);
+
+            if (tmpQueue == null) {
+                tmpQueue = new ArrayDeque<T>();
+                tmpMap.put(viewType, tmpQueue);
+            }
+
+            T viewHolder = queue.poll();
+
+            if (viewHolder == null) {
+                viewHolder = onCreateViewHolder(viewType);
+            }
+
+            if (viewHolder == null) {
+                throw new NullPointerException();
+            }
+
+            tmpQueue.offer(viewHolder);
+            onBindViewHolder(viewHolder, i);
+
+            final Component component = viewHolder.getItem();
+
+            if(component == null){
+                throw new NullPointerException();
+            }
+
+            mContainer.add(component);
         }
 
-        mComponentPool.addAll(newItems);
+        final Set<Integer> tmpKeys = tmpMap.keySet();
+        for (final Integer key : tmpKeys){
+            final Queue<T> queue = mComponentPool.get(key);
+            final Queue<T> tmpQueue = tmpMap.get(key);
+
+            if(queue == null || tmpQueue == null){
+                throw new IllegalStateException();
+            }
+
+            queue.addAll(tmpQueue);
+        }
+
         mContainer.updateUI();
     }
 
-    protected abstract int getCount();
+    protected abstract int getItemCount();
 
-    protected abstract Component getView(int position, @Nullable Component convertItem);
+    protected abstract int getItemViewType(int position);
+
+    protected abstract T onCreateViewHolder(int viewType);
+
+    protected abstract void onBindViewHolder(T holder,int position);
+
+    public static abstract class ViewHolder{
+        protected abstract Component getItem();
+    }
 }

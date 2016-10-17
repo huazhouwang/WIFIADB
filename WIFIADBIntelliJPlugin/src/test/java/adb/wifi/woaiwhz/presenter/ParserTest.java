@@ -1,6 +1,6 @@
 package adb.wifi.woaiwhz.presenter;
 
-import adb.wifi.woaiwhz.base.Device;
+import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.parser.AllDevicesCommand;
 import adb.wifi.woaiwhz.parser.ICommand;
 import org.junit.Test;
