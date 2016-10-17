@@ -27,82 +27,6 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="74cd4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
-                <constraints border-constraint="North"/>
-                <properties/>
-                <border type="none" title="Enter a new port address"/>
-                <children>
-                  <component id="8620f" class="javax.swing.JTextField" binding="mIP_1">
-                    <constraints/>
-                    <properties>
-                      <columns value="2"/>
-                      <horizontalAlignment value="0"/>
-                      <text value=""/>
-                    </properties>
-                  </component>
-                  <component id="74439" class="javax.swing.JLabel">
-                    <constraints/>
-                    <properties>
-                      <horizontalTextPosition value="11"/>
-                      <text value="."/>
-                    </properties>
-                  </component>
-                  <component id="b9085" class="javax.swing.JTextField" binding="mIP_2">
-                    <constraints/>
-                    <properties>
-                      <columns value="2"/>
-                      <horizontalAlignment value="0"/>
-                      <text value=""/>
-                    </properties>
-                  </component>
-                  <component id="9b70a" class="javax.swing.JLabel">
-                    <constraints/>
-                    <properties>
-                      <text value="."/>
-                    </properties>
-                  </component>
-                  <component id="a0b06" class="javax.swing.JTextField" binding="mIP_3">
-                    <constraints/>
-                    <properties>
-                      <columns value="2"/>
-                      <horizontalAlignment value="0"/>
-                    </properties>
-                  </component>
-                  <component id="2ea88" class="javax.swing.JLabel">
-                    <constraints/>
-                    <properties>
-                      <text value="."/>
-                    </properties>
-                  </component>
-                  <component id="97a48" class="javax.swing.JTextField" binding="mIP_4">
-                    <constraints/>
-                    <properties>
-                      <columns value="2"/>
-                      <horizontalAlignment value="0"/>
-                    </properties>
-                  </component>
-                  <component id="d8923" class="javax.swing.JLabel">
-                    <constraints/>
-                    <properties>
-                      <text value=":"/>
-                    </properties>
-                  </component>
-                  <component id="1d171" class="javax.swing.JTextField" binding="mPort">
-                    <constraints/>
-                    <properties>
-                      <columns value="4"/>
-                      <horizontalAlignment value="0"/>
-                      <text value="5555"/>
-                    </properties>
-                  </component>
-                  <component id="d7e60" class="javax.swing.JButton" binding="mConnectButton">
-                    <constraints/>
-                    <properties>
-                      <text value="Connect"/>
-                    </properties>
-                  </component>
-                </children>
-              </grid>
               <grid id="1e803" binding="mContentLayout" layout-manager="CardLayout" hgap="0" vgap="0">
                 <constraints border-constraint="Center"/>
                 <properties/>
@@ -127,8 +51,108 @@
                       </component>
                     </children>
                   </grid>
+                  <scrollpane id="fca" binding="mScrollPane">
+                    <constraints>
+                      <card name="Card2"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <grid id="e7df4" binding="mActivePane" layout-manager="CardLayout" hgap="0" vgap="0">
+                        <constraints/>
+                        <properties/>
+                        <border type="none"/>
+                        <children/>
+                      </grid>
+                    </children>
+                  </scrollpane>
                 </children>
               </grid>
+              <scrollpane id="c1114">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <verticalScrollBarPolicy value="20"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <grid id="74cd4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                    <constraints/>
+                    <properties/>
+                    <border type="none" title="Enter a new port address"/>
+                    <children>
+                      <component id="8620f" class="javax.swing.JTextField" binding="mIP_1">
+                        <constraints/>
+                        <properties>
+                          <columns value="3"/>
+                          <horizontalAlignment value="0"/>
+                          <text value=""/>
+                        </properties>
+                      </component>
+                      <component id="74439" class="javax.swing.JLabel">
+                        <constraints/>
+                        <properties>
+                          <horizontalTextPosition value="11"/>
+                          <text value="."/>
+                        </properties>
+                      </component>
+                      <component id="b9085" class="javax.swing.JTextField" binding="mIP_2">
+                        <constraints/>
+                        <properties>
+                          <columns value="3"/>
+                          <horizontalAlignment value="0"/>
+                          <text value=""/>
+                        </properties>
+                      </component>
+                      <component id="9b70a" class="javax.swing.JLabel">
+                        <constraints/>
+                        <properties>
+                          <text value="."/>
+                        </properties>
+                      </component>
+                      <component id="a0b06" class="javax.swing.JTextField" binding="mIP_3">
+                        <constraints/>
+                        <properties>
+                          <columns value="3"/>
+                          <horizontalAlignment value="0"/>
+                        </properties>
+                      </component>
+                      <component id="2ea88" class="javax.swing.JLabel">
+                        <constraints/>
+                        <properties>
+                          <text value="."/>
+                        </properties>
+                      </component>
+                      <component id="97a48" class="javax.swing.JTextField" binding="mIP_4">
+                        <constraints/>
+                        <properties>
+                          <columns value="3"/>
+                          <horizontalAlignment value="0"/>
+                        </properties>
+                      </component>
+                      <component id="d8923" class="javax.swing.JLabel">
+                        <constraints/>
+                        <properties>
+                          <text value=":"/>
+                        </properties>
+                      </component>
+                      <component id="1d171" class="javax.swing.JTextField" binding="mPort">
+                        <constraints/>
+                        <properties>
+                          <columns value="5"/>
+                          <horizontalAlignment value="0"/>
+                          <text value="5555"/>
+                        </properties>
+                      </component>
+                      <component id="d7e60" class="javax.swing.JButton" binding="mConnectButton">
+                        <constraints/>
+                        <properties>
+                          <text value="Connect"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="5d555" binding="mLoadingLayout" layout-manager="GridBagLayout">

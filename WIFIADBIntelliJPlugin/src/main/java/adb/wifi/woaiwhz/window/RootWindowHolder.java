@@ -1,7 +1,7 @@
 package adb.wifi.woaiwhz.window;
 
 import adb.wifi.woaiwhz.base.Config;
-import adb.wifi.woaiwhz.base.Device;
+import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.base.Notify;
 import adb.wifi.woaiwhz.component.DevicesAdapter;
 import adb.wifi.woaiwhz.component.ListView;
@@ -45,24 +45,27 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPr
     private JPanel mCenterLayout;
     private JPanel mFunctionLayout;
     private JLabel mProgressTip;
+    private JScrollPane mScrollPane;
+    private JPanel mActivePane;
 
-    private final ListView mDevicesList;
     private final DevicesAdapter mAdapter;
 
     private final RootPresenter mPresenter;
 
     {
         mPresenter = new RootPresenter(this);
-        mDevicesList = new ListView();
+
+        final ListView devicesList = new ListView();
+        mActivePane.add(devicesList);
         mAdapter = new DevicesAdapter();
-        mDevicesList.setAdapter(mAdapter);
+        devicesList.setAdapter(mAdapter);
     }
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         attach2ToolWindow(toolWindow);
-        attach2Project(project);
         init();
+        attach2Project(project);
     }
 
     private void attach2ToolWindow(ToolWindow toolWindow){
@@ -256,12 +259,22 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPr
 
     @Override
     public void onADBEmpty() {
+        Notify.error("Cannot find adb");
 
+        for (Component component : mIPTexts){
+            component.setEnabled(false);
+        }
+
+        mPort.setEnabled(false);
     }
 
     @Override
     public void onADBComplete(String path) {
+        for (Component component : mIPTexts){
+            component.setEnabled(true);
+        }
 
+        mPort.setEnabled(true);
     }
 
     @Override
@@ -281,16 +294,16 @@ public class RootWindowHolder implements ToolWindowFactory,ActionListener,RootPr
     @Override
     public void refreshDevices(@Nullable Device[] devices) {
         if (devices == null){
-            mContentLayout.remove(mDevicesList);
+            mContentLayout.removeAll();
             mContentLayout.add(mEmptyLayout);
             return;
         }
 
-        mContentLayout.remove(mEmptyLayout);
-        mContentLayout.add(mDevicesList);
+        mContentLayout.removeAll();
+        mContentLayout.add(mScrollPane);
 
         mAdapter.addAll(Arrays.asList(devices));
-        mAdapter.notifyDataChange();
+        mAdapter.notifyDataSetChange();
     }
 
     @Override
