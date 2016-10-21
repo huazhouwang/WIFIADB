@@ -60,7 +60,7 @@ public class RootPresenter {
     }
 
     private void addDeviceInCurrentThread(final String deviceId){
-        mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connect to " + deviceId);
+        mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connecting " + deviceId);
 
         final ICommand<String,String> command = new ConnectDevice(deviceId);
         final String result = CommandExecute.execute(command.getCommand(mAdbPath));
@@ -88,7 +88,7 @@ public class RootPresenter {
         lock();
 
         runOnPooledThread(() ->{
-            mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Disconnect to " + deviceId);
+            mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Disconnecting " + deviceId);
 
             final ICommand<String,String> command = new DisconnectRemoteDevice(deviceId);
             final String result = CommandExecute.execute(command.getCommand(mAdbPath));
@@ -124,7 +124,7 @@ public class RootPresenter {
             final ICommand<?,?> alertAdbPort = new AlertAdbPort(deviceId);
             CommandExecute.execute(alertAdbPort.getCommand(mAdbPath));
 
-            Notify.alert(Utils.concat("Maybe you can disconnect target device[",deviceId,"] over usb now"));
+            Notify.alert(Utils.concat("Maybe you can disconnect target device [",deviceId,"] over usb now"));
 
             addDeviceInCurrentThread(Utils.concat(ip,":",Config.DEFAULT_PORT));
 
@@ -176,8 +176,7 @@ public class RootPresenter {
 
     private class CustomHandler extends Handler {
         private static final int GET_ALL_DEVICES = 1;
-        private static final int CONNECT_DEVICE = 1 << 1;
-        private static final int CHANGE_PROGRESS_TIP = 1 << 2;
+        private static final int CHANGE_PROGRESS_TIP = 1 << 1;
 
         @Override
         protected void handleMessage(@NotNull Message msg) {
@@ -187,10 +186,6 @@ public class RootPresenter {
                 case GET_ALL_DEVICES:
                     handleAllDevicesAction(msg);
                     unlock();
-                    break;
-
-                case CONNECT_DEVICE:
-                    handleConnectDeviceAction(msg);
                     break;
 
                 case CHANGE_PROGRESS_TIP:
@@ -209,20 +204,6 @@ public class RootPresenter {
                 mViewLayer.refreshProgressTip(Config.DEFAULT_PROGRESS_TIP);
             }else {
                 mViewLayer.refreshProgressTip(newTip);
-            }
-        }
-
-        private void handleConnectDeviceAction(@NotNull Message msg){
-            final Device device = msg.get();
-
-            if(device == null){
-                return;
-            }
-
-            if(device.state){
-                Notify.alert(Utils.concat("connect to",Config.SPACE,device.id));
-            }else {
-                Notify.alert(Utils.concat("cannot connect to",Config.SPACE,device.id));
             }
         }
 

@@ -28,9 +28,18 @@ public class ConnectDevice implements ICommand<String,String> {
             final String[] lines = Utils.removeDaemon(s.split(Config.ENTER));
 
             if (lines.length > 0){
-                return lines[0];
-            }
+                final String line = lines[0];
 
+                if (Utils.isBlank(line)){
+                    return null;
+                }
+
+                if (line.contains(CANNOT) || line.contains(UNABLE)){
+                    return Utils.concat("Cannot connect to ",mDeviceId);
+                }else if (line.contains(Utils.concat("connected to ",mDeviceId))){
+                    return Utils.concat("Connected to ",mDeviceId);
+                }
+            }
         }catch (Exception e){
             final String track = e.getMessage();
             Notify.error(track);

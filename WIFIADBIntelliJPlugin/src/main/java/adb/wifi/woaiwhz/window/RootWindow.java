@@ -92,9 +92,11 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
     private void initPortText(){
         final NumberDocumentFilter documentFilter = new NumberDocumentFilter(5);
         final InputVerifier verifier = new CustomInputVerifier(1 << 16,5555);
+        final FocusListener focusListener = new SelectAllListener();
 
         documentFilter.bind(mPort);
         mPort.setInputVerifier(verifier);
+        mPort.addFocusListener(focusListener);
 
         mPort.setText(Config.DEFAULT_PORT);
     }
@@ -107,9 +109,11 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         for (JTextField item : mIPTexts){
             final NumberDocumentFilter documentFilter = new NumberDocumentFilter(3);
             final InputVerifier verifier = new CustomInputVerifier(1 << 8);
+            final FocusListener focusListener = new SelectAllListener();
 
             documentFilter.bind(item);
             item.setInputVerifier(verifier);
+            item.addFocusListener(focusListener);
         }
     }
 
