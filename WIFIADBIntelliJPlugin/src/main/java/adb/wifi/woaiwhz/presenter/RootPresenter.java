@@ -1,13 +1,14 @@
 package adb.wifi.woaiwhz.presenter;
 
-import adb.wifi.woaiwhz.base.*;
+import adb.wifi.woaiwhz.base.CommandExecute;
+import adb.wifi.woaiwhz.base.Config;
+import adb.wifi.woaiwhz.base.Notify;
+import adb.wifi.woaiwhz.base.Utils;
 import adb.wifi.woaiwhz.base.device.Device;
+import adb.wifi.woaiwhz.command.*;
 import adb.wifi.woaiwhz.dispatch.Executor;
 import adb.wifi.woaiwhz.dispatch.Handler;
 import adb.wifi.woaiwhz.dispatch.Message;
-import adb.wifi.woaiwhz.parser.AllDevicesCommand;
-import adb.wifi.woaiwhz.parser.ConnectDeviceCommand;
-import adb.wifi.woaiwhz.parser.ICommand;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,25 +52,22 @@ public class RootPresenter {
 
         lock();
 
-        runOnPooledThread(new Runnable() {
-            @Override
-            public void run() {
-                mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connect to " + deviceId);
+        runOnPooledThread(() ->{
+            addDeviceInCurrentThread(deviceId);
 
-                final ICommand<String,Boolean> command = new ConnectDeviceCommand(deviceId);
-                final String result = CommandExecute.execute(command.getCommand(mAdbPath));
-                final boolean connected = command.parse(result);
-
-                final Device device = new Device(deviceId,connected,null,null,null);
-
-                final Message message = new Message(CustomHandler.CONNECT_DEVICE,device);
-                mHandler.sendMessage(message);
-
-                realGetAllDevices();
-            }
+            getDevicesInCurrentThread();
         });
     }
 
+    private void addDeviceInCurrentThread(final String deviceId){
+        mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connect to " + deviceId);
+
+        final ICommand<String,String> command = new ConnectDevice(deviceId);
+        final String result = CommandExecute.execute(command.getCommand(mAdbPath));
+        final String message = command.parse(result);
+        Notify.alert(message);
+    }
+    
     public void getAllDevices(){
         if(isAdbEmpty() && !isRunning()){
             return;
@@ -77,18 +75,68 @@ public class RootPresenter {
 
         lock();
 
-        runOnPooledThread(new Runnable() {
-            @Override
-            public void run() {
-                realGetAllDevices();
-            }
+        runOnPooledThread(this::getDevicesInCurrentThread);
+    }
+
+    public void disconnectRemoteDevice(final String deviceId){
+        if (!Utils.isRemoteDevice(deviceId)){
+            Notify.error();
+            getAllDevices();
+            return;
+        }
+
+        lock();
+
+        runOnPooledThread(() ->{
+            mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Disconnect to " + deviceId);
+
+            final ICommand<String,String> command = new DisconnectRemoteDevice(deviceId);
+            final String result = CommandExecute.execute(command.getCommand(mAdbPath));
+            final String message = command.parse(result);
+            Notify.alert(message);
+
+            getDevicesInCurrentThread();
         });
     }
 
-    private void realGetAllDevices(){
+    public void connectLocalDevice(final String deviceId){
+        if (Utils.isBlank(deviceId)){
+            Notify.error();
+            getAllDevices();
+
+            return;
+        }
+
+        lock();
+
+        runOnPooledThread(() -> {
+            mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Get ip address from " + deviceId);
+
+            final ICommand<String,String> getIpCommand = new GainDeviceIP(deviceId);
+            final String ipTmpResult = CommandExecute.execute(getIpCommand.getCommand(mAdbPath));
+            final String ip = getIpCommand.parse(ipTmpResult);
+
+            if (Utils.isBlank(ip)){
+                Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't connected to correct wifi"));
+                return;
+            }
+
+            final ICommand<?,?> alertAdbPort = new AlertAdbPort(deviceId);
+            CommandExecute.execute(alertAdbPort.getCommand(mAdbPath));
+
+            Notify.alert(Utils.concat("Maybe you can disconnect target device[",deviceId,"] over usb now"));
+
+            addDeviceInCurrentThread(Utils.concat(ip,":",Config.DEFAULT_PORT));
+
+            mockWait();
+            getDevicesInCurrentThread();
+        });
+    }
+
+    private void getDevicesInCurrentThread(){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Refresh devices list");
 
-        final ICommand<String,Device[]> command = new AllDevicesCommand();
+        final ICommand<String,Device[]> command = new AllDevices();
         final String result = CommandExecute.execute(command.getCommand(mAdbPath));
         final Device[] devices = command.parse(result);
 

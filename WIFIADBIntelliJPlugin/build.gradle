@@ -15,7 +15,7 @@ apply plugin: 'java'
 group 'adb.wifi.woaiwhz'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()

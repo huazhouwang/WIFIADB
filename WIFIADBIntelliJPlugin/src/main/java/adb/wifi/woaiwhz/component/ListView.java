@@ -1,7 +1,7 @@
 package adb.wifi.woaiwhz.component;
 
 import adb.wifi.woaiwhz.component.base.BaseAdapter;
-import com.intellij.ui.components.panels.VerticalLayout;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 
@@ -12,7 +12,7 @@ public class ListView extends JPanel {
     private BaseAdapter mAdapter;
 
     public ListView() {
-        super(new VerticalLayout(10));
+        super(new VerticalLayout(5));
     }
 
     public void setAdapter(BaseAdapter adapter){

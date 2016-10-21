@@ -1,4 +1,4 @@
-package adb.wifi.woaiwhz.parser;
+package adb.wifi.woaiwhz.command;
 
 import adb.wifi.woaiwhz.base.Config;
 import adb.wifi.woaiwhz.base.Notify;
@@ -8,13 +8,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by huazhou.whz on 2016/10/15.
  */
-public class AllDevicesCommand implements ICommand<String,Device[]> {
-    private static String IP_PATTERN = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}:\\d{1,5}";
+public class AllDevices implements ICommand<String,Device[]> {
     private static String USELESS = "List of devices attached";
     private static String CONNECTED_STATE = "device";
     private static String INDEX_OF_PRODUCT = "product:";
@@ -31,10 +29,16 @@ public class AllDevicesCommand implements ICommand<String,Device[]> {
             final String[] originalLines = Utils.removeDaemon(s.split(Config.ENTER));
             final String[] lines = removeUseless(originalLines);
 
-            final List<Device> list = new ArrayList<Device>();
+            final List<Device> list = new ArrayList<>();
 
             for (final String line : lines){
                 final String[] items = line.split(Config.ANY_SPACES);
+
+                final boolean state = getItem(items,1).equals(CONNECTED_STATE);
+
+                if(!state){
+                    continue;
+                }
 
                 final String id = getItem(items,0);
 
@@ -44,7 +48,7 @@ public class AllDevicesCommand implements ICommand<String,Device[]> {
                     continue;
                 }
 
-                final Device device = builder.state(getItem(items,1).equals(CONNECTED_STATE))
+                final Device device = builder.state(true)
                         .product(getValue(getItem(items,2),INDEX_OF_PRODUCT))
                         .model(getValue(getItem(items,3),INDEX_OF_MODEL))
                         .device(getValue(getItem(items,4),INDEX_OF_DEVICE))
@@ -68,7 +72,7 @@ public class AllDevicesCommand implements ICommand<String,Device[]> {
             return null;
         }
 
-        return new Device.Builder(Pattern.matches(IP_PATTERN,deviceId))
+        return new Device.Builder(Utils.isRemoteDevice(deviceId))
                 .id(deviceId);
     }
 

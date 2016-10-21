@@ -1,13 +1,13 @@
 package adb.wifi.woaiwhz.window;
 
 import adb.wifi.woaiwhz.base.Config;
-import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.base.Notify;
+import adb.wifi.woaiwhz.base.Utils;
+import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.component.DevicesAdapter;
 import adb.wifi.woaiwhz.component.ListView;
-import adb.wifi.woaiwhz.listener.CustomInputVerifier;
-import adb.wifi.woaiwhz.listener.LaunchWebBrowser;
-import adb.wifi.woaiwhz.listener.NumberDocumentFilter;
+import adb.wifi.woaiwhz.listener.*;
+import adb.wifi.woaiwhz.listener.MouseAdapter;
 import adb.wifi.woaiwhz.presenter.RootPresenter;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -20,11 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Arrays;
+import java.awt.event.*;
 
 /**
  * Created by huazhou.whz on 2016/10/7.
@@ -47,6 +43,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
     private JLabel mProgressTip;
     private JScrollPane mScrollPane;
     private JPanel mActivePane;
+    private JLabel mRefreshLabel;
 
     private final DevicesAdapter mAdapter;
 
@@ -57,14 +54,14 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
 
         final ListView devicesList = new ListView();
         mActivePane.add(devicesList);
-        mAdapter = new DevicesAdapter();
+        mAdapter = new DevicesAdapter(mPresenter);
         devicesList.setAdapter(mAdapter);
     }
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        attach2ToolWindow(toolWindow);
         init();
+        attach2ToolWindow(toolWindow);
         attach2Project(project);
     }
 
@@ -88,7 +85,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
     }
 
     private void initConnectButton(){
-        mConnectButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        mConnectButton.setCursor(Utils.getHandCursor());
         mConnectButton.addActionListener(this);
     }
 
@@ -99,7 +96,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         documentFilter.bind(mPort);
         mPort.setInputVerifier(verifier);
 
-        mPort.setText(String.valueOf(Config.DEFAULT_PORT));
+        mPort.setText(Config.DEFAULT_PORT);
     }
 
     private void initIpText(){
@@ -168,7 +165,15 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
 
     private void initOthersComponent() {
         mHelpLabel.addMouseListener(new LaunchWebBrowser(Config.HELP));
-        mHelpLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        mHelpLabel.setCursor(Utils.getHandCursor());
+
+        mRefreshLabel.setCursor(Utils.getHandCursor());
+        mRefreshLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mPresenter.getAllDevices();
+            }
+        });
     }
 
     @Override
@@ -232,7 +237,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         for(JTextField field : mIPTexts){
             field.setText("");
         }
-        mPort.setText(String.valueOf(Config.DEFAULT_PORT));
+        mPort.setText(Config.DEFAULT_PORT);
     }
 
     private boolean verifyIpText(){
@@ -302,7 +307,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         mContentLayout.removeAll();
         mContentLayout.add(mScrollPane);
 
-        mAdapter.addAll(Arrays.asList(devices));
+        mAdapter.addAll(devices);
         mAdapter.notifyDataSetChange();
     }
 

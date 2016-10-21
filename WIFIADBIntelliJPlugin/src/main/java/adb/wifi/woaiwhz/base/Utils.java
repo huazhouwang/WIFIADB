@@ -5,14 +5,26 @@ import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.android.sdk.AndroidSdkUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by huazhou.whz on 2016/10/14.
  */
 public class Utils {
+    private static Cursor mHandCursor;
+
+    public static Cursor getHandCursor(){
+        if (mHandCursor == null){
+            mHandCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
+        }
+
+        return mHandCursor;
+    }
+
     public static String concat(String... texts){
         final StringBuilder builder = new StringBuilder();
 
@@ -21,6 +33,10 @@ public class Utils {
         }
 
         return builder.toString();
+    }
+
+    public static boolean isRemoteDevice(String deviceId){
+        return !isBlank(deviceId) && Pattern.matches(Config.IP_PATTERN,deviceId);
     }
 
     public static boolean isBlank(String text){
