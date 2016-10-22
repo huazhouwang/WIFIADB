@@ -41,7 +41,7 @@ android {
         variant.outputs.each { output ->
             output.outputFile = new File(
                     project.getProjectDir().path + "/out",
-                     "WifiAdbAndroid-${variant.buildType.name}-${variant.versionName}.apk".toUpperCase())
+                     "WifiAdbAndroid-${variant.buildType.name}-${variant.versionName}.apk")
         }
     }
 }
