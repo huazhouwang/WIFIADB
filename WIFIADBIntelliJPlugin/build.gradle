@@ -22,13 +22,18 @@ repositories {
 }
 
 dependencies {
-    compile 'junit:junit:4.12'
-    compile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.10.19'
 }
 
 intellij {
     version '14.1.5'
     plugins 'android'
     updateSinceUntilBuild false
-    pluginName 'WifiAdbIntellijPlugin'
+    pluginName 'WIFI_ADB_ULTIMATE'
+}
+
+task buildPluginAndCopy(type:Copy,dependsOn:['buildPlugin']){
+    from('build/distributions')
+    into('out')
 }
