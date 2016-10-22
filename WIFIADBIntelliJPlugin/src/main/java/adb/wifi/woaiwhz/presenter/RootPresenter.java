@@ -117,14 +117,14 @@ public class RootPresenter {
             final String ip = getIpCommand.parse(ipTmpResult);
 
             if (Utils.isBlank(ip)){
-                Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't connected to correct wifi"));
+                Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't connected correct wifi"));
                 return;
             }
 
             final ICommand<?,?> alertAdbPort = new AlertAdbPort(deviceId);
             CommandExecute.execute(alertAdbPort.getCommand(mAdbPath));
 
-            Notify.alert(Utils.concat("Maybe you can disconnect target device [",deviceId,"] over usb now"));
+            Notify.alert(Utils.concat("Now maybe you can disconnect the usb cable of target device [",deviceId,"]"));
 
             addDeviceInCurrentThread(Utils.concat(ip,":",Config.DEFAULT_PORT));
 

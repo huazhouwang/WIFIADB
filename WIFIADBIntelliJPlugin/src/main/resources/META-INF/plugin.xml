@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin version="2">
     <id>adb.wifi.woaiwhz</id>
-    <name>WifiAdbIntellijPlugin</name>
-    <version>0.0.1</version>
+    <name>Wifi Adb Ultimate</name>
+    <version>1.0</version>
     <vendor email="huazhou19@gmail.com" url="https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin">
         HuaZhou Wang - (Sausure)
     </vendor>
 
     <description><![CDATA[
-      Sample plugin.<br>
+      Now you can connect your android devices over wifi really if you also use the android software I provided.
+      <br/>
+      Or connect devices using the USB cable for the first time.
+      <br/>
+      For more information,please visit my github.
     ]]></description>
 
     <change-notes><![CDATA[
-      Release 0.0.1: Initial release.<br>
+      1.0: Initial release.<br>
     ]]>
     </change-notes>
 
-    <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
     <idea-version since-build="131"/>
-
-    <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.intellij.modules.lang</depends>
-    -->
 
     <extensions defaultExtensionNs="com.intellij">
         <defaultProjectTypeProvider type="Android"/>
         <toolWindow
-                id="WiFi Adb Plugin"
+                id="Wifi Adb Ultimate"
                 icon="/icons/icon.png"
                 anchor="right"
                 factoryClass="adb.wifi.woaiwhz.window.RootWindow"
