@@ -46,7 +46,6 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
     private JLabel mRefreshLabel;
 
     private final DevicesAdapter mAdapter;
-
     private final RootPresenter mPresenter;
 
     {
@@ -91,7 +90,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
 
     private void initPortText(){
         final NumberDocumentFilter documentFilter = new NumberDocumentFilter(5);
-        final InputVerifier verifier = new CustomInputVerifier(1 << 16,5555);
+        final InputVerifier verifier = new CustomInputVerifier(1 << 16,Integer.valueOf(Config.DEFAULT_PORT));
         final FocusListener focusListener = new SelectAllListener();
 
         documentFilter.bind(mPort);
@@ -106,10 +105,11 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
                 mIP_1,mIP_2,mIP_3,mIP_4
         };
 
+        final InputVerifier verifier = new CustomInputVerifier(1 << 8);
+        final FocusListener focusListener = new SelectAllListener();
+
         for (JTextField item : mIPTexts){
             final NumberDocumentFilter documentFilter = new NumberDocumentFilter(3);
-            final InputVerifier verifier = new CustomInputVerifier(1 << 8);
-            final FocusListener focusListener = new SelectAllListener();
 
             documentFilter.bind(item);
             item.setInputVerifier(verifier);
@@ -160,7 +160,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
             field.addKeyListener(enterKeyListener);
 
             if(field == mIP_4 || field == mPort){
-                return;
+                continue;
             }
 
             field.addKeyListener(autoFocusNext);
@@ -196,9 +196,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         }
 
         final String deviceId = gainIpAddressWithPortNumber();
-//        Notify.alert("success : " + deviceId);
         mPresenter.addDevice(deviceId);
-//        cleanText();
     }
 
     private String gainIpAddressWithPortNumber(){
@@ -237,6 +235,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         return false;
     }
 
+    @SuppressWarnings("unused")
     private void cleanText(){
         for(JTextField field : mIPTexts){
             field.setText("");
@@ -254,7 +253,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
 
             try{
                 int ip = Integer.valueOf(text);
-                if(ip < 0 && ip >= 1 << 8){
+                if(ip < 0 || ip >= 1 << 8){
                     return false;
                 }
             }catch (Exception e){
@@ -268,13 +267,15 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
 
     @Override
     public void onADBEmpty() {
-        Notify.error("Cannot find adb");
+        Notify.error("Cannot find adb,please check this project's android sdk and restart IDE");
 
         for (Component component : mIPTexts){
             component.setEnabled(false);
         }
 
         mPort.setEnabled(false);
+        mConnectButton.setEnabled(false);
+        mRefreshLabel.setEnabled(false);
     }
 
     @Override
@@ -284,6 +285,8 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         }
 
         mPort.setEnabled(true);
+        mConnectButton.setEnabled(true);
+        mRefreshLabel.setEnabled(true);
     }
 
     @Override

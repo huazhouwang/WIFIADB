@@ -56,7 +56,6 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
         mItems.clear();
 
         if (devices == null || devices.length == 0){
-            notifyDataSetChange();
             return;
         }
 
@@ -91,8 +90,6 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
         }
 
         mItems.add(new Item(REFRESH_ITEM,null));
-
-        notifyDataSetChange();
     }
 
     @Override

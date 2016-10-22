@@ -7,7 +7,7 @@ import adb.wifi.woaiwhz.base.Utils;
 import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.command.*;
 import adb.wifi.woaiwhz.dispatch.Executor;
-import adb.wifi.woaiwhz.dispatch.Handler;
+import adb.wifi.woaiwhz.dispatch.MainThreadHandler;
 import adb.wifi.woaiwhz.dispatch.Message;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RootPresenter {
     private final RootView mViewLayer;
-    private final Handler mHandler;
+    private final MainThreadHandler mHandler;
 
     private Project mProject;
     private String mAdbPath;
@@ -46,7 +46,12 @@ public class RootPresenter {
     }
 
     public void addDevice(final String deviceId){
+        if (!canRun()){
+            return;
+        }
+
         if(Utils.isBlank(deviceId)){
+            Notify.error();
             return;
         }
 
@@ -59,17 +64,26 @@ public class RootPresenter {
         });
     }
 
+    private boolean canRun(){
+        return !(isAdbEmpty() || mRunning);
+    }
+
     private void addDeviceInCurrentThread(final String deviceId){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connecting " + deviceId);
 
         final ICommand<String,String> command = new ConnectDevice(deviceId);
         final String result = CommandExecute.execute(command.getCommand(mAdbPath));
         final String message = command.parse(result);
-        Notify.alert(message);
+
+        if (Utils.isBlank(message)) {
+            Notify.error();
+        }else {
+            Notify.alert(message);
+        }
     }
     
     public void getAllDevices(){
-        if(isAdbEmpty() && !isRunning()){
+        if(!canRun()){
             return;
         }
 
@@ -79,9 +93,12 @@ public class RootPresenter {
     }
 
     public void disconnectRemoteDevice(final String deviceId){
+        if (!canRun()){
+            return;
+        }
+
         if (!Utils.isRemoteDevice(deviceId)){
             Notify.error();
-            getAllDevices();
             return;
         }
 
@@ -93,7 +110,12 @@ public class RootPresenter {
             final ICommand<String,String> command = new DisconnectRemoteDevice(deviceId);
             final String result = CommandExecute.execute(command.getCommand(mAdbPath));
             final String message = command.parse(result);
-            Notify.alert(message);
+
+            if (Utils.isBlank(message)){
+                Notify.error();
+            }else {
+                Notify.alert(message);
+            }
 
             getDevicesInCurrentThread();
         });
@@ -128,7 +150,7 @@ public class RootPresenter {
 
             addDeviceInCurrentThread(Utils.concat(ip,":",Config.DEFAULT_PORT));
 
-            mockWait();
+            mayWait();
             getDevicesInCurrentThread();
         });
     }
@@ -144,7 +166,7 @@ public class RootPresenter {
         mHandler.sendMessage(message);
     }
 
-    private void mockWait(){
+    private void mayWait(){
         try{
             Thread.sleep(2000);
         }catch (Exception e){
@@ -154,10 +176,6 @@ public class RootPresenter {
 
     private void runOnPooledThread(@NotNull Runnable runnable){
         Executor.execute(runnable);
-    }
-
-    private boolean isRunning(){
-        return mRunning;
     }
 
     private void lock(){
@@ -174,7 +192,7 @@ public class RootPresenter {
         }
     }
 
-    private class CustomHandler extends Handler {
+    private class CustomHandler extends MainThreadHandler {
         private static final int GET_ALL_DEVICES = 1;
         private static final int CHANGE_PROGRESS_TIP = 1 << 1;
 

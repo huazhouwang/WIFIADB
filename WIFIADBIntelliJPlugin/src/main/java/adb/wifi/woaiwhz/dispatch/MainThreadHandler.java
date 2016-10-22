@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by huazhou.whz on 2016/10/8.
  */
-public abstract class Handler {
+public abstract class MainThreadHandler {
     protected abstract void handleMessage(@NotNull Message msg);
 
     public void sendEmptyMessage(int what){
@@ -15,12 +15,7 @@ public abstract class Handler {
     }
 
     public void sendMessage(@NotNull final Message msg){
-        post(new Runnable() {
-            @Override
-            public void run() {
-                handleMessage(msg);
-            }
-        });
+        post(() -> handleMessage(msg));
     }
 
     public void sendMessage(int what,Object obj){

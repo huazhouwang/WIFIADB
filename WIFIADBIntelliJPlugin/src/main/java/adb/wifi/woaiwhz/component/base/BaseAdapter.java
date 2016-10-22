@@ -15,7 +15,7 @@ public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
     private final Map<Integer,Queue<T>> mComponentPool;
 
     {
-        mComponentPool = new HashMap<Integer, Queue<T>>();
+        mComponentPool = new HashMap<>();
     }
 
     public void attach(@NotNull JPanel container){
@@ -42,21 +42,21 @@ public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
             return;
         }
 
-        final Map<Integer, Queue<T>> tmpMap = new HashMap<Integer, Queue<T>>();
+        final Map<Integer, Queue<T>> tmpMap = new HashMap<>();
 
         for (int i = 0; i < count; ++i) {
             final int viewType = getItemViewType(i);
             Queue<T> queue = mComponentPool.get(viewType);
 
             if (queue == null) {
-                queue = new ArrayDeque<T>();
+                queue = new ArrayDeque<>();
                 mComponentPool.put(viewType, queue);
             }
 
             Queue<T> tmpQueue = tmpMap.get(viewType);
 
             if (tmpQueue == null) {
-                tmpQueue = new ArrayDeque<T>();
+                tmpQueue = new ArrayDeque<>();
                 tmpMap.put(viewType, tmpQueue);
             }
 

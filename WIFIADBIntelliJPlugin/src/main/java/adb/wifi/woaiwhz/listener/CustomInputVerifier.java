@@ -1,7 +1,7 @@
 package adb.wifi.woaiwhz.listener;
 
 import adb.wifi.woaiwhz.base.Notify;
-import org.apache.http.util.TextUtils;
+import adb.wifi.woaiwhz.base.Utils;
 
 import javax.swing.*;
 
@@ -35,7 +35,7 @@ public class CustomInputVerifier extends InputVerifier {
         final JTextField current = (JTextField) input;
         final String text = current.getText();
 
-        if(TextUtils.isBlank(text)){
+        if(Utils.isBlank(text)){
             if(mDefaultNumber != Integer.MIN_VALUE){
                 current.setText(String.valueOf(mDefaultNumber));
             }
@@ -47,11 +47,12 @@ public class CustomInputVerifier extends InputVerifier {
             if(number >= 0 && number < mMaxNumber){
                 return true;
             }else {
-                Notify.error("Number should >= 0 and &lt " + mMaxNumber);
+                Notify.error(Utils.concat("Number should >= 0 and &lt ",String.valueOf(mMaxNumber),
+                        " ,\nbut now is ",String.valueOf(number)));
                 return false;
             }
         }catch (NumberFormatException e){
-            Notify.error("error input : " + text);
+            Notify.error("Error input : " + text);
             return false;
         }
     }

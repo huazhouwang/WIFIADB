@@ -77,7 +77,7 @@ public class AllDevices implements ICommand<String,Device[]> {
     }
 
     private String[] removeUseless(@NotNull String[] originalLines){
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
 
         for (String line : originalLines){
             if(line.contains(USELESS)){

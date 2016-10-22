@@ -21,7 +21,7 @@ public class LaunchWebBrowser extends MouseAdapter {
         try {
             Desktop.getDesktop().browse(new java.net.URI(mUrl));
         }catch (Exception exception){
-            Notify.error();
+            Notify.error("Cannot launch web browser");
         }
     }
 }

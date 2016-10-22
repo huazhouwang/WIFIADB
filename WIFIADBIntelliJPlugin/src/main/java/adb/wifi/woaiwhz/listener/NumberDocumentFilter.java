@@ -45,13 +45,8 @@ public class NumberDocumentFilter extends PlainDocument implements KeyListener{
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
+    public void keyPressed(KeyEvent e) {}
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-
+    public void keyReleased(KeyEvent e) {}
 }
