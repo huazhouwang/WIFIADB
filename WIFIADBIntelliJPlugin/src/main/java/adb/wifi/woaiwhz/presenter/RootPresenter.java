@@ -139,7 +139,8 @@ public class RootPresenter {
             final String ip = getIpCommand.parse(ipTmpResult);
 
             if (Utils.isBlank(ip)){
-                Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't connected correct wifi"));
+                Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't been connecting correct wifi"));
+                getDevicesInCurrentThread();
                 return;
             }
 
