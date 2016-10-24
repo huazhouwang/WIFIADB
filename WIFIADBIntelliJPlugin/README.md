@@ -8,7 +8,7 @@
 
 ## Features
 1. If you has already installed [this application](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid) I provided,you would no longer need an USB cable.
-You can quickly gain the row of adb tcp number and parse it to this plugin,then press `Connect` button,and now you can run or debug your application over wifi.
+You can quickly gain the row of adb tcp numbers and parse it to this plugin,then press `Connect` button,and now you can run or debug your application over wifi
 `I recommend you to install this application then tell me your suggestions,thanks!`
 2. Or If you don't want to install the application above,your should connect devices to PC over USB cable and press `Refresh` image button,
 then press `Connect` image button which right of the target device,after that you can unplug the USB cable
