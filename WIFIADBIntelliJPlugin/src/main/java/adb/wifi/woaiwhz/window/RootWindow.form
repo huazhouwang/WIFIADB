@@ -33,7 +33,7 @@
                     </properties>
                     <border type="none"/>
                     <children>
-                      <component id="da1a1" class="javax.swing.JLabel">
+                      <component id="da1a1" class="javax.swing.JLabel" binding="mEmptyLabel">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                           <gridbag weightx="0.0" weighty="0.0"/>

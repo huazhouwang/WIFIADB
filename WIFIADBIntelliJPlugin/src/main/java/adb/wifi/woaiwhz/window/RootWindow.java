@@ -44,6 +44,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
     private JScrollPane mScrollPane;
     private JPanel mActivePane;
     private JLabel mRefreshLabel;
+    private JLabel mEmptyLabel;
 
     private final DevicesAdapter mAdapter;
     private final RootPresenter mPresenter;
@@ -267,7 +268,8 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
 
     @Override
     public void onADBEmpty() {
-        Notify.error("Cannot find adb,please check this project's android sdk and restart IDE");
+        final String error = "Cannot find adb,please check this project's android sdk and restart IDE";
+        Notify.error(error);
 
         for (Component component : mIPTexts){
             component.setEnabled(false);
@@ -276,6 +278,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         mPort.setEnabled(false);
         mConnectButton.setEnabled(false);
         mRefreshLabel.setEnabled(false);
+        mEmptyLabel.setText(error);
     }
 
     @Override
@@ -287,6 +290,7 @@ public class RootWindow implements ToolWindowFactory,ActionListener,RootPresente
         mPort.setEnabled(true);
         mConnectButton.setEnabled(true);
         mRefreshLabel.setEnabled(true);
+        mEmptyLabel.setText("There is no active devices");
     }
 
     @Override
