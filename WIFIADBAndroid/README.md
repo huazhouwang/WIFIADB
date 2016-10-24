@@ -2,11 +2,11 @@
 <br>
 <img src="https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/art/ic_launcher.png" width="100px" height="100px">
 <br>
-## There are just a few steps.
-* Turn on the wifi
+## Get start
+* connect wifi
 * Click the middle circle button,and root privileges are required
-* When you are successful, you will see a port address
-* After that,if you has already installed [my intellij plugin](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin),you should just paste the port address to the plugin and manage you devices by it;or you just use a command like "adb connect \<port address\>" to connect your devices from terminal
+* When you are successful, you will see a row of ip address with port number
+* After that,if you has already installed [this intellij plugin](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin),you should just paste this row of number to the plugin and then you can manage you devices on it;or you just enter a command like "adb connect \<port address\>" to connect your devices through your terminal
 
 ## Demo
 ![](https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/art/demonstrate.gif)
