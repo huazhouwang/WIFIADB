@@ -3,9 +3,9 @@
 
 <img src="./art/icon.png" width="200px" height="200px">
 
-There are two projects in the repository.
-The first one is an android project,and the second is an intellij plugin project.
-You can see more information in the respective project,and I hope you can tell me your suggestions.
+There are two projects in the repository.<br/>
+The first one is an android project,and the second is an intellij plugin project.<br/>
+You can see more information in the respective project,and I hope you can [tell](https://github.com/Sausure/WIFIADB/issues) me your suggestions.<br/>
 
 ##License
 
