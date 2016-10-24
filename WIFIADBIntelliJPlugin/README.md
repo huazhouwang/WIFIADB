@@ -6,6 +6,9 @@
 <img src="./art/screenshot1.png" width="200px">
 <img src="./art/screenshot2.png" width="200px">
 
+## Installation
+1. You can visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin/out) to get the latest version
+
 ## Features
 1. If you has already installed [this application](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid) I provided,you would no longer need an USB cable.
 You can quickly gain a row of adb tcp numbers and parse it to this plugin,then press `Connect` button,and now you can run or debug your application over wifi.
