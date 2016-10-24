@@ -1,6 +1,6 @@
 # WIFIADBAndroid
 <br>
-<img src="https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/art/ic_launcher.png" width="100px" height="100px">
+<img src="./art/ic_launcher.png" width="100px" height="100px">
 <br>
 ## There are just a few steps.
 * Turn on the wifi
@@ -9,7 +9,7 @@
 * After that,if you has already installed [my intellij plugin](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin),you should just paste the port address to the plugin and manage you devices by it;or you just use a command like "adb connect \<port address\>" to connect your devices from terminal
 
 ## Demo
-![](https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/art/demonstrate.gif)
+![](./art/demonstrate.gif)
 
 >If you have some questions or advices,I hope you can tell me by [issues](https://github.com/Sausure/WIFIADB/issues).
 
