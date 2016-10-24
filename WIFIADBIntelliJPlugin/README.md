@@ -3,7 +3,8 @@
 <img src="./art/icon.png" width="100px">
 
 ## Screenshot
-<img src="./art/screenshot.png" width="200px">
+<img src="./art/screenshot1.png" width="200px">
+<img src="./art/screenshot2.png" width="200px">
 
 ## Features
 1. If you has already installed [this application](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid) I provided,you would no longer need an USB cable.
