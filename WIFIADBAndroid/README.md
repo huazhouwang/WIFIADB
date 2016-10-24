@@ -9,7 +9,7 @@
 * After that,if you has already installed [my intellij plugin](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin),you should just paste the port address to the plugin and manage you devices by it;or you just use a command like "adb connect \<port address\>" to connect your devices from terminal
 
 ## GIF
-![](./art/demonstrate.gif)
+![](./art/demo.gif)
 
 >If you have some questions or advices,I hope you can tell me by [issues](https://github.com/Sausure/WIFIADB/issues).
 
