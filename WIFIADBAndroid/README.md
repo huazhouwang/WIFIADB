@@ -1,7 +1,7 @@
 # WIFIADBAndroid
-<br>
+
 <img src="./art/ic_launcher.png" width="100px" height="100px">
-<br>
+
 ## Get Start
 * Visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid/app/out) and you can find the latest version of application
 * Connect wifi
