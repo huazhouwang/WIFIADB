@@ -1,6 +1,6 @@
-# WIFIADBAndroid
+# WIFI ADB ANDROID
 
-<img src="./art/icon.png" width="100px">
+<img src="./art/icon.png" width="200px">
 
 ## Get Start
 * Visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid/app/out) and you can find the latest version of application
