@@ -20,7 +20,7 @@ then press `Connect` image button which right of the target device,after that yo
 [AndroidWiFiADB](https://github.com/pedrovgs/AndroidWiFiADB)
 
 ## To Do
-I will add more features and I need your suggestions,thanks!
+I will add more features and I [need](https://github.com/Sausure/WIFIADB/issues) your suggestions,thanks!
 
 ## License
 
