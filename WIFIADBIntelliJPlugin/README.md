@@ -1,6 +1,6 @@
 # WIFI ADB ULTIMATE
 
-<img src="./art/icon.png" width="100px">
+<img src="./art/icon.png" width="200px">
 
 ## Screenshot
 <img src="./art/screenshot1.png" width="200px">
