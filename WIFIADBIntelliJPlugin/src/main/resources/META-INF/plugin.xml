@@ -32,15 +32,6 @@
                 />
     </extensions>
 
-    <application-components>
-    </application-components>
-
-    <project-components>
-    </project-components>
-
     <depends>org.jetbrains.android</depends>
-
-    <actions>
-    </actions>
 
 </idea-plugin>

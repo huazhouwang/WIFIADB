@@ -1,17 +1,19 @@
-# WIFIADBAndroid
-<br>
-<img src="https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/art/ic_launcher.png" width="100px" height="100px">
-<br>
-## There are just a few steps.
-* Turn on the wifi
+# WIFI ADB ANDROID
+
+<img src="./art/icon.png" width="200px">
+
+## Get Start
+* Visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid/app/out) and you can find the latest version of application
+* Connect wifi
 * Click the middle circle button,and root privileges are required
-* When you are successful, you will see a port address
-* After that,if you has already installed [my intellij plugin](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin),you should just paste the port address to the plugin and manage you devices by it;or you just use a command like "adb connect \<port address\>" to connect your devices from terminal
+* When you are successful, you will see a row of ip address with port number
+* After that,if you has already installed [this intellij plugin](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin),you should just paste this row of numbers to the plugin and then you can manage you devices on it;or you just enter a command like "adb connect \<ip address with port\>" to connect your devices through the terminal
 
-## Demo
-![](https://github.com/Sausure/WIFIADB/blob/master/WIFIADBAndroid/art/demonstrate.gif)
+## GIF
+![](./art/demo.gif)
 
->If you have some questions or advices,I hope you can tell me by [issues](https://github.com/Sausure/WIFIADB/issues).
+## Something
+If you have some questions or suggestions,I hope you can [tell](https://github.com/Sausure/WIFIADB/issues) me.
 
 ##License
 
