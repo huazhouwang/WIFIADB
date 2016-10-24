@@ -1,4 +1,4 @@
-# WIFIADB
+# WIFI ADB
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/Sausure/SmartGo/blob/master/LICENSE.txt)
 
 <img src="./art/icon.png" width="200px" height="200px">
