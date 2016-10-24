@@ -1,6 +1,6 @@
 # WIFIADBAndroid
 
-<img src="./art/ic_launcher.png" width="100px" height="100px">
+<img src="./art/icon.png" width="100px">
 
 ## Get Start
 * Visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid/app/out) and you can find the latest version of application
@@ -12,7 +12,8 @@
 ## GIF
 ![](./art/demo.gif)
 
->If you have some questions or advices,I hope you can tell me by [issues](https://github.com/Sausure/WIFIADB/issues).
+## Something
+If you have some questions or suggestions,I hope you can tell me by [issues](https://github.com/Sausure/WIFIADB/issues).
 
 ##License
 
