@@ -13,7 +13,7 @@
 ![](./art/demo.gif)
 
 ## Something
-If you have some questions or suggestions,I hope you can tell me by [issues](https://github.com/Sausure/WIFIADB/issues).
+If you have some questions or suggestions,I hope you can [tell](https://github.com/Sausure/WIFIADB/issues) me.
 
 ##License
 
