@@ -1,11 +1,11 @@
 # WIFIADB
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/Sausure/SmartGo/blob/master/LICENSE.txt)
-<br>
-<img src="https://github.com/Sausure/WIFIADB/blob/master/art/icon.png" width="200px" height="200px">
-<br>
-There are two projects in this repository.<br>
+
+<img src="./art/icon.png" width="200px" height="200px">
+
+There are two projects in the repository.
 The first one is an android project,and the second is an intellij plugin project.
-> Developing
+You can see more information in the respective project,and I hope you can tell me your suggestions.
 
 ##License
 
