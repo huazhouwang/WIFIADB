@@ -1,10 +1,13 @@
 # WIFI ADB ULTIMATE
 
-<img src="./art/icon.png" width="100px">
+<img src="./art/icon.png" width="200px">
 
 ## Screenshot
 <img src="./art/screenshot1.png" width="200px">
 <img src="./art/screenshot2.png" width="200px">
+
+## Installation
+1. You can visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin/out) to get the latest version
 
 ## Features
 1. If you has already installed [this application](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid) I provided,you would no longer need an USB cable.
@@ -17,7 +20,7 @@ then press `Connect` image button which right of the target device,after that yo
 [AndroidWiFiADB](https://github.com/pedrovgs/AndroidWiFiADB)
 
 ## To Do
-I will add more features and I need your suggestions,thanks!
+I will add more features and I [need](https://github.com/Sausure/WIFIADB/issues) your suggestions,thanks!
 
 ## License
 
