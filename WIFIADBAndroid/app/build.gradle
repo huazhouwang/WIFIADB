@@ -24,15 +24,22 @@ android {
         }
     }
 
+    defaultConfig{
+        manifestPlaceholders = [app_label:"@string/app_name"]
+    }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug{
             minifyEnabled false
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [app_label:"@string/app_name_debug"]
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
