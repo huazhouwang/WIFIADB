@@ -9,7 +9,7 @@
 ## Installation
 1. You can visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin/out) to get the latest version
 2. Or [here](https://plugins.jetbrains.com/plugin/9207)
-3. Or search 'WIFI ADB ULTIMATE' in IDE remote repositories<br>
+3. Or search `WIFI ADB ULTIMATE` in IDE remote repositories<br>
 <img src="./art/search.png" width="400px">
 
 ## Features
