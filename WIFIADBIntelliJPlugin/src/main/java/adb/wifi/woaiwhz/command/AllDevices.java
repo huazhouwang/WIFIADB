@@ -29,7 +29,7 @@ public class AllDevices implements ICommand<String,Device[]> {
             final String[] originalLines = Utils.removeDaemon(s.split(Config.ENTER));
             final String[] lines = removeUseless(originalLines);
 
-            final List<Device> list = new ArrayList<>();
+            final List<Device> list = new ArrayList<Device>();
 
             for (final String line : lines){
                 final String[] items = line.split(Config.ANY_SPACES);
@@ -77,7 +77,7 @@ public class AllDevices implements ICommand<String,Device[]> {
     }
 
     private String[] removeUseless(@NotNull String[] originalLines){
-        final List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<String>();
 
         for (String line : originalLines){
             if(line.contains(USELESS)){

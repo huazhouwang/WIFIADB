@@ -15,7 +15,12 @@ public abstract class MainThreadHandler {
     }
 
     public void sendMessage(@NotNull final Message msg){
-        post(() -> handleMessage(msg));
+        post(new Runnable() {
+            @Override
+            public void run() {
+                handleMessage(msg);
+            }
+        });
     }
 
     public void sendMessage(int what,Object obj){

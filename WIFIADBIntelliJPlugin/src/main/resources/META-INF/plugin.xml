@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin version="2">
     <id>adb.wifi.woaiwhz</id>
-    <name>Wifi Adb Ultimate</name>
-    <version>1.0</version>
+    <name>WIFI ADB ULTIMATE</name>
+    <version>1.1</version>
     <vendor email="huazhou19@gmail.com" url="https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin">
         HuaZhou Wang - (Sausure)
     </vendor>
@@ -12,11 +12,12 @@
       <br/>
       Or connect devices using the USB cable for the first time.
       <br/>
-      For more information,please visit my github.
+      For more information,please visit my GitHub.
     ]]></description>
 
     <change-notes><![CDATA[
-      1.0: Initial release.<br>
+        1.1: Fix compatibility bug.<br>
+        1.0: Initial release.<br>
     ]]>
     </change-notes>
 
@@ -25,7 +26,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <defaultProjectTypeProvider type="Android"/>
         <toolWindow
-                id="Wifi Adb Ultimate"
+                id="WIFI ADB ULTIMATE"
                 icon="/icons/icon.png"
                 anchor="right"
                 factoryClass="adb.wifi.woaiwhz.window.RootWindow"

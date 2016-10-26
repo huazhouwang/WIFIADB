@@ -41,7 +41,7 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
     public DevicesAdapter(@NotNull RootPresenter presenter){
         mPresenter = presenter;
 
-        mItems = new ArrayList<>();
+        mItems = new ArrayList<Item>();
 
         final Class clazz = getClass();
         mIcons = new Icon[]{
@@ -118,7 +118,12 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
                 return new LocalDeviceHolder(mIcons[2],mIcons[3]);
 
             case REFRESH_ITEM:
-                return new RefreshItemHolder(e -> mPresenter.getAllDevices());
+                return new RefreshItemHolder(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        mPresenter.getAllDevices();
+                    }
+                });
 
             default:
                 return null;

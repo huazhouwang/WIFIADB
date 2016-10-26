@@ -57,10 +57,13 @@ public class RootPresenter {
 
         lock();
 
-        runOnPooledThread(() ->{
-            addDeviceInCurrentThread(deviceId);
+        runOnPooledThread(new Runnable() {
+            @Override
+            public void run() {
+                addDeviceInCurrentThread(deviceId);
 
-            getDevicesInCurrentThread();
+                getDevicesInCurrentThread();
+            }
         });
     }
 
@@ -89,7 +92,12 @@ public class RootPresenter {
 
         lock();
 
-        runOnPooledThread(this::getDevicesInCurrentThread);
+        runOnPooledThread(new Runnable() {
+            @Override
+            public void run() {
+                getDevicesInCurrentThread();
+            }
+        });
     }
 
     public void disconnectRemoteDevice(final String deviceId){
@@ -104,20 +112,23 @@ public class RootPresenter {
 
         lock();
 
-        runOnPooledThread(() ->{
-            mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Disconnecting " + deviceId);
+        runOnPooledThread(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Disconnecting " + deviceId);
 
-            final ICommand<String,String> command = new DisconnectRemoteDevice(deviceId);
-            final String result = CommandExecute.execute(command.getCommand(mAdbPath));
-            final String message = command.parse(result);
+                final ICommand<String,String> command = new DisconnectRemoteDevice(deviceId);
+                final String result = CommandExecute.execute(command.getCommand(mAdbPath));
+                final String message = command.parse(result);
 
-            if (Utils.isBlank(message)){
-                Notify.error();
-            }else {
-                Notify.alert(message);
+                if (Utils.isBlank(message)){
+                    Notify.error();
+                }else {
+                    Notify.alert(message);
+                }
+
+                getDevicesInCurrentThread();
             }
-
-            getDevicesInCurrentThread();
         });
     }
 
@@ -131,28 +142,31 @@ public class RootPresenter {
 
         lock();
 
-        runOnPooledThread(() -> {
-            mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Get ip address from " + deviceId);
+        runOnPooledThread(new Runnable() {
+            @Override
+            public void run() {
+                mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Get ip address from " + deviceId);
 
-            final ICommand<String,String> getIpCommand = new GainDeviceIP(deviceId);
-            final String ipTmpResult = CommandExecute.execute(getIpCommand.getCommand(mAdbPath));
-            final String ip = getIpCommand.parse(ipTmpResult);
+                final ICommand<String,String> getIpCommand = new GainDeviceIP(deviceId);
+                final String ipTmpResult = CommandExecute.execute(getIpCommand.getCommand(mAdbPath));
+                final String ip = getIpCommand.parse(ipTmpResult);
 
-            if (Utils.isBlank(ip)){
-                Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't been connecting correct wifi"));
+                if (Utils.isBlank(ip)){
+                    Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't been connecting correct wifi"));
+                    getDevicesInCurrentThread();
+                    return;
+                }
+
+                final ICommand<?,?> alertAdbPort = new AlertAdbPort(deviceId);
+                CommandExecute.execute(alertAdbPort.getCommand(mAdbPath));
+
+                Notify.alert(Utils.concat("Now maybe you can disconnect the usb cable of target device [",deviceId,"]"));
+
+                addDeviceInCurrentThread(Utils.concat(ip,":",Config.DEFAULT_PORT));
+
+                mayWait();
                 getDevicesInCurrentThread();
-                return;
             }
-
-            final ICommand<?,?> alertAdbPort = new AlertAdbPort(deviceId);
-            CommandExecute.execute(alertAdbPort.getCommand(mAdbPath));
-
-            Notify.alert(Utils.concat("Now maybe you can disconnect the usb cable of target device [",deviceId,"]"));
-
-            addDeviceInCurrentThread(Utils.concat(ip,":",Config.DEFAULT_PORT));
-
-            mayWait();
-            getDevicesInCurrentThread();
         });
     }
 
