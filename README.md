@@ -7,7 +7,10 @@ There are two projects in the repository.<br/>
 The first one is an android project,and the second is an intellij plugin project.<br/>
 You can see more information in the respective project,and I hope you can [tell](https://github.com/Sausure/WIFIADB/issues) me your suggestions.<br/>
 
-##License
+## Developed By
+* Huazhou Wang - <huazhou19@gmail.com>
+
+## License
 
     Copyright 2016 Sausure.
 

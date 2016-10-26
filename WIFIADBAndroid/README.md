@@ -2,8 +2,10 @@
 
 <img src="./art/icon.png" width="200px">
 
+## Installation
+1. Visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid/app/out) and you can find the latest version of application
+
 ## Get Start
-* Visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid/app/out) and you can find the latest version of application
 * Connect wifi
 * Click the middle circle button,and root privileges are required
 * When you are successful, you will see a row of ip address with port number
