@@ -4,6 +4,7 @@
 
 ## Installation
 1. Visit [here](https://github.com/Sausure/WIFIADB/tree/master/WIFIADBAndroid/app/out) and you can find the latest version of application
+2. And this application has been added to the market [wandoujia](http://www.wandoujia.com/apps/adb.wifi.woaiwhz.wifiadbandroid)
 
 ## Get Start
 * Connect wifi
