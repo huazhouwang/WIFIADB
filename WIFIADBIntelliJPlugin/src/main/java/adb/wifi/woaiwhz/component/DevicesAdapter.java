@@ -14,10 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,7 +28,6 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
     private final int REMOTE_DEVICE_ITEM = 1 << 1;
     private final int LOCAL_DEVICE_TITLE = 1 << 3;
     private final int LOCAL_DEVICE_ITEM = 1 << 4;
-    private final int REFRESH_ITEM = 1 << 5;
 
     private final Icon[] mIcons;
 
@@ -85,8 +84,6 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
                 mItems.add(new Item(LOCAL_DEVICE_ITEM,devices[i]));
             }
         }
-
-        mItems.add(new Item(REFRESH_ITEM,null));
     }
 
     @Override
@@ -113,14 +110,6 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
 
             case LOCAL_DEVICE_ITEM:
                 return new LocalDeviceHolder(mIcons[2],mIcons[3]);
-
-            case REFRESH_ITEM:
-                return new RefreshItemHolder(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        mPresenter.getAllDevices();
-                    }
-                });
 
             default:
                 return null;
@@ -286,25 +275,6 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
         protected void onBind(@Nullable Object obj) {
             mTitleLabel.setText(Strings.toUpperCase("Local Devices"));
         }
-    }
-
-    static class RefreshItemHolder extends BaseViewHolder{
-        private JPanel mItemRoot;
-        private JButton mRefreshButton;
-
-        private RefreshItemHolder(ActionListener listener){
-            mRefreshButton.setCursor(Utils.getHandCursor());
-            mRefreshButton.addActionListener(listener);
-            mItemRoot.setPreferredSize(new Dimension(-1,80));
-        }
-
-        @Override
-        protected Component getItem() {
-            return mItemRoot;
-        }
-
-        @Override
-        protected void onBind(@Nullable Object device) {}
     }
 
     private static class Item{
