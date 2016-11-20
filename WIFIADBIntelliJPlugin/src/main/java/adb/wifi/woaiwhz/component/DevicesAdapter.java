@@ -17,9 +17,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -139,7 +137,7 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
 
             realHolder.setOnClick(new OnClickAdapter() {
                 @Override
-                public void onClick() {
+                public void onClick(AWTEvent e) {
                     final Device device = realHolder.getDevice();
 
                     if (device != null){
@@ -152,7 +150,7 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
 
             realHolder.setOnClick(new OnClickAdapter() {
                 @Override
-                public void onClick() {
+                public void onClick(AWTEvent e) {
                     final Device device = realHolder.getDevice();
 
                     if (device != null){

@@ -1,5 +1,6 @@
 package adb.wifi.woaiwhz.listener;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -10,13 +11,14 @@ import java.awt.event.MouseEvent;
 public abstract class OnClickAdapter extends MouseAdapter implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
-        onClick();
+        onClick(e);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        onClick();
+
+        onClick(e);
     }
 
-    public abstract void onClick();
+    public abstract void onClick(AWTEvent e);
 }

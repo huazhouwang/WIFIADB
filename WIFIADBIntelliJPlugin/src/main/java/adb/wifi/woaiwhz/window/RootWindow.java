@@ -19,7 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Created by huazhou.whz on 2016/10/7.
@@ -106,7 +108,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
         mConnectButton.setCursor(Utils.getHandCursor());
         mConnectButton.addActionListener(new OnClickAdapter() {
             @Override
-            public void onClick() {
+            public void onClick(AWTEvent e) {
                 handleConnection();
             }
         });
@@ -187,7 +189,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
         mRefreshLabel.setCursor(Utils.getHandCursor());
         mRefreshLabel.addMouseListener(new OnClickAdapter() {
             @Override
-            public void onClick() {
+            public void onClick(AWTEvent e) {
                 mPresenter.getAllDevices();
             }
         });
