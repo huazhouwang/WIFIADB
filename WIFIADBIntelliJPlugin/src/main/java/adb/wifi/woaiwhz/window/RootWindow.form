@@ -24,7 +24,7 @@
                 <properties/>
                 <border type="none" title="Manage devices"/>
                 <children>
-                  <grid id="90bc8" binding="mEmptyLayout" layout-manager="GridBagLayout">
+                  <grid id="90bc8" binding="mEmptyLayout" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
                       <card name="Card1"/>
                     </constraints>
@@ -34,27 +34,11 @@
                     <border type="none"/>
                     <children>
                       <component id="da1a1" class="javax.swing.JLabel" binding="mEmptyLabel">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                          <gridbag weightx="0.0" weighty="0.0"/>
-                        </constraints>
+                        <constraints border-constraint="Center"/>
                         <properties>
                           <horizontalAlignment value="0"/>
                           <horizontalTextPosition value="0"/>
-                          <text value="There is no active devices."/>
-                        </properties>
-                      </component>
-                      <component id="f9d9b" class="javax.swing.JLabel" binding="mRefreshLabel">
-                        <constraints>
-                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                          <gridbag weightx="0.0" weighty="0.0"/>
-                        </constraints>
-                        <properties>
-                          <horizontalAlignment value="0"/>
-                          <horizontalTextPosition value="0"/>
-                          <icon value="icons/refresh.png"/>
-                          <text value=""/>
-                          <verticalAlignment value="0"/>
+                          <text value="Nothing Active"/>
                         </properties>
                       </component>
                     </children>
@@ -86,94 +70,148 @@
                   </scrollpane>
                 </children>
               </grid>
-              <scrollpane id="c1114">
+              <grid id="4df34" layout-manager="BorderLayout" hgap="0" vgap="0">
                 <constraints border-constraint="North"/>
-                <properties>
-                  <verticalScrollBarPolicy value="20"/>
-                </properties>
+                <properties/>
                 <border type="none"/>
                 <children>
-                  <grid id="74cd4" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
-                    <constraints/>
-                    <properties/>
-                    <border type="none" title="Enter a new port address"/>
+                  <scrollpane id="c1114">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <verticalScrollBarPolicy value="21"/>
+                    </properties>
+                    <border type="none"/>
                     <children>
-                      <component id="8620f" class="javax.swing.JTextField" binding="mIP_1">
+                      <grid id="74cd4" binding="mTextLayout" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
                         <constraints/>
                         <properties>
-                          <columns value="3"/>
-                          <horizontalAlignment value="0"/>
+                          <minimumSize width="450" height="70"/>
+                          <preferredSize width="420" height="70"/>
+                          <visible value="true"/>
+                        </properties>
+                        <border type="none" title="Enter a new port address"/>
+                        <children>
+                          <component id="8620f" class="javax.swing.JTextField" binding="mIP_1">
+                            <constraints/>
+                            <properties>
+                              <columns value="3"/>
+                              <horizontalAlignment value="0"/>
+                              <text value=""/>
+                            </properties>
+                          </component>
+                          <component id="74439" class="javax.swing.JLabel">
+                            <constraints/>
+                            <properties>
+                              <horizontalTextPosition value="11"/>
+                              <text value="."/>
+                            </properties>
+                          </component>
+                          <component id="b9085" class="javax.swing.JTextField" binding="mIP_2">
+                            <constraints/>
+                            <properties>
+                              <columns value="3"/>
+                              <horizontalAlignment value="0"/>
+                              <text value=""/>
+                            </properties>
+                          </component>
+                          <component id="9b70a" class="javax.swing.JLabel">
+                            <constraints/>
+                            <properties>
+                              <text value="."/>
+                            </properties>
+                          </component>
+                          <component id="a0b06" class="javax.swing.JTextField" binding="mIP_3">
+                            <constraints/>
+                            <properties>
+                              <columns value="3"/>
+                              <horizontalAlignment value="0"/>
+                            </properties>
+                          </component>
+                          <component id="2ea88" class="javax.swing.JLabel">
+                            <constraints/>
+                            <properties>
+                              <text value="."/>
+                            </properties>
+                          </component>
+                          <component id="97a48" class="javax.swing.JTextField" binding="mIP_4">
+                            <constraints/>
+                            <properties>
+                              <columns value="3"/>
+                              <horizontalAlignment value="0"/>
+                            </properties>
+                          </component>
+                          <component id="d8923" class="javax.swing.JLabel">
+                            <constraints/>
+                            <properties>
+                              <text value=":"/>
+                            </properties>
+                          </component>
+                          <component id="1d171" class="javax.swing.JTextField" binding="mPort">
+                            <constraints/>
+                            <properties>
+                              <columns value="5"/>
+                              <horizontalAlignment value="0"/>
+                              <text value="5555"/>
+                            </properties>
+                          </component>
+                          <component id="d7e60" class="javax.swing.JButton" binding="mConnectButton">
+                            <constraints/>
+                            <properties>
+                              <horizontalTextPosition value="4"/>
+                              <icon value="icons/connect-icon.png"/>
+                              <text value="Connect"/>
+                              <toolTipText value="Press To Connect"/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                    </children>
+                  </scrollpane>
+                  <grid id="ae493" layout-manager="FlowLayout" hgap="18" vgap="5" flow-align="1">
+                    <constraints border-constraint="Center"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="aa858" class="javax.swing.JLabel" binding="mHistoryLabel">
+                        <constraints/>
+                        <properties>
+                          <icon value="icons/history-icon.png"/>
                           <text value=""/>
+                          <toolTipText value="History"/>
                         </properties>
                       </component>
-                      <component id="74439" class="javax.swing.JLabel">
+                      <component id="c1957" class="javax.swing.JLabel" binding="mRefreshLabel">
                         <constraints/>
                         <properties>
-                          <horizontalTextPosition value="11"/>
-                          <text value="."/>
-                        </properties>
-                      </component>
-                      <component id="b9085" class="javax.swing.JTextField" binding="mIP_2">
-                        <constraints/>
-                        <properties>
-                          <columns value="3"/>
-                          <horizontalAlignment value="0"/>
+                          <icon value="icons/refresh-icon.png"/>
                           <text value=""/>
+                          <toolTipText value="Reload"/>
                         </properties>
                       </component>
-                      <component id="9b70a" class="javax.swing.JLabel">
+                      <component id="35065" class="javax.swing.JLabel" binding="mRebootLabel">
                         <constraints/>
                         <properties>
-                          <text value="."/>
+                          <icon value="icons/reboot-icon.png"/>
+                          <text value=""/>
+                          <toolTipText value="Reboot ADB"/>
                         </properties>
                       </component>
-                      <component id="a0b06" class="javax.swing.JTextField" binding="mIP_3">
+                      <component id="6f37c" class="javax.swing.JLabel" binding="mAddressLabel">
                         <constraints/>
                         <properties>
-                          <columns value="3"/>
-                          <horizontalAlignment value="0"/>
-                        </properties>
-                      </component>
-                      <component id="2ea88" class="javax.swing.JLabel">
-                        <constraints/>
-                        <properties>
-                          <text value="."/>
-                        </properties>
-                      </component>
-                      <component id="97a48" class="javax.swing.JTextField" binding="mIP_4">
-                        <constraints/>
-                        <properties>
-                          <columns value="3"/>
-                          <horizontalAlignment value="0"/>
-                        </properties>
-                      </component>
-                      <component id="d8923" class="javax.swing.JLabel">
-                        <constraints/>
-                        <properties>
-                          <text value=":"/>
-                        </properties>
-                      </component>
-                      <component id="1d171" class="javax.swing.JTextField" binding="mPort">
-                        <constraints/>
-                        <properties>
-                          <columns value="5"/>
-                          <horizontalAlignment value="0"/>
-                          <text value="5555"/>
-                        </properties>
-                      </component>
-                      <component id="d7e60" class="javax.swing.JButton" binding="mConnectButton">
-                        <constraints/>
-                        <properties>
-                          <text value="Connect"/>
+                          <icon value="icons/adb-icon.png"/>
+                          <text value=""/>
+                          <toolTipText value="ADB Address"/>
                         </properties>
                       </component>
                     </children>
                   </grid>
                 </children>
-              </scrollpane>
+              </grid>
             </children>
           </grid>
-          <grid id="5d555" binding="mLoadingLayout" layout-manager="GridBagLayout">
+          <grid id="5d555" binding="mLoadingLayout" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <card name="Card3"/>
             </constraints>
@@ -182,8 +220,7 @@
             <children>
               <component id="3de13" class="javax.swing.JProgressBar">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <borderPainted value="false"/>
@@ -194,8 +231,7 @@
               </component>
               <component id="84bc1" class="javax.swing.JLabel" binding="mProgressTip">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag top="10" left="0" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <horizontalAlignment value="0"/>
@@ -218,6 +254,7 @@
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
               <text value="&lt;html&gt;Get &lt;font color=&quot;#F44336&quot;&gt;&lt;u&gt;H&lt;/u&gt;&lt;/font&gt;elp&lt;/html&gt;"/>
+              <toolTipText value="Visit Author's Web Site"/>
             </properties>
           </component>
         </children>

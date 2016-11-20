@@ -16,7 +16,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,10 +44,10 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
 
         final Class clazz = getClass();
         mIcons = new Icon[]{
-                new ImageIcon(clazz.getResource("/icons/remote_device.png")),
-                new ImageIcon(clazz.getResource("/icons/disconnect.png")),
-                new ImageIcon(clazz.getResource("/icons/local_device.png")),
-                new ImageIcon(clazz.getResource("/icons/play.png"))
+                new ImageIcon(clazz.getResource("/icons/device-remote-icon.png")),
+                new ImageIcon(clazz.getResource("/icons/disconnect-icon.png")),
+                new ImageIcon(clazz.getResource("/icons/device-local-icon.png")),
+                new ImageIcon(clazz.getResource("/icons/connect-icon.png"))
         };
     }
 
@@ -140,7 +139,7 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
 
             realHolder.setOnClick(new OnClickAdapter() {
                 @Override
-                public void onClick(@Nullable ActionEvent e1, @Nullable MouseEvent e2) {
+                public void onClick() {
                     final Device device = realHolder.getDevice();
 
                     if (device != null){
@@ -153,7 +152,7 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
 
             realHolder.setOnClick(new OnClickAdapter() {
                 @Override
-                public void onClick(@Nullable ActionEvent e1, @Nullable MouseEvent e2) {
+                public void onClick() {
                     final Device device = realHolder.getDevice();
 
                     if (device != null){

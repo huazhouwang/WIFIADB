@@ -35,9 +35,9 @@ public class RootPresenter {
         mAdbPath = Utils.getAdbPath(mProject);
 
         if(isAdbEmpty()){
-            mViewLayer.onADBEmpty();
+            mViewLayer.onADBFail();
         }else {
-            mViewLayer.onADBComplete(mAdbPath);
+            mViewLayer.onADBSuccess(mAdbPath);
         }
     }
 
@@ -254,8 +254,8 @@ public class RootPresenter {
     }
 
     public interface RootView{
-        void onADBEmpty();
-        void onADBComplete(String path);
+        void onADBFail();
+        void onADBSuccess(String path);
         void showLoading();
         void hideLoading();
         void refreshDevices(@Nullable Device[] devices);

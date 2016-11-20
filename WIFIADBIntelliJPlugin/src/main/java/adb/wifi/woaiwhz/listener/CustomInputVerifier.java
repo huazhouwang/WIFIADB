@@ -9,18 +9,21 @@ import javax.swing.*;
  * Created by huazhou.whz on 2016/10/7.
  */
 public class CustomInputVerifier extends InputVerifier {
+    private final int mMinNumber;
     private final int mMaxNumber;
     private final int mDefaultNumber;
 
     /**
-     * 0 <= input < maxNumber
+     * minNumber <= input <= maxNumber
      */
-    public CustomInputVerifier(int maxNumber){
+    public CustomInputVerifier(int minNumber,int maxNumber){
+        mMinNumber = minNumber;
         mMaxNumber = maxNumber;
         mDefaultNumber = Integer.MIN_VALUE;
     }
 
-    public CustomInputVerifier(int maxNumber,int defaultNumber) {
+    public CustomInputVerifier(int minNumber,int maxNumber,int defaultNumber) {
+        mMinNumber = minNumber;
         mMaxNumber = maxNumber;
         mDefaultNumber = defaultNumber;
     }
@@ -47,8 +50,8 @@ public class CustomInputVerifier extends InputVerifier {
             if(number >= 0 && number < mMaxNumber){
                 return true;
             }else {
-                Notify.error(Utils.concat("Number should >= 0 and &lt ",String.valueOf(mMaxNumber),
-                        " ,\nbut now is ",String.valueOf(number)));
+                Notify.error(Utils.concat("Number should >= ",String.valueOf(mMinNumber)," and &lt ",
+                        String.valueOf(mMaxNumber), " ,\nbut now is ",String.valueOf(number)));
                 return false;
             }
         }catch (NumberFormatException e){

@@ -27,7 +27,7 @@
         <defaultProjectTypeProvider type="Android"/>
         <toolWindow
                 id="WIFI ADB ULTIMATE"
-                icon="/icons/icon.png"
+                icon="/icons/app-icon.png"
                 anchor="right"
                 factoryClass="adb.wifi.woaiwhz.window.RootWindow"
                 />
