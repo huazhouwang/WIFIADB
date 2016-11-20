@@ -24,12 +24,9 @@ dependencies {
     testCompile 'org.mockito:mockito-all:1.10.19'
 }
 
-//sourceCompatibility = 1.6
-//targetCompatibility = 1.6
-
 compileJava {
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 //    options.bootClasspath = "S:/JAVA/jdk8/jre/lib/rt.jar"
 }
 

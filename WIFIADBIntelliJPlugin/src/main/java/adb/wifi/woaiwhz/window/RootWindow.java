@@ -100,18 +100,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
 
     private void init(){
         initTexts();
-        initConnectButton();
         initOthersComponent();
-    }
-
-    private void initConnectButton(){
-        mConnectButton.setCursor(Utils.getHandCursor());
-        mConnectButton.addActionListener(new OnClickAdapter() {
-            @Override
-            public void onClick(AWTEvent e) {
-                handleConnection();
-            }
-        });
     }
 
     private void initTexts(){
@@ -183,16 +172,22 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
     }
 
     private void initOthersComponent() {
-        mHelpLabel.addMouseListener(new LaunchWebBrowser(Config.HELP));
-        mHelpLabel.setCursor(Utils.getHandCursor());
+        final Cursor cursor = Utils.getHandCursor();
+        final OnClickAdapter clickAdapter = new CustomClick();
 
-        mRefreshLabel.setCursor(Utils.getHandCursor());
-        mRefreshLabel.addMouseListener(new OnClickAdapter() {
-            @Override
-            public void onClick(AWTEvent e) {
-                mPresenter.getAllDevices();
-            }
-        });
+        mConnectButton.setCursor(cursor);
+        mHistoryLabel.setCursor(cursor);
+        mRefreshLabel.setCursor(cursor);
+        mRebootLabel.setCursor(cursor);
+        mAddressLabel.setCursor(cursor);
+        mHelpLabel.setCursor(cursor);
+
+        mConnectButton.addActionListener(clickAdapter);
+        mHistoryLabel.addMouseListener(clickAdapter);
+        mRefreshLabel.addMouseListener(clickAdapter);
+        mRebootLabel.addMouseListener(clickAdapter);
+        mAddressLabel.addMouseListener(clickAdapter);
+        mHelpLabel.addMouseListener(clickAdapter);
     }
 
     private void handleConnection(){
@@ -273,7 +268,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
 
     @Override
     public void onADBFail() {
-        final String error = "Cannot find adb,please check this project's android sdk and restart IDE";
+        final String error = "Cannot find adb,please specify correct android sdk";
         Notify.error(error);
 
         for(final Component item : mNeedADBItems){
@@ -319,5 +314,53 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
     @Override
     public void refreshProgressTip(@NotNull String tip) {
         mProgressTip.setText(tip);
+    }
+
+    private class CustomClick extends OnClickAdapter{
+        @Override
+        public void onClick(AWTEvent e) {
+            final Component component = e.getSource() instanceof Component ?
+                    (Component) e.getSource() : null;
+
+            if (component == null){
+                return;
+            }
+
+            final String name = component.getName();
+
+            if (Utils.isBlank(name)){
+                return;
+            }
+
+            switch (name){
+                case "CONNECT":
+                    handleConnection();
+                    break;
+
+                case "HISTORY":
+                    break;
+
+                case "REFRESH":
+                    mPresenter.getAllDevices();
+                    break;
+
+                case "REBOOT":
+                    break;
+
+                case "ADDRESS":
+                    break;
+
+                case "HELP":
+                    try {
+                        Desktop.getDesktop().browse(new java.net.URI(Config.HELP));
+                    }catch (Exception exception){
+                        Notify.error("Cannot launch web browser");
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 }

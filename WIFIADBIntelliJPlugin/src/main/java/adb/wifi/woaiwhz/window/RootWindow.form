@@ -159,6 +159,7 @@
                             <properties>
                               <horizontalTextPosition value="4"/>
                               <icon value="icons/connect-icon.png"/>
+                              <name value="CONNECT"/>
                               <text value="Connect"/>
                               <toolTipText value="Press To Connect"/>
                             </properties>
@@ -176,6 +177,7 @@
                         <constraints/>
                         <properties>
                           <icon value="icons/history-icon.png"/>
+                          <name value="HISTORY"/>
                           <text value=""/>
                           <toolTipText value="History"/>
                         </properties>
@@ -184,6 +186,7 @@
                         <constraints/>
                         <properties>
                           <icon value="icons/refresh-icon.png"/>
+                          <name value="REFRESH"/>
                           <text value=""/>
                           <toolTipText value="Reload"/>
                         </properties>
@@ -192,6 +195,7 @@
                         <constraints/>
                         <properties>
                           <icon value="icons/reboot-icon.png"/>
+                          <name value="REBOOT"/>
                           <text value=""/>
                           <toolTipText value="Reboot ADB"/>
                         </properties>
@@ -200,6 +204,7 @@
                         <constraints/>
                         <properties>
                           <icon value="icons/adb-icon.png"/>
+                          <name value="ADDRESS"/>
                           <text value=""/>
                           <toolTipText value="ADB Address"/>
                         </properties>
@@ -253,6 +258,7 @@
             <properties>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
+              <name value="HELP"/>
               <text value="&lt;html&gt;Get &lt;font color=&quot;#F44336&quot;&gt;&lt;u&gt;H&lt;/u&gt;&lt;/font&gt;elp&lt;/html&gt;"/>
               <toolTipText value="Visit Author's Web Site"/>
             </properties>
