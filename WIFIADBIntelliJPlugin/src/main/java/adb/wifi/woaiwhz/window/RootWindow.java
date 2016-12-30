@@ -345,22 +345,27 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
                     break;
 
                 case "REBOOT":
+                    mPresenter.rebootServer();
                     break;
 
                 case "ADDRESS":
                     break;
 
                 case "HELP":
-                    try {
-                        Desktop.getDesktop().browse(new java.net.URI(Config.HELP));
-                    }catch (Exception exception){
-                        Notify.error("Cannot launch web browser");
-                    }
+                    getHelp();
                     break;
 
                 default:
                     break;
             }
+        }
+    }
+
+    private void getHelp() {
+        try {
+            Desktop.getDesktop().browse(new java.net.URI(Config.HELP));
+        }catch (Exception exception){
+            Notify.error("Cannot launch web browser");
         }
     }
 }

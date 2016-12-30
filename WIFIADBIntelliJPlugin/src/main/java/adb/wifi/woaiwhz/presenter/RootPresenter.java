@@ -60,18 +60,70 @@ public class RootPresenter {
         runOnPooledThread(new Runnable() {
             @Override
             public void run() {
-                addDeviceInCurrentThread(deviceId);
+                addDeviceUnchecked(deviceId);
 
-                getDevicesInCurrentThread();
+                getDevicesUnchecked();
             }
         });
+    }
+
+    public void rebootServer() {
+        killServer();
+    }
+
+    private void killServer() {
+        if (!canRun()) {
+            return;
+        }
+
+        lock();
+
+        runOnPooledThread(new Runnable() {
+            @Override
+            public void run() {
+                killServerUnchecked();
+            }
+        });
+    }
+
+    private void killServerUnchecked() {
+        mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP, "Kill ADB server...");
+
+        final ICommand command = new KillCommand();
+        CommandExecute.execute(command.getCommand(mAdbPath));
+
+        mHandler.sendEmptyMessage(CustomHandler.POST_START_SERVER);
+    }
+
+    private void startServer() {
+        if (!canRun()) {
+            return;
+        }
+
+        lock();
+
+        runOnPooledThread(new Runnable() {
+            @Override
+            public void run() {
+                startServerUnchecked();
+            }
+        });
+    }
+
+    private void startServerUnchecked() {
+        mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP, "Start ADB server...");
+
+        final ICommand command = new StartCommad();
+        CommandExecute.execute(command.getCommand(mAdbPath));
+
+        mHandler.sendEmptyMessage(CustomHandler.POST_GET_DEVICES);
     }
 
     private boolean canRun(){
         return !(isAdbEmpty() || mRunning);
     }
 
-    private void addDeviceInCurrentThread(final String deviceId){
+    private void addDeviceUnchecked(final String deviceId){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connecting " + deviceId);
 
         final ICommand<String,String> command = new ConnectDevice(deviceId);
@@ -84,7 +136,7 @@ public class RootPresenter {
             Notify.alert(message);
         }
     }
-    
+
     public void getAllDevices(){
         if(!canRun()){
             return;
@@ -95,7 +147,7 @@ public class RootPresenter {
         runOnPooledThread(new Runnable() {
             @Override
             public void run() {
-                getDevicesInCurrentThread();
+                getDevicesUnchecked();
             }
         });
     }
@@ -127,7 +179,7 @@ public class RootPresenter {
                     Notify.alert(message);
                 }
 
-                getDevicesInCurrentThread();
+                getDevicesUnchecked();
             }
         });
     }
@@ -153,7 +205,7 @@ public class RootPresenter {
 
                 if (Utils.isBlank(ip)){
                     Notify.error(Utils.concat("Maybe target device [",deviceId,"] hasn't been connecting correct wifi"));
-                    getDevicesInCurrentThread();
+                    getDevicesUnchecked();
                     return;
                 }
 
@@ -162,23 +214,22 @@ public class RootPresenter {
 
                 Notify.alert(Utils.concat("Now maybe you can disconnect the usb cable of target device [",deviceId,"]"));
 
-                addDeviceInCurrentThread(Utils.concat(ip,":",Config.DEFAULT_PORT));
+                addDeviceUnchecked(Utils.concat(ip,":",Config.DEFAULT_PORT));
 
                 mayWait();
-                getDevicesInCurrentThread();
+                getDevicesUnchecked();
             }
         });
     }
 
-    private void getDevicesInCurrentThread(){
+    private void getDevicesUnchecked(){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Refresh devices list");
 
         final ICommand<String,Device[]> command = new AllDevices();
         final String result = CommandExecute.execute(command.getCommand(mAdbPath));
         final Device[] devices = command.parse(result);
 
-        final Message message = new Message(CustomHandler.GET_ALL_DEVICES,devices);
-        mHandler.sendMessage(message);
+        mHandler.sendMessage(CustomHandler.HANDLE_DEVICES, devices);
     }
 
     private void mayWait(){
@@ -207,22 +258,34 @@ public class RootPresenter {
         }
     }
 
-    private class CustomHandler extends MainThreadHandler {
-        private static final int GET_ALL_DEVICES = 1;
-        private static final int CHANGE_PROGRESS_TIP = 1 << 1;
+    class CustomHandler extends MainThreadHandler {
+        static final int HANDLE_DEVICES = 1;
+        static final int CHANGE_PROGRESS_TIP = 1 << 1;
+        static final int POST_START_SERVER = 1 << 2;
+        static final int POST_GET_DEVICES = 1 << 3;
 
         @Override
         protected void handleMessage(@NotNull Message msg) {
             final int what = msg.what;
 
             switch (what) {
-                case GET_ALL_DEVICES:
+                case HANDLE_DEVICES:
                     handleAllDevicesAction(msg);
                     unlock();
                     break;
 
                 case CHANGE_PROGRESS_TIP:
                     handleChangeProgressTipAction(msg);
+                    break;
+
+                case POST_START_SERVER:
+                    unlock();
+                    startServer();
+                    break;
+
+                case POST_GET_DEVICES:
+                    unlock();
+                    getAllDevices();
                     break;
 
                 default:
