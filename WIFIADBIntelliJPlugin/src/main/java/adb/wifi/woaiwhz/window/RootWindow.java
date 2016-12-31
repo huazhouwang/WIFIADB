@@ -349,6 +349,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
                     break;
 
                 case "ADDRESS":
+                    mPresenter.chooseADBAddress();
                     break;
 
                 case "HELP":
