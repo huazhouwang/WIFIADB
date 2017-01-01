@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by huazhou.whz on 2016/10/21.
  */
-public class AlertAdbPort implements ICommand<String,Void> {
+public class SpecifyPort implements ICommand<String,Void> {
     private String mDeviceId;
 
-    public AlertAdbPort(@NotNull String deviceId){
+    public SpecifyPort(@NotNull String deviceId){
         mDeviceId = deviceId;
     }
 

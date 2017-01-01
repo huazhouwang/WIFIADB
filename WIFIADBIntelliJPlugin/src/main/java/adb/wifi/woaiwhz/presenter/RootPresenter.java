@@ -93,15 +93,15 @@ public class RootPresenter {
     private void killServerUnchecked() {
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP, "Kill ADB server...");
 
-        final ICommand command = new KillCommand();
-        CommandExecute.execute(command.getCommand(mAdbPath));
+        final ICommand cmd = new KillServer();
+        CommandExecute.execute(cmd.getCommand(mAdbPath));
     }
 
     private void startServerUnchecked() {
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP, "Start ADB server...");
 
-        final ICommand command = new StartCommad();
-        CommandExecute.execute(command.getCommand(mAdbPath));
+        final ICommand cmd = new StartServer();
+        CommandExecute.execute(cmd.getCommand(mAdbPath));
     }
 
     public void chooseADBPath() {
@@ -143,7 +143,7 @@ public class RootPresenter {
             public void run() {
                 mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP, "Preparing ADB...");
 
-                final ICommand<String, Boolean> cmd = new CheckADBCmd();
+                final ICommand<String, Boolean> cmd = new CheckADB();
                 final String result = CommandExecute.execute(cmd.getCommand(path));
 
                 if (cmd.parse(result)) {
@@ -185,9 +185,9 @@ public class RootPresenter {
     private void addDeviceUnchecked(final String deviceId){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Connecting " + deviceId);
 
-        final ICommand<String,String> command = new ConnectDevice(deviceId);
-        final String result = CommandExecute.execute(command.getCommand(mAdbPath));
-        final String message = command.parse(result);
+        final ICommand<String,String> cmd = new AddDevice(deviceId);
+        final String result = CommandExecute.execute(cmd.getCommand(mAdbPath));
+        final String message = cmd.parse(result);
 
         if (Utils.isBlank(message)) {
             Notify.error();
@@ -228,9 +228,9 @@ public class RootPresenter {
             public void run() {
                 mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Disconnecting " + deviceId);
 
-                final ICommand<String,String> command = new DisconnectRemoteDevice(deviceId);
-                final String result = CommandExecute.execute(command.getCommand(mAdbPath));
-                final String message = command.parse(result);
+                final ICommand<String,String> cmd = new RemoveDevice(deviceId);
+                final String result = CommandExecute.execute(cmd.getCommand(mAdbPath));
+                final String message = cmd.parse(result);
 
                 if (Utils.isBlank(message)){
                     Notify.error();
@@ -258,7 +258,7 @@ public class RootPresenter {
             public void run() {
                 mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Get ip address from " + deviceId);
 
-                final ICommand<String,String> getIpCommand = new GainDeviceIP(deviceId);
+                final ICommand<String,String> getIpCommand = new GetDeviceIP(deviceId);
                 final String ipTmpResult = CommandExecute.execute(getIpCommand.getCommand(mAdbPath));
                 final String ip = getIpCommand.parse(ipTmpResult);
 
@@ -268,7 +268,7 @@ public class RootPresenter {
                     return;
                 }
 
-                final ICommand<?,?> alertAdbPort = new AlertAdbPort(deviceId);
+                final ICommand<?,?> alertAdbPort = new SpecifyPort(deviceId);
                 CommandExecute.execute(alertAdbPort.getCommand(mAdbPath));
 
                 Notify.alert(Utils.concat("Now maybe you can disconnect the usb cable of target device [",deviceId,"]"));
@@ -284,9 +284,9 @@ public class RootPresenter {
     private void getDevicesUnchecked(){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Refresh devices list");
 
-        final ICommand<String,Device[]> command = new AllDevices();
-        final String result = CommandExecute.execute(command.getCommand(mAdbPath));
-        final Device[] devices = command.parse(result);
+        final ICommand<String,Device[]> cmd = new AllDevices();
+        final String result = CommandExecute.execute(cmd.getCommand(mAdbPath));
+        final Device[] devices = cmd.parse(result);
 
         mHandler.sendMessage(CustomHandler.HANDLE_DEVICES, devices);
     }

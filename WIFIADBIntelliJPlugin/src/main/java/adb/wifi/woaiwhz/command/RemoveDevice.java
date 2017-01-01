@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by huazhou.whz on 2016/10/21.
  */
-public class DisconnectRemoteDevice implements ICommand<String,String> {
+public class RemoveDevice implements ICommand<String,String> {
     private String mDeviceId;
 
-    public DisconnectRemoteDevice(@NotNull String deviceId){
+    public RemoveDevice(@NotNull String deviceId){
         mDeviceId = deviceId;
     }
 

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by wanghuazhou on 31/12/2016.
  */
-public class CheckADBCmd implements ICommand<String, Boolean> {
+public class CheckADB implements ICommand<String, Boolean> {
     @Override
     public Boolean parse(String string) {
         return string.contains("Android Debug Bridge version");

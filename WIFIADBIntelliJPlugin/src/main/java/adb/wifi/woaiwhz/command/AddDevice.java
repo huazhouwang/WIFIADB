@@ -8,13 +8,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by huazhou.whz on 2016/10/15.
  */
-public class ConnectDevice implements ICommand<String,String> {
+public class AddDevice implements ICommand<String,String> {
     private static final String CANNOT = "cannot";
     private static final String UNABLE = "unable";
 
     private final String mDeviceId;
 
-    public ConnectDevice(@NotNull String deviceId){
+    public AddDevice(@NotNull String deviceId){
         mDeviceId = deviceId;
     }
 

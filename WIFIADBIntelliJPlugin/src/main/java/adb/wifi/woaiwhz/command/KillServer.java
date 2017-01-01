@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by wanghuazhou on 30/12/2016.
  */
-public class KillCommand implements ICommand<Void,Void>{
+public class KillServer implements ICommand<Void,Void>{
 
     @Override
     public Void parse(Void aVoid) {

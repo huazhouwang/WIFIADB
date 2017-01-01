@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by wanghuazhou on 30/12/2016.
  */
-public class StartCommad implements ICommand<Void, Void> {
+public class StartServer implements ICommand<Void, Void> {
 
     @Override
     public Void parse(Void aVoid) {
