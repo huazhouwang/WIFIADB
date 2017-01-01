@@ -275,13 +275,16 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
             item.setEnabled(false);
         }
 
+        mAddressLabel.setToolTipText("Please specify adb path");
     }
 
     @Override
-    public void onADBSuccess(String path) {
+    public void onADBSuccess(@NotNull String path) {
         for(final Component item : mNeedADBItems){
             item.setEnabled(true);
         }
+
+        mAddressLabel.setToolTipText(path);
     }
 
     @Override
@@ -349,7 +352,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
                     break;
 
                 case "ADDRESS":
-                    mPresenter.chooseADBAddress();
+                    mPresenter.chooseADBPath();
                     break;
 
                 case "HELP":

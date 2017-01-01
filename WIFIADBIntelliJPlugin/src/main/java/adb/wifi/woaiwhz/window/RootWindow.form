@@ -206,7 +206,7 @@
                           <icon value="icons/adb-icon.png"/>
                           <name value="ADDRESS"/>
                           <text value=""/>
-                          <toolTipText value="ADB Address"/>
+                          <toolTipText value="Please specify adb path"/>
                         </properties>
                       </component>
                     </children>

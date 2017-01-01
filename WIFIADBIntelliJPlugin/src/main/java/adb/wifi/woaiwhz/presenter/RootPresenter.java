@@ -1,9 +1,7 @@
 package adb.wifi.woaiwhz.presenter;
 
-import adb.wifi.woaiwhz.base.CommandExecute;
-import adb.wifi.woaiwhz.base.Config;
-import adb.wifi.woaiwhz.base.Notify;
-import adb.wifi.woaiwhz.base.Utils;
+import adb.wifi.woaiwhz.base.*;
+import adb.wifi.woaiwhz.base.compat.OsCompat;
 import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.command.*;
 import adb.wifi.woaiwhz.dispatch.Executor;
@@ -12,6 +10,7 @@ import adb.wifi.woaiwhz.dispatch.Message;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +36,9 @@ public class RootPresenter {
 
     public void init(@NotNull Project project){
         mProject = project;
-        mAdbPath = Utils.getAdbPath(mProject);
+        Global.instance().bindProject(mProject);
+
+        mAdbPath = Utils.getAdbPath();
 
         if(isAdbEmpty()){
             mViewLayer.onADBFail();
@@ -51,7 +52,7 @@ public class RootPresenter {
     }
 
     public void addDevice(final String deviceId){
-        if (!shouldWait()){
+        if (shouldWait()){
             return;
         }
 
@@ -73,7 +74,7 @@ public class RootPresenter {
     }
 
     public void rebootServer() {
-        if (!shouldWait()) {
+        if (shouldWait()) {
             return;
         }
 
@@ -83,9 +84,8 @@ public class RootPresenter {
             @Override
             public void run() {
                 killServerUnchecked();
-//                startServerUnchecked();
-
-                mHandler.sendEmptyMessage(CustomHandler.POST_GET_DEVICES);
+                startServerUnchecked();
+                getDevicesUnchecked();
             }
         });
     }
@@ -95,37 +95,26 @@ public class RootPresenter {
 
         final ICommand command = new KillCommand();
         CommandExecute.execute(command.getCommand(mAdbPath));
-
-//        mHandler.sendEmptyMessage(CustomHandler.POST_START_SERVER);
     }
 
-//    private void startServer() {
-//        if (shouldWait()) {
-//            return;
-//        }
-//
-//        lock();
-//
-//        runOnPooledThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                startServerUnchecked();
-//            }
-//        });
-//    }
+    private void startServerUnchecked() {
+        mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP, "Start ADB server...");
 
-//    private void startServerUnchecked() {
-//        mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP, "Start ADB server...");
-//
-//        final ICommand command = new StartCommad();
-//        CommandExecute.execute(command.getCommand(mAdbPath));
-//
-//        mHandler.sendEmptyMessage(CustomHandler.POST_GET_DEVICES);
-//    }
+        final ICommand command = new StartCommad();
+        CommandExecute.execute(command.getCommand(mAdbPath));
+    }
 
-    public void chooseADBAddress() {
+    public void chooseADBPath() {
+        final VirtualFile toSelect;
+
+        if (isAdbEmpty()) {
+            toSelect = null;
+        } else {
+            toSelect = LocalFileSystem.getInstance().refreshAndFindFileByPath(mAdbPath);
+        }
+
         VirtualFile vFile = FileChooser.chooseFile(
-                FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor(), mProject, null);
+                FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor(), mProject, toSelect);
 
         if (vFile == null || !vFile.exists()) {
             return;
@@ -158,9 +147,9 @@ public class RootPresenter {
                 final String result = CommandExecute.execute(cmd.getCommand(path));
 
                 if (cmd.parse(result)) {
-                    mHandler.sendMessage(CustomHandler.HANDLE_ADB_PATH, path);
+                    mHandler.sendMessage(CustomHandler.CHANGE_ADB_PATH, path);
                 } else {
-                    mHandler.sendMessage(CustomHandler.HANDLE_ADB_PATH, null);
+                    mHandler.sendMessage(CustomHandler.CHANGE_ADB_PATH, null);
                 }
             }
         });
@@ -171,7 +160,7 @@ public class RootPresenter {
         final String adbPath;
 
         if (vFile.isDirectory()) {
-            adbPath = Utils.concat(vFile.getPath(), "/platform-tools/adb");
+            adbPath = Utils.concat(vFile.getPath(), OsCompat.instance().getADBinSdk());
         } else {
             adbPath = vFile.getPath();
         }
@@ -186,7 +175,7 @@ public class RootPresenter {
     }
 
     private void fail2FindADB() {
-        Notify.error("Cannot find adb,please try again");
+        Notify.error("Cannot find adb,please specify sdk dir or adb file");
     }
 
     private boolean shouldWait() {
@@ -331,9 +320,7 @@ public class RootPresenter {
     class CustomHandler extends MainThreadHandler {
         static final int HANDLE_DEVICES = 1;
         static final int CHANGE_PROGRESS_TIP = 1 << 1;
-        static final int POST_START_SERVER = 1 << 2;
-        static final int POST_GET_DEVICES = 1 << 3;
-        static final int HANDLE_ADB_PATH = 1 << 4;
+        static final int CHANGE_ADB_PATH = 1 << 2;
 
         @Override
         protected void handleMessage(@NotNull Message msg) {
@@ -341,26 +328,16 @@ public class RootPresenter {
 
             switch (what) {
                 case HANDLE_DEVICES:
-                    handleAllDevicesAction(msg);
+                    handleAllDevices(msg);
                     unlock();
                     break;
 
                 case CHANGE_PROGRESS_TIP:
-                    handleChangeProgressTipAction(msg);
+                    handleProgressTipChange(msg);
                     break;
 
-                case HANDLE_ADB_PATH:
-                    handleAdbPath(msg);
-                    unlock();
-                    break;
-
-//                case POST_START_SERVER:
-//                    unlock();
-//                    startServer();
-//                    break;
-
-                case POST_GET_DEVICES:
-                    getAllDevices();
+                case CHANGE_ADB_PATH:
+                    handleAdbPathChange(msg);
                     unlock();
                     break;
 
@@ -369,7 +346,7 @@ public class RootPresenter {
             }
         }
 
-        private void handleAdbPath(@NotNull Message msg) {
+        private void handleAdbPathChange(@NotNull Message msg) {
             final String path = msg.get();
 
             if (Utils.isBlank(path)) {
@@ -378,12 +355,12 @@ public class RootPresenter {
             }
 
             mAdbPath = path;
-            Notify.alert("Current ADB path : " + mAdbPath);
-
+            Properties.instance().pjLevel().setValue(Config.ADB_PATH, path);
             mViewLayer.onADBSuccess(path);
+            Notify.alert("Current adb : " + path);
         }
 
-        private void handleChangeProgressTipAction(@NotNull Message msg){
+        private void handleProgressTipChange(@NotNull Message msg){
             final String newTip = msg.get();
 
             if(Utils.isBlank(newTip)){
@@ -393,7 +370,7 @@ public class RootPresenter {
             }
         }
 
-        private void handleAllDevicesAction(@NotNull Message msg){
+        private void handleAllDevices(@NotNull Message msg){
             final Device[] devices = msg.get();
 
             if (devices == null){
@@ -408,7 +385,7 @@ public class RootPresenter {
 
     public interface RootView{
         void onADBFail();
-        void onADBSuccess(String path);
+        void onADBSuccess(@NotNull String path);
         void showLoading();
         void hideLoading();
         void refreshDevices(@Nullable Device[] devices);
