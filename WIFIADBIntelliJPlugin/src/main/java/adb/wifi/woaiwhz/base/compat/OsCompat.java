@@ -25,6 +25,12 @@ public class OsCompat implements IOsCompat{
         return mProxy.getADBinSdk();
     }
 
+    @NotNull
+    @Override
+    public String getADBName() {
+        return mProxy.getADBName();
+    }
+
     private static IOsCompat checkOs() {
         String os = System.getProperty("os.name").toLowerCase();
 

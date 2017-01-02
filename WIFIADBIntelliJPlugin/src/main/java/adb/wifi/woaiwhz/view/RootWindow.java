@@ -96,7 +96,7 @@ public class RootWindow implements ToolWindowFactory, RootPresenter.RootView, Hi
 
     private void attach2ToolWindow(ToolWindow toolWindow){
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(mRoot, Config.TITLE, false);
+        Content content = contentFactory.createContent(mRoot, null, true);
         toolWindow.getContentManager().addContent(content);
     }
 

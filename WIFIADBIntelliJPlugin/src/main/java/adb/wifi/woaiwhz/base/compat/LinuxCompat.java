@@ -16,4 +16,10 @@ class LinuxCompat extends AbOsCompat {
     public String getADBinSdk() {
         return "/platform-tools/adb";
     }
+
+    @NotNull
+    @Override
+    public String getADBName() {
+        return "adb";
+    }
 }

@@ -26,7 +26,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <defaultProjectTypeProvider type="Android"/>
         <toolWindow
-                id="WIFI ADB ULTIMATE"
+                id="WIFI ADB ULTIMATE1"
                 icon="/icons/app-icon.png"
                 anchor="right"
                 factoryClass="adb.wifi.woaiwhz.view.RootWindow"

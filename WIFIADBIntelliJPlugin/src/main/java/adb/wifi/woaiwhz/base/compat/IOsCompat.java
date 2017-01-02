@@ -9,4 +9,7 @@ public interface IOsCompat {
 
     @NotNull
     String getADBinSdk();
+
+    @NotNull
+    String getADBName();
 }

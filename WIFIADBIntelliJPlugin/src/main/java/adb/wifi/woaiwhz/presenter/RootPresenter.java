@@ -127,7 +127,9 @@ public class RootPresenter {
     public void chooseADBPath(@NotNull VirtualFile vFile) {
         final File adbFile = findADB(vFile);
 
-        if (adbFile == null || !adbFile.canExecute() || !adbFile.getName().equalsIgnoreCase("adb")) {
+        if (adbFile == null
+                || !adbFile.canExecute()
+                || !adbFile.getName().equalsIgnoreCase(OsCompat.instance().getADBName())) {
             fail2FindADB();
         } else {
             checkAdbAvailable(adbFile);

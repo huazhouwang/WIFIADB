@@ -17,4 +17,10 @@ class MacOsCompat extends AbOsCompat {
         return "/platform-tools/adb";
     }
 
+    @NotNull
+    @Override
+    public String getADBName() {
+        return "adb";
+    }
+
 }

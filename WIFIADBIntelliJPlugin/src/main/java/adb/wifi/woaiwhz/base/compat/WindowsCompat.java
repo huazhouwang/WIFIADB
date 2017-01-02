@@ -16,4 +16,10 @@ class WindowsCompat extends AbOsCompat {
     public String getADBinSdk() {
         return "/platform-tools/adb.exe";
     }
+
+    @NotNull
+    @Override
+    public String getADBName() {
+        return "adb.exe";
+    }
 }

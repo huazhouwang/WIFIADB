@@ -7,7 +7,7 @@ public interface Config {
     int MAX_IP_RECORD = 10;
     String ADB_PATH = "adb_path";
     String IP_HISTORY = "ip_history";
-    String TITLE = "Wifi Adb Ultimate";
+    String TITLE = "WIFI ADB ULTIMATE";
     String HELP = "https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin";
     String DEFAULT_PORT = "5555";
     String EMPTY = "";
