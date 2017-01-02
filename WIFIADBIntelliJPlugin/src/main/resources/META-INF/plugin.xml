@@ -2,7 +2,7 @@
 <idea-plugin version="2">
     <id>adb.wifi.woaiwhz</id>
     <name>WIFI ADB ULTIMATE</name>
-    <version>1.1</version>
+    <version>1.5</version>
     <vendor email="huazhou19@gmail.com" url="https://github.com/Sausure/WIFIADB/tree/master/WIFIADBIntelliJPlugin">
         HuaZhou Wang - (Sausure)
     </vendor>
@@ -16,6 +16,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        1.5: Add many new features like history cache,restart adb and specify adb path
         1.1: Fix compatibility bug.<br>
         1.0: Initial release.<br>
     ]]>
@@ -26,7 +27,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <defaultProjectTypeProvider type="Android"/>
         <toolWindow
-                id="WIFI ADB ULTIMATE1"
+                id="WIFI ADB ULTIMATE"
                 icon="/icons/app-icon.png"
                 anchor="right"
                 factoryClass="adb.wifi.woaiwhz.view.RootWindow"
