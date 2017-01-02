@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by huazhou.whz on 2016/10/21.
  */
-public class GainDeviceIP implements ICommand<String,String> {
+public class GetDeviceIP implements ICommand<String,String> {
     private String mDeviceId;
 
-    public GainDeviceIP(String deviceId){
+    public GetDeviceIP(String deviceId){
         mDeviceId = deviceId;
     }
 

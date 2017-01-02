@@ -1,14 +1,22 @@
-package adb.wifi.woaiwhz.window;
+package adb.wifi.woaiwhz.view;
 
 import adb.wifi.woaiwhz.base.Config;
+import adb.wifi.woaiwhz.base.Global;
 import adb.wifi.woaiwhz.base.Notify;
 import adb.wifi.woaiwhz.base.Utils;
 import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.component.DevicesAdapter;
-import adb.wifi.woaiwhz.component.ListView;
-import adb.wifi.woaiwhz.listener.*;
+import adb.wifi.woaiwhz.component.ListPanel;
+import adb.wifi.woaiwhz.listener.CustomInputVerifier;
+import adb.wifi.woaiwhz.listener.NumberDocumentFilter;
+import adb.wifi.woaiwhz.listener.OnClickAdapter;
+import adb.wifi.woaiwhz.listener.SelectAllListener;
 import adb.wifi.woaiwhz.presenter.RootPresenter;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
@@ -26,7 +34,7 @@ import java.awt.event.KeyListener;
 /**
  * Created by huazhou.whz on 2016/10/7.
  */
-public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
+public class RootWindow implements ToolWindowFactory, RootPresenter.RootView, HistoryDialog.Callback{
     private JPanel mRoot;
     private JTextField mIP_1;
     private JTextField mIP_2;
@@ -41,7 +49,6 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
     private JPanel mCenterLayout;
     private JPanel mFunctionLayout;
     private JLabel mProgressTip;
-    private JScrollPane mScrollPane;
     private JPanel mActivePane;
     private JLabel mRefreshLabel;
     private JLabel mEmptyLabel;
@@ -74,7 +81,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
 
         mPresenter = new RootPresenter(this);
 
-        final ListView devicesList = new ListView();
+        final ListPanel devicesList = new ListPanel();
         mActivePane.add(devicesList);
         mAdapter = new DevicesAdapter(mPresenter);
         devicesList.setAdapter(mAdapter);
@@ -275,13 +282,16 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
             item.setEnabled(false);
         }
 
+        mAddressLabel.setToolTipText("Please specify adb path");
     }
 
     @Override
-    public void onADBSuccess(String path) {
+    public void onADBSuccess(@NotNull String path) {
         for(final Component item : mNeedADBItems){
             item.setEnabled(true);
         }
+
+        mAddressLabel.setToolTipText(path);
     }
 
     @Override
@@ -299,14 +309,13 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
     @Override
     public void refreshDevices(@Nullable Device[] devices) {
         if (devices == null || devices.length == 0){
-            mEmptyLabel.setVisible(true);
-            mScrollPane.setVisible(false);
+            mEmptyLayout.setVisible(true);
+            mActivePane.setVisible(false);
             return;
         }
 
-        mEmptyLabel.setVisible(false);
-        mScrollPane.setVisible(true);
-
+        mEmptyLayout.setVisible(false);
+        mActivePane.setVisible(true);
         mAdapter.addAll(devices);
         mAdapter.notifyDataSetChange();
     }
@@ -317,6 +326,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
     }
 
     private class CustomClick extends OnClickAdapter{
+
         @Override
         public void onClick(AWTEvent e) {
             final Component component = e.getSource() instanceof Component ?
@@ -338,6 +348,7 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
                     break;
 
                 case "HISTORY":
+                    showHistoryDialog();
                     break;
 
                 case "REFRESH":
@@ -345,22 +356,57 @@ public class RootWindow implements ToolWindowFactory,RootPresenter.RootView{
                     break;
 
                 case "REBOOT":
+                    mPresenter.rebootServer();
                     break;
 
                 case "ADDRESS":
+                    specifyADBPath();
                     break;
 
                 case "HELP":
-                    try {
-                        Desktop.getDesktop().browse(new java.net.URI(Config.HELP));
-                    }catch (Exception exception){
-                        Notify.error("Cannot launch web browser");
-                    }
+                    getHelp();
                     break;
 
                 default:
                     break;
             }
+        }
+    }
+
+    private void specifyADBPath() {
+        final String adbPath = Global.instance().adbPath();
+        final VirtualFile toSelect;
+
+        if (Utils.isBlank(adbPath)) {
+            toSelect = null;
+        } else {
+            toSelect = LocalFileSystem.getInstance().refreshAndFindFileByPath(adbPath);
+        }
+
+        final VirtualFile vFile = FileChooser.chooseFile(
+                FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor(), Global.instance().project(), toSelect);
+
+        if (vFile == null || !vFile.exists()) {
+            return;
+        }
+
+        mPresenter.chooseADBPath(vFile);
+    }
+
+    private void showHistoryDialog() {
+        new HistoryDialog(this).show();
+    }
+
+    @Override
+    public void gainIpFromHistory(@NotNull String[] ips) {
+        mPresenter.addDevices(ips);
+    }
+
+    private void getHelp() {
+        try {
+            Desktop.getDesktop().browse(new java.net.URI(Config.HELP));
+        }catch (Exception exception){
+            Notify.error("Cannot launch web browser");
         }
     }
 }

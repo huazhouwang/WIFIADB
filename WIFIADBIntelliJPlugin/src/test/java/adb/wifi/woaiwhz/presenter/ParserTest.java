@@ -2,7 +2,7 @@ package adb.wifi.woaiwhz.presenter;
 
 import adb.wifi.woaiwhz.base.device.Device;
 import adb.wifi.woaiwhz.command.AllDevices;
-import adb.wifi.woaiwhz.command.GainDeviceIP;
+import adb.wifi.woaiwhz.command.GetDeviceIP;
 import adb.wifi.woaiwhz.command.ICommand;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class ParserTest {
     public void getIpTest(){
         final String result = "inet 30.34.168.10/22 brd 30.34.171.255 scope global wlan0";
 
-        ICommand<String,String> command = new GainDeviceIP("");
+        ICommand<String,String> command = new GetDeviceIP("");
         final String ip = command.parse(result);
 
         System.out.println(ip);

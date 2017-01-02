@@ -29,7 +29,7 @@
                 id="WIFI ADB ULTIMATE"
                 icon="/icons/app-icon.png"
                 anchor="right"
-                factoryClass="adb.wifi.woaiwhz.window.RootWindow"
+                factoryClass="adb.wifi.woaiwhz.view.RootWindow"
                 />
     </extensions>
 

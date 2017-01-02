@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="adb.wifi.woaiwhz.component.IpHolder">
+  <grid id="27dc6" binding="mContentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="429" height="41"/>
+    </constraints>
+    <properties>
+      <minimumSize width="100" height="30"/>
+      <preferredSize width="100" height="30"/>
+      <requestFocusEnabled value="true"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="8d1f6" class="javax.swing.JRadioButton" binding="mRadio">
+        <constraints border-constraint="West"/>
+        <properties>
+          <contentAreaFilled value="false"/>
+          <focusPainted value="false"/>
+          <focusable value="false"/>
+          <label value=""/>
+          <requestFocusEnabled value="false"/>
+          <text value=""/>
+          <visible value="true"/>
+        </properties>
+      </component>
+      <component id="a27fb" class="javax.swing.JLabel" binding="mIpLabel">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <text value="IP with port"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

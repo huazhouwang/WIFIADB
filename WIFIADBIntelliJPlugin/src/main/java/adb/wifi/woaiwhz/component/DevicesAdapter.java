@@ -198,7 +198,7 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
         }
 
         @Override
-        protected Component getItem() {
+        protected Component getRoot() {
             return mItemRoot;
         }
 
@@ -257,7 +257,7 @@ public class DevicesAdapter extends BaseAdapter<DevicesAdapter.BaseViewHolder>{
         }
 
         @Override
-        protected Component getItem() {
+        protected Component getRoot() {
             return mItemRoot;
         }
     }

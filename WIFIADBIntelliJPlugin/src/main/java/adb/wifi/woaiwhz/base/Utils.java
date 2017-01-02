@@ -1,6 +1,5 @@
 package adb.wifi.woaiwhz.base;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.android.sdk.AndroidSdkUtils;
 import org.jetbrains.annotations.NotNull;
@@ -43,12 +42,16 @@ public class Utils {
         return StringUtil.isEmptyOrSpaces(text);
     }
 
-    public static String getAdbPath(@NotNull Project project) {
-        String adbPath = "";
-        final File adbFile = AndroidSdkUtils.getAdb(project);
+    public static String getAdbPath() {
+        String adbPath = Properties.instance().pjLevel().getValue(Config.ADB_PATH);
 
-        if (adbFile != null) {
-            adbPath = adbFile.getAbsolutePath();
+        if (Utils.isBlank(adbPath)) {
+            final File adbFile = AndroidSdkUtils.getAdb(Global.instance().project());
+
+            if (adbFile != null) {
+                adbPath = adbFile.getAbsolutePath();
+                Properties.instance().pjLevel().setValue(Config.ADB_PATH, adbPath);
+            }
         }
 
         return adbPath;
