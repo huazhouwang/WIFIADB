@@ -8,10 +8,10 @@ import javax.swing.*;
 /**
  * Created by huazhou.whz on 2016/10/15.
  */
-public class ListView extends JPanel {
+public class ListPanel extends JPanel {
     private BaseAdapter mAdapter;
 
-    public ListView() {
+    public ListPanel() {
         super(new VerticalLayout(5));
     }
 

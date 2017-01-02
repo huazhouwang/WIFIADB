@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -13,9 +14,11 @@ import java.util.Queue;
 public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
     private JPanel mContainer;
     private final Map<Integer,Queue<T>> mComponentPool;
+    protected final List<T> mHolderList;
 
     {
-        mComponentPool = new HashMap<Integer,Queue<T>>();
+        mComponentPool = new HashMap<>();
+        mHolderList = new ArrayList<>();
     }
 
     public void attach(@NotNull JPanel container){
@@ -34,6 +37,7 @@ public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
         }
 
         mContainer.removeAll();
+        mHolderList.clear();
 
         final int count = getItemCount();
 
@@ -42,21 +46,21 @@ public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
             return;
         }
 
-        final Map<Integer, Queue<T>> tmpMap = new HashMap<Integer, Queue<T>>();
+        final Map<Integer, Queue<T>> tmpMap = new HashMap<>();
 
         for (int i = 0; i < count; ++i) {
             final int viewType = getItemViewType(i);
             Queue<T> queue = mComponentPool.get(viewType);
 
             if (queue == null) {
-                queue = new ArrayDeque<T>();
+                queue = new LinkedList<>();
                 mComponentPool.put(viewType, queue);
             }
 
             Queue<T> tmpQueue = tmpMap.get(viewType);
 
             if (tmpQueue == null) {
-                tmpQueue = new ArrayDeque<T>();
+                tmpQueue = new LinkedList<>();
                 tmpMap.put(viewType, tmpQueue);
             }
 
@@ -72,8 +76,9 @@ public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
 
             tmpQueue.offer(viewHolder);
             onBindViewHolder(viewHolder, i);
+            mHolderList.add(viewHolder);
 
-            final Component component = viewHolder.getItem();
+            final Component component = viewHolder.getRoot();
 
             if(component == null){
                 throw new NullPointerException();
@@ -106,6 +111,6 @@ public abstract class BaseAdapter<T extends BaseAdapter.ViewHolder> {
     protected abstract void onBindViewHolder(T holder,int position);
 
     public static abstract class ViewHolder{
-        protected abstract Component getItem();
+        protected abstract Component getRoot();
     }
 }

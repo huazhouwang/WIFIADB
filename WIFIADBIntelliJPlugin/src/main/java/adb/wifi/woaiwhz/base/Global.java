@@ -8,6 +8,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Global {
     private Project mThisProject;
+    private String mADBPath;
+
+    public void setADBPath(String adbPath) {
+        mADBPath = adbPath;
+    }
+
+    public String adbPath() {
+        return mADBPath;
+    }
 
     public void bindProject(@NotNull final Project project) {
         mThisProject = project;

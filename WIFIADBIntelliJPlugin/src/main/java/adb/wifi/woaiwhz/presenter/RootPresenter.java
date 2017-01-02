@@ -1,21 +1,21 @@
 package adb.wifi.woaiwhz.presenter;
 
 import adb.wifi.woaiwhz.base.*;
+import adb.wifi.woaiwhz.base.Properties;
 import adb.wifi.woaiwhz.base.compat.OsCompat;
 import adb.wifi.woaiwhz.base.device.Device;
+import adb.wifi.woaiwhz.base.device.RemoteDevice;
 import adb.wifi.woaiwhz.command.*;
 import adb.wifi.woaiwhz.dispatch.Executor;
 import adb.wifi.woaiwhz.dispatch.MainThreadHandler;
 import adb.wifi.woaiwhz.dispatch.Message;
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.*;
 
 /**
  * Created by huazhou.whz on 2016/10/14.
@@ -44,6 +44,7 @@ public class RootPresenter {
             mViewLayer.onADBFail();
         }else {
             mViewLayer.onADBSuccess(mAdbPath);
+            Global.instance().setADBPath(mAdbPath);
         }
     }
 
@@ -67,6 +68,25 @@ public class RootPresenter {
             @Override
             public void run() {
                 addDeviceUnchecked(deviceId);
+
+                getDevicesUnchecked();
+            }
+        });
+    }
+
+    public void addDevices(@NotNull final String[] deviceIds) {
+        if (shouldWait()) {
+            return;
+        }
+
+        lock();
+
+        runOnPooledThread(new Runnable() {
+            @Override
+            public void run() {
+                for (String devicesId : deviceIds) {
+                    addDeviceUnchecked(devicesId);
+                }
 
                 getDevicesUnchecked();
             }
@@ -104,22 +124,7 @@ public class RootPresenter {
         CommandExecute.execute(cmd.getCommand(mAdbPath));
     }
 
-    public void chooseADBPath() {
-        final VirtualFile toSelect;
-
-        if (isAdbEmpty()) {
-            toSelect = null;
-        } else {
-            toSelect = LocalFileSystem.getInstance().refreshAndFindFileByPath(mAdbPath);
-        }
-
-        VirtualFile vFile = FileChooser.chooseFile(
-                FileChooserDescriptorFactory.createSingleFileOrFolderDescriptor(), mProject, toSelect);
-
-        if (vFile == null || !vFile.exists()) {
-            return;
-        }
-
+    public void chooseADBPath(@NotNull VirtualFile vFile) {
         final File adbFile = findADB(vFile);
 
         if (adbFile == null || !adbFile.canExecute() || !adbFile.getName().equalsIgnoreCase("adb")) {
@@ -274,8 +279,6 @@ public class RootPresenter {
                 Notify.alert(Utils.concat("Now maybe you can disconnect the usb cable of target device [",deviceId,"]"));
 
                 addDeviceUnchecked(Utils.concat(ip,":",Config.DEFAULT_PORT));
-
-                mayWait();
                 getDevicesUnchecked();
             }
         });
@@ -284,16 +287,64 @@ public class RootPresenter {
     private void getDevicesUnchecked(){
         mHandler.sendMessage(CustomHandler.CHANGE_PROGRESS_TIP,"Refresh devices list");
 
+        mayWait(2000);
         final ICommand<String,Device[]> cmd = new AllDevices();
         final String result = CommandExecute.execute(cmd.getCommand(mAdbPath));
         final Device[] devices = cmd.parse(result);
 
+        lruCache(devices);
         mHandler.sendMessage(CustomHandler.HANDLE_DEVICES, devices);
     }
 
-    private void mayWait(){
+    private void lruCache(@NotNull Device[] devices) {
+        if (devices.length == 0) {
+            return;
+        }
+
+        final String[] history = Properties.instance().appLevel().getValues(Config.IP_HISTORY);
+        final int historyCount = history != null ? history.length : 0;
+        final Map<Integer, String> map = new HashMap<>();
+
+        if (history != null) {
+            for (int i = 0, j = historyCount - 1; i < historyCount; ++i) {
+                map.put(j - i, history[i]);
+            }
+        }
+
+        int count = historyCount;
+
+        for (Device device : devices) {
+            if (device instanceof RemoteDevice && device.state) {
+                map.put(count, device.id);
+                ++count;
+            }
+        }
+
+        --count;
+
+        int divide = Math.max(map.size() - Config.MAX_IP_RECORD + 1, 0);
+        final Integer[] keys = map.keySet().toArray(new Integer[map.size()]);
+        Arrays.sort(keys);
+
+        final List<String> result = new ArrayList<>();
+
+        for (int i = keys.length - 1; divide >= 0 && i >= divide; --i) {
+            final String value = map.get(keys[i]);
+
+            if (result.contains(value)) {
+                --divide;
+            } else {
+                result.add(value);
+            }
+        }
+
+        Properties.instance().appLevel().setValues(
+                Config.IP_HISTORY, result.toArray(new String[result.size()]));
+    }
+
+    private void mayWait(int time){
         try{
-            Thread.sleep(2000);
+            Thread.sleep(time);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -356,6 +407,7 @@ public class RootPresenter {
 
             mAdbPath = path;
             Properties.instance().pjLevel().setValue(Config.ADB_PATH, path);
+            Global.instance().setADBPath(mAdbPath);
             mViewLayer.onADBSuccess(path);
             Notify.alert("Current adb : " + path);
         }
@@ -380,7 +432,6 @@ public class RootPresenter {
 
             mViewLayer.refreshDevices(devices);
         }
-
     }
 
     public interface RootView{
